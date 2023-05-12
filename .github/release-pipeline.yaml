@@ -52,10 +52,10 @@ jobs:
                     NEXT_VERSION=${{ github.event.inputs.next }}
                     mvn -B -ntp --file pom.xml release:prepare -B -Dusername=skunkworks-rabot -Dpassword=${{ secrets.SKUNKWORKS_RABOT_PAT}} -Dtag=$RELEASE_VERSION -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion="${NEXT_VERSION}-SNAPSHOT"
 
-    # Build RET CLI executable per runner
+    # Build plugins per runner
     cli:
         needs: [ prepare ]
-        name: 'Build RET CLI with Graal on ${{ matrix.os }}'
+        name: 'Build plugins with Graal on ${{ matrix.os }}'
         strategy:
             fail-fast: true
             matrix:
