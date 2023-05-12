@@ -7,6 +7,23 @@
     <artifactId>ret-plugins</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <url>https://github.com/rabobank/ret-plugins</url>
+    <description>RET Engineering Tools</description>
+    <inceptionYear>2023</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>'MIT License'</name>
+            <url>https://github.com/rabobank/ret-plugins/blob/main/LICENSE</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>Rabobank</id>
+        </developer>
+    </developers>
+
     <properties>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
         <kotlin.version>1.8.10</kotlin.version>
@@ -17,6 +34,9 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.0.2.Final</quarkus.platform.version>
         <skipITs>true</skipITs>
+        <jreleaser-maven-plugin.version>1.6.0</jreleaser-maven-plugin.version>
+        <maven-assembly-plugin.version>3.5.0</maven-assembly-plugin.version>
+        <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
         <ret-plugin.version>0.0.7</ret-plugin.version>
@@ -60,8 +80,81 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <version>${jreleaser-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <jreleaser>
+                        <release>
+                            <github>
+                                <tagName>{{projectVersion}}</tagName>
+                                <releaseName>{{projectVersion}}</releaseName>
+                                <overwrite>true</overwrite>
+                                <changelog>
+                                    <formatted>ALWAYS</formatted>
+                                    <format>- {{commitShortHash}} {{commitTitle}}</format>
+                                    <preset>conventional-commits</preset>
+                                    <contributors>
+                                        <format>- {{contributorName}}</format>
+                                    </contributors>
+                                    <hide>
+                                        <categories>merge</categories>
+                                        <contributors>GitHub,dependabot,Skunk Works Rabot</contributors>
+                                    </hide>
+                                </changelog>
+                            </github>
+                        </release>
+                        <distributions>
+                            <git-plugin>
+                                <type>BINARY</type>
+                                <artifacts>
+                                    <artifact>
+                                        <path>{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip</path>
+                                        <platform>linux-x86_64</platform>
+                                    </artifact>
+                                    <artifact>
+                                        <path>{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip</path>
+                                        <platform>osx-x86_64</platform>
+                                    </artifact>
+                                </artifacts>
+                            </git-plugin>
+                            <splunk-plugin>
+                                <type>BINARY</type>
+                                <artifacts>
+                                    <artifact>
+                                        <path>{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip</path>
+                                        <platform>linux-x86_64</platform>
+                                    </artifact>
+                                    <artifact>
+                                        <path>{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip</path>
+                                        <platform>osx-x86_64</platform>
+                                    </artifact>
+                                </artifacts>
+                            </splunk-plugin>
+                        </distributions>
+                        <signing>
+                            <active>ALWAYS</active>
+                            <armored>true</armored>
+                        </signing>
+                    </jreleaser>
+                </configuration>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>kr.motd.maven</groupId>
+                    <artifactId>os-maven-plugin</artifactId>
+                    <version>${os-maven-plugin.version}</version>
+                </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>${failsafe-plugin.version}</version>

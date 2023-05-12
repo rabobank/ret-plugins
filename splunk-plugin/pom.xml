@@ -117,11 +117,35 @@
                                             <arg value="-c"/>
                                             <arg value="native-image $(cat native-image.args)"/>
                                         </exec>
-                                        <copy file="${project.build.directory}/native-sources/${project.build.finalName}.dylib" tofile="${project.build.directory}/${project.build.finalName}.dylib"/>
+                                        <copy file="${project.build.directory}/native-sources/${project.build.finalName}.${lib.extension}"
+                                              tofile="${project.build.directory}/${project.build.finalName}.${lib.extension}"/>
                                     </target>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <attach>false</attach>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>${project.build.finalName}-${project.version}-${os.detected.classifier}</finalName>
+                            <outputDirectory>${project.build.directory}/distributions</outputDirectory>
+                            <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                            <descriptors>
+                                <descriptor>../assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-distribution</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -134,6 +158,39 @@
                 <quarkus.package.type>native-sources</quarkus.package.type>
                 <quarkus.package.add-runner-suffix>false</quarkus.package.add-runner-suffix>
                 <quarkus.native.additional-build-args>--shared</quarkus.native.additional-build-args>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <lib.extension>so</lib.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <lib.extension>dll</lib.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>macos</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <lib.extension>dylib</lib.extension>
             </properties>
         </profile>
     </profiles>
