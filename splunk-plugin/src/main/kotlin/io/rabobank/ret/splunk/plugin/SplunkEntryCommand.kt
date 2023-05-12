@@ -13,7 +13,6 @@ import picocli.CommandLine
     subcommands = [
         PluginInitializeCommand::class,
         SplunkSearchCommand::class,
-        AutoCompleteCommand::class,
     ],
 )
 @RegisterForReflection(targets = [RetContext::class])
