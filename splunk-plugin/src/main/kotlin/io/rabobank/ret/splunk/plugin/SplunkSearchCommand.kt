@@ -2,10 +2,9 @@ package io.rabobank.ret.splunk.plugin
 
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.picocli.mixin.ContextAwareness
-import io.rabobank.ret.splunk.plugin.splunk.SplunkData
+import io.rabobank.ret.splunk.plugin.splunk.SplunkConfig
 import io.rabobank.ret.util.BrowserUtils
 import jakarta.ws.rs.core.UriBuilder
-import org.eclipse.microprofile.config.inject.ConfigProperty
 import picocli.CommandLine.Command
 import picocli.CommandLine.Mixin
 import picocli.CommandLine.Option
@@ -14,8 +13,8 @@ import picocli.CommandLine.Parameters
 @Command(name = "search", description = ["Open Splunk search results"])
 internal class SplunkSearchCommand(
     private val browserUtils: BrowserUtils,
-    private val splunkData: SplunkData,
     private val retContext: RetContext,
+    splunkConfig: SplunkConfig,
 ) : Runnable {
     @Mixin
     lateinit var contextAwareness: ContextAwareness
@@ -39,22 +38,20 @@ internal class SplunkSearchCommand(
     @Parameters
     var queryParts: List<String> = emptyList()
 
-    @ConfigProperty(name = "splunk.baseUrl")
-    lateinit var splunkBaseUrl: String
+    private val splunkUrl = "${splunkConfig.splunkBaseUrl}/en-GB/app/${splunkConfig.splunkApp}/search"
 
     override fun run() {
         val queryArguments = mutableListOf<String>()
 
         val appName = providedAppName ?: retContext.gitRepository
-        val index = determineIndex(appName)
 
-        index?.let { queryArguments += "index=$it" }
+        providedIndex?.let { queryArguments += "index=$it" }
         appName?.let { queryArguments += "cf_app_name=$it" }
         queryArguments += queryParts
 
         val query = queryArguments.joinToString(" ")
 
-        val url = UriBuilder.fromUri(splunkBaseUrl)
+        val url = UriBuilder.fromUri(splunkUrl)
             .apply {
                 if (query.isNotBlank()) {
                     queryParam("q", "search $query")
@@ -64,27 +61,6 @@ internal class SplunkSearchCommand(
             .toASCIIString()
 
         browserUtils.openUrl(url)
-    }
-
-    private fun determineIndex(appName: String?): String? {
-        return when {
-            providedIndex != null || appName == null -> providedIndex
-            else -> splunkData.getAllByAppName(appName)
-                .map { it.index }
-                .sortedWith(this::compareByProdIndex)
-                .firstOrNull()
-        }
-    }
-
-    private fun compareByProdIndex(indexA: String, indexB: String): Int {
-        val isIndexAProd = indexA.endsWith("_p")
-        val isIndexBProd = indexB.endsWith("_p")
-
-        return when {
-            isIndexAProd && !isIndexBProd -> return -1
-            isIndexBProd && !isIndexAProd -> return 1
-            else -> indexA.compareTo(indexB) // Alphabetical order
-        }
     }
 }
 
