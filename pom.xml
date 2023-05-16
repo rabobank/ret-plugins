@@ -268,12 +268,11 @@
         </pluginManagement>
     </build>
 
-    <repositories>
-        <repository>
-            <id>mavenCentral</id>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-    </repositories>
-
+    <scm>
+        <connection>scm:git:https://github.com/rabobank/ret-plugins.git</connection>
+        <developerConnection>scm:git:https://github.com/rabobank/ret-plugins.git</developerConnection>
+        <url>https://github.com/rabobank/ret-plugins</url>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
