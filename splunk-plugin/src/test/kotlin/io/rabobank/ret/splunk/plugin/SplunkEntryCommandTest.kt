@@ -1,6 +1,7 @@
 package io.rabobank.ret.splunk.plugin
 
 import io.rabobank.ret.RetContext
+import io.rabobank.ret.commands.PluginInitializeCommand
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
 import io.rabobank.ret.picocli.mixin.ContextAwareness
@@ -17,10 +18,11 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
+import picocli.CommandLine.IFactory
 
 private const val SPLUNK_URL = "splunk.base.url/en-GB/app/appName/search"
 
-class SplunkSearchCommandTest {
+class SplunkEntryCommandTest {
 
     private lateinit var mockedBrowserUtils: BrowserUtils
     private lateinit var commandLine: CommandLine
@@ -36,7 +38,7 @@ class SplunkSearchCommandTest {
         mockedBrowserUtils = mock()
         mockedRetContext = mock()
 
-        val splunkCommand = SplunkSearchCommand(
+        val splunkCommand = SplunkEntryCommand(
             mockedBrowserUtils,
             mockedRetContext,
             SplunkConfig(retConfig),
@@ -44,7 +46,10 @@ class SplunkSearchCommandTest {
 
         splunkCommand.contextAwareness = ContextAwareness()
 
-        commandLine = CommandLine(splunkCommand)
+        commandLine = CommandLine(
+            splunkCommand,
+            CustomInitializationFactory(),
+        )
     }
 
     @ParameterizedTest
@@ -135,5 +140,16 @@ class SplunkSearchCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
+    }
+}
+
+class CustomInitializationFactory : IFactory {
+    private val pluginInitializeCommand: PluginInitializeCommand = mock()
+    override fun <K : Any?> create(cls: Class<K>?): K {
+        return if (cls?.isInstance(pluginInitializeCommand) == true) {
+            cls.cast(pluginInitializeCommand)
+        } else {
+            CommandLine.defaultFactory().create(cls)
+        }
     }
 }
