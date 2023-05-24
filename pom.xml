@@ -33,7 +33,7 @@
         <quarkus.platform.version>3.0.2.Final</quarkus.platform.version>
         <skipITs>true</skipITs>
         <jreleaser-maven-plugin.version>1.6.0</jreleaser-maven-plugin.version>
-        <maven-assembly-plugin.version>3.5.0</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
