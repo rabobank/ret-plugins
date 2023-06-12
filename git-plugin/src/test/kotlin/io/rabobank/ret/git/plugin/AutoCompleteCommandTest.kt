@@ -40,27 +40,21 @@ import java.time.ZonedDateTime
 @QuarkusTest
 class AutoCompleteCommandTest {
     private lateinit var commandLine: CommandLine
-    private lateinit var azureDevopsClient: AzureDevopsClient
-    private lateinit var output: StringWriter
-    private lateinit var outputHandler: OutputHandler
-    private lateinit var mockedRetContext: RetContext
+    private val azureDevopsClient = mock<AzureDevopsClient>()
+    private val output = StringWriter()
+    private val outputHandler = mock<OutputHandler>()
+    private val mockedRetContext = mock<RetContext>()
     private lateinit var allMockedPullRequests: List<PullRequest>
     private lateinit var allMockedRepositories: List<Repository>
 
     @BeforeEach
     fun beforeEach() {
-        val configurables: Instance<Configurable> = mock()
-
+        val configurables = mock<Instance<Configurable>>()
         val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
         retConfig["azure_devops_email"] = "manks@live.com"
         retConfig["azure_devops_pat"] = "pat"
         retConfig["azure_devops_project"] = "projectId"
         retConfig["azure_devops_organization"] = "organization"
-
-        outputHandler = mock()
-        azureDevopsClient = mock()
-        mockedRetContext = mock()
-        output = StringWriter()
 
         val command = AutoCompleteCommand(
             azureDevopsClient,
@@ -80,9 +74,7 @@ class AutoCompleteCommandTest {
             Repository("generic-project", "refs/heads/master"),
             Repository("open-source-tool", "refs/heads/master"),
         )
-        whenever(azureDevopsClient.getAllRepositories()).thenReturn(
-            AzureResponse.of(allMockedRepositories),
-        )
+        whenever(azureDevopsClient.getAllRepositories()).thenReturn(AzureResponse.of(allMockedRepositories))
         whenever(
             azureDevopsClient.getAllRefs(
                 "admin-service",
@@ -96,15 +88,19 @@ class AutoCompleteCommandTest {
             ),
         )
         allMockedPullRequests = listOf(
-            PullRequest("1234", "PR Title", Repository("repo", "refs/heads/master"), listOf(Reviewer("manks@live.com"))),
-            PullRequest("1235", "Add logo", Repository("generic-project", "refs/heads/master"), listOf(Reviewer("manks@live.com"))),
+            PullRequest("1234",
+                "PR Title",
+                Repository("repo", "refs/heads/master"),
+                listOf(Reviewer("manks@live.com"))),
+            PullRequest("1235",
+                "Add logo",
+                Repository("generic-project", "refs/heads/master"),
+                listOf(Reviewer("manks@live.com"))),
             PullRequest("1241", "NOJIRA: ahum", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
             PullRequest("1271", "NOJIRA: MANKS", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
             PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
         )
-        whenever(azureDevopsClient.getAllPullRequests()).thenReturn(
-            AzureResponse.of(allMockedPullRequests),
-        )
+        whenever(azureDevopsClient.getAllPullRequests()).thenReturn(AzureResponse.of(allMockedPullRequests))
     }
 
     @Test
@@ -379,13 +375,18 @@ class AutoCompleteCommandTest {
     @Test
     fun `should autocomplete pipeline-runs using the pipeline folder and name as well as id`() {
         val pipeline = Pipeline(123456, "pipeline_name", "\\folder")
-        val expectedResponse = PipelineRun(123, "name", staticCreatedDate, PipelineRunState.COMPLETED, PipelineRunResult.CANCELED)
+        val expectedResponse = PipelineRun(123,
+            "name",
+            staticCreatedDate,
+            PipelineRunState.COMPLETED,
+            PipelineRunResult.CANCELED)
         whenever(azureDevopsClient.getAllPipelines()).thenReturn(
             AzureResponse.of(
                 pipeline,
             ),
         )
-        whenever(azureDevopsClient.getPipelineRuns(pipeline.id.toString())).thenReturn(AzureResponse.of(expectedResponse))
+        whenever(azureDevopsClient.getPipelineRuns(pipeline.id.toString()))
+            .thenReturn(AzureResponse.of(expectedResponse))
 
         val exitCode = commandLine.execute("git-pipeline-run", "--pipeline-id", "folder\\pipeline_name")
         assertThat(exitCode).isEqualTo(0)
@@ -411,7 +412,10 @@ class AutoCompleteCommandTest {
             Arguments.of("admin-service", listOf(Repository("admin-service", "refs/heads/master"))),
             Arguments.of(
                 "service",
-                listOf(Repository("admin-service", "refs/heads/master"), Repository("client-service", "refs/heads/master")),
+                listOf(
+                    Repository("admin-service", "refs/heads/master"),
+                    Repository("client-service", "refs/heads/master")
+                ),
             ),
         )
 

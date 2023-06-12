@@ -18,18 +18,15 @@ import picocli.CommandLine
 
 internal class PipelineCommandTest {
 
-    private lateinit var pluginConfigMock: PluginConfig
+    private val pluginConfigMock = mock<PluginConfig>()
+    private val browserUtilsMock = mock<BrowserUtils>()
+    private val azureDevopsClientMock = mock<AzureDevopsClient>()
     private lateinit var azureDevopsUrlFactory: AzureDevopsUrlFactory
-    private lateinit var browserUtilsMock: BrowserUtils
-    private lateinit var azureDevopsClientMock: AzureDevopsClient
     private lateinit var commandLine: CommandLine
 
     @BeforeEach
     fun before() {
-        pluginConfigMock = mock()
         azureDevopsUrlFactory = AzureDevopsUrlFactory(pluginConfigMock, "https://dev.azure.com/my-organization")
-        browserUtilsMock = mock()
-        azureDevopsClientMock = mock()
         val command = PipelineCommand(azureDevopsUrlFactory, browserUtilsMock, azureDevopsClientMock)
 
         commandLine = CommandLine(command)
@@ -92,7 +89,8 @@ internal class PipelineCommandTest {
     fun `should open browser for correct pipeline run`() {
         val pipelineId = "not_used"
         val pipelineRunId = "123456"
-        val expectedPipelineRunURL = "https://dev.azure.com/my-organization/org/proj/_build/results?buildId=$pipelineRunId"
+        val expectedPipelineRunURL =
+            "https://dev.azure.com/my-organization/org/proj/_build/results?buildId=$pipelineRunId"
 
         commandLine.execute("open", pipelineId, pipelineRunId)
 

@@ -60,7 +60,9 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
                     0 -> Wrapper(listOf(Item("No pipelines found", valid = false)))
                     else -> Wrapper(
                         listOf(Item(title = "Pipeline dashboard", arg = "open-dashboard")) +
-                            list.map { Item(title = it.name, subtitle = "Folder: ${it.folder}", arg = it.id.toString()) },
+                            list.map {
+                                Item(title = it.name, subtitle = "Folder: ${it.folder}", arg = it.id.toString())
+                            },
                     )
                 },
             ),

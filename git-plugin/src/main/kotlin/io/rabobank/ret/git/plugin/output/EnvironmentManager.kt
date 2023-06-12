@@ -7,7 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Produces
 
 @ApplicationScoped
-class EnvironmentManager(private val retContext: RetContext) {
+class EnvironmentManager {
 
     @Produces
     @ApplicationScoped
