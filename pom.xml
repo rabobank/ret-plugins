@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.rabobank</groupId>
     <artifactId>ret-plugins</artifactId>
@@ -30,8 +31,10 @@
 
         <assertj-core.version>3.24.2</assertj-core.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <detekt.version>1.22.0</detekt.version>
         <git-commit-id.version>6.0.0</git-commit-id.version>
         <jreleaser-maven-plugin.version>1.6.0</jreleaser-maven-plugin.version>
+        <ktlint-maven-plugin.version>1.16.0</ktlint-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-surefire-junit5-tree-reporter.version>1.2.1</maven-surefire-junit5-tree-reporter.version>
@@ -125,11 +128,15 @@
                                 <type>BINARY</type>
                                 <artifacts>
                                     <artifact>
-                                        <path>{{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip</path>
+                                        <path>
+                                            {{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip
+                                        </path>
                                         <platform>linux-x86_64</platform>
                                     </artifact>
                                     <artifact>
-                                        <path>{{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip</path>
+                                        <path>
+                                            {{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip
+                                        </path>
                                         <platform>osx-x86_64</platform>
                                     </artifact>
                                 </artifacts>
@@ -138,11 +145,15 @@
                                 <type>BINARY</type>
                                 <artifacts>
                                     <artifact>
-                                        <path>{{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip</path>
+                                        <path>
+                                            {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip
+                                        </path>
                                         <platform>linux-x86_64</platform>
                                     </artifact>
                                     <artifact>
-                                        <path>{{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip</path>
+                                        <path>
+                                            {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip
+                                        </path>
                                         <platform>osx-x86_64</platform>
                                     </artifact>
                                 </artifacts>
@@ -213,6 +224,7 @@
                     <configuration>
                         <systemPropertyVariables>
                             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                            <!--suppress UnresolvedMavenProperty -->
                             <maven.home>${maven.home}</maven.home>
                         </systemPropertyVariables>
                         <reportFormat>plain</reportFormat>
@@ -345,9 +357,55 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>${maven-antrun-plugin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.gantsign.maven</groupId>
+                    <artifactId>ktlint-maven-plugin</artifactId>
+                    <version>${ktlint-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>format-and-check</id>
+                            <goals>
+                                <goal>format</goal>
+                                <goal>check</goal>
+                            </goals>
+                            <phase>generate-sources</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.ozsie</groupId>
+                    <artifactId>detekt-maven-plugin</artifactId>
+                    <version>${detekt.version}</version>
+                    <configuration>
+                        <config>detekt-rules.yml</config>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <phase>generate-sources</phase>
+                            <configuration>
+                                <autoCorrect>true</autoCorrect>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>io.gitlab.arturbosch.detekt</groupId>
+                            <artifactId>detekt-formatting</artifactId>
+                            <version>${detekt.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>io.gitlab.arturbosch.detekt</groupId>
+                            <artifactId>detekt-rules-libraries</artifactId>
+                            <version>${detekt.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

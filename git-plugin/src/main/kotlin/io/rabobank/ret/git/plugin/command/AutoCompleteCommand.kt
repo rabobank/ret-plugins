@@ -58,9 +58,7 @@ class AutoCompleteCommand(
         val pipelineRuns = azureDevopsClient.getPipelineRuns(pipelineId)
 
         outputHandler.listPipelineRuns(
-            pipelineRuns.value.filter {
-                it.matches(word)
-            }
+            pipelineRuns.value.filter { it.matches(word) }
                 .sortedByDescending { it.createdDate }
                 .take(TOP_20_PIPELINES),
         )
@@ -72,10 +70,7 @@ class AutoCompleteCommand(
 
         outputHandler.listRepositories(
             repositories.value.filter {
-                word == null || intelliSearch.matches(
-                    word,
-                    it.name,
-                )
+                word == null || intelliSearch.matches(word, it.name)
             },
         )
     }
@@ -112,42 +107,35 @@ class AutoCompleteCommand(
         filterRepository: String? = null,
     ) {
         val prs = azureDevopsClient.getAllPullRequests().value
-            .filter { !notReviewed || !(it.reviewers.any { r -> r.uniqueName.equals(pluginConfig.email, true) }) }
+            .filter { !notReviewed || !it.reviewers.any { r -> r.uniqueName.equals(pluginConfig.email, true) } }
             .filter { it.isFromRepository(filterRepository) }
         val filteredPrs = prs.filter {
-            word == null || intelliSearch.matches(word, it.title) || intelliSearch.matches(
-                word,
-                it.repository.name,
-            )
+            word == null ||
+                intelliSearch.matches(word, it.title) ||
+                intelliSearch.matches(word, it.repository.name)
         }
         outputHandler.listPRs(filteredPrs)
     }
 
     private fun PullRequest.isFromRepository(filterRepository: String?): Boolean {
         val repositoryInContext = if (contextAwareness.ignoreContextAwareness) null else retContext.gitRepository
-        val filterWord = when {
-            !filterRepository.isNullOrBlank() -> filterRepository
-            else -> repositoryInContext
-        }
+        val filterWord = if (!filterRepository.isNullOrBlank()) filterRepository else repositoryInContext
 
-        if (filterWord.isNullOrBlank()) {
-            return true
-        }
-
-        return this.repository.name.equals(filterWord, true)
+        return filterWord.isNullOrBlank() || this.repository.name.equals(filterWord, true)
     }
 
     private fun Pipeline.matches(value: String?): Boolean =
-        value == null || intelliSearch.matches(value, name) || intelliSearch.matches(
-            value,
-            cleanedFolder,
-        ) || intelliSearch.matches(value, uniqueName)
+        value == null ||
+            intelliSearch.matches(value, name) ||
+            intelliSearch.matches(value, cleanedFolder) ||
+            intelliSearch.matches(value, uniqueName)
 
     private fun PipelineRun.matches(word: String?): Boolean =
         word == null || intelliSearch.matches(word, id.toString()) || intelliSearch.matches(word, name) ||
             intelliSearch.matches(word, state.toString()) || intelliSearch.matches(word, result.toString())
 
-    private fun getPipelineByUniqueName(pipelineIdFlag: String) = azureDevopsClient.getAllPipelines().value
-        .firstOrNull { it.uniqueName == pipelineIdFlag }
-        ?: throw IllegalArgumentException("Could not find pipeline id by <folder>\\<pipeline-name> combination: '$pipelineIdFlag'")
+    private fun getPipelineByUniqueName(pipelineIdFlag: String) =
+        requireNotNull(azureDevopsClient.getAllPipelines().value.firstOrNull { it.uniqueName == pipelineIdFlag }) {
+            "Could not find pipeline id by <folder>\\<pipeline-name> combination: '$pipelineIdFlag'"
+        }
 }

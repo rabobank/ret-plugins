@@ -55,8 +55,9 @@ class PullRequestCreateCommand(
     var filterRepository: String? = null
 
     override fun run() {
-        val repositoryName = filterRepository ?: retContext.gitRepository
-            ?: throw IllegalArgumentException("Could not determine repository from context. Please provide the repository.")
+        val repositoryName = requireNotNull(filterRepository ?: retContext.gitRepository) {
+            "Could not determine repository from context. Please provide the repository."
+        }
         val contextBranch = retContext.gitBranch
         val sourceBranch = providedBranch ?: contextBranch
 
@@ -66,13 +67,12 @@ class PullRequestCreateCommand(
             val prCreateURL = azureDevopsUrlFactory.createPullRequestCreateUrl(repositoryName, branch)
             browserUtils.openUrl(prCreateURL)
         } else {
-            sourceBranch
-                ?: throw IllegalArgumentException("Could not determine branch from context. Please provide the branch.")
+            requireNotNull(sourceBranch) { "Could not determine branch from context. Please provide the branch." }
             val repository = azureDevopsClient.getRepositoryById(repositoryName)
-            val defaultBranch = repository.defaultBranch ?: throw IllegalStateException("No default branch available.")
+            val defaultBranch = requireNotNull(repository.defaultBranch) { "No default branch available." }
 
-            if (defaultBranch == sourceBranch) {
-                throw IllegalArgumentException("Could not create PR. Source branch is the same as the default branch.")
+            require(defaultBranch != sourceBranch) {
+                "Could not create PR. Source branch is the same as the default branch."
             }
 
             val createPullRequest = CreatePullRequest(
@@ -92,22 +92,16 @@ class PullRequestCreateCommand(
                     azureDevopsUrlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
-                val message = when (e.response.status) {
-                    CONFLICT -> "A pull request for this branch already exists!"
-                    else -> "Creating a PR directly failed."
-                }
+                val message = if (e.response.status == CONFLICT) "A pull request for this branch already exists!"
+                else "Creating a PR directly failed."
 
                 throw IllegalStateException(message, e)
             }
         }
     }
 
-    private fun autofillBranchRequired(filterRepository: String?, providedBranch: String?, contextBranch: String?): Boolean {
-        return when {
-            providedBranch != null -> true
-            else -> contextBranch != null && filterRepository == null
-        }
-    }
+    private fun autofillBranchRequired(filterRepository: String?, providedBranch: String?, contextBranch: String?): Boolean =
+        providedBranch != null || contextBranch != null && filterRepository == null
 }
 
 internal class BranchCompletionCandidates : Iterable<String> {

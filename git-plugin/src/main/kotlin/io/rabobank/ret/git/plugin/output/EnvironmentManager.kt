@@ -11,13 +11,12 @@ class EnvironmentManager {
 
     @Produces
     @ApplicationScoped
-    fun outputHandler(retContext: RetContext, retConsole: RetConsole, objectMapper: ObjectMapper): OutputHandler {
-        return when (retContext.environment) {
+    fun outputHandler(retContext: RetContext, retConsole: RetConsole, objectMapper: ObjectMapper): OutputHandler =
+        when (retContext.environment) {
             "CLI" -> CliOutputHandler(retConsole)
             "ZSH_AUTOCOMPLETE" -> CliAutocompleteHandler(retConsole)
             "ALFRED" -> AlfredOutputHandler(retConsole, objectMapper)
             "ALFRED_AUTOCOMPLETE" -> AlfredAutocompleteHandler(retConsole, objectMapper)
             else -> CliOutputHandler(retConsole)
         }
-    }
 }

@@ -27,10 +27,7 @@ class CliAutocompleteHandler(private val retConsole: RetConsole) : OutputHandler
 
     override fun listPipelineRuns(list: List<PipelineRun>) {
         list.map {
-            val combinedState = when (it.state) {
-                PipelineRunState.COMPLETED -> it.result
-                else -> it.state
-            }
+            val combinedState = if (it.state == PipelineRunState.COMPLETED) it.result else it.state
             "${it.id}:${it.name} ($combinedState)"
         }.forEach(retConsole::out)
     }

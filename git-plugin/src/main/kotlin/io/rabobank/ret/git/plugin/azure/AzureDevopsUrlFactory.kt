@@ -11,50 +11,45 @@ class AzureDevopsUrlFactory(
     @ConfigProperty(name = "azure.devops.baseUrl") private val azureDevopsBaseUrl: String,
 ) {
 
-    fun createRepositoryUrl(repositoryName: String): String {
-        return azdoBaseUriBuilder()
+    fun createRepositoryUrl(repositoryName: String): String =
+        azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .build()
             .toASCIIString()
-    }
 
-    fun createPipelineRunUrl(pipelineRunId: String): String {
-        return azdoBaseUriBuilder()
+    fun createPipelineRunUrl(pipelineRunId: String): String =
+        azdoBaseUriBuilder()
             .path("_build")
             .path("results")
             .queryParam("buildId", pipelineRunId)
             .build()
             .toASCIIString()
-    }
 
-    fun createPipelineUrl(pipelineId: String): String {
-        return azdoBaseUriBuilder()
+    fun createPipelineUrl(pipelineId: String): String =
+        azdoBaseUriBuilder()
             .path("_build")
             .queryParam("definitionId", pipelineId)
             .build()
             .toASCIIString()
-    }
 
-    fun createPipelineDashboardUrl(): String {
-        return azdoBaseUriBuilder()
+    fun createPipelineDashboardUrl(): String =
+        azdoBaseUriBuilder()
             .path("_build")
             .build()
             .toASCIIString()
-    }
 
-    fun createPullRequestUrl(repositoryName: String, pullRequestId: String): String {
-        return azdoBaseUriBuilder()
+    fun createPullRequestUrl(repositoryName: String, pullRequestId: String): String =
+        azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .path("pullrequest")
             .path(pullRequestId)
             .build()
             .toASCIIString()
-    }
 
-    fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): String {
-        return azdoBaseUriBuilder()
+    fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): String =
+        azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .path("pullrequestcreate")
@@ -65,17 +60,15 @@ class AzureDevopsUrlFactory(
             }
             .build()
             .toASCIIString()
-    }
 
-    fun pullRequestUrl(repositoryName: String, pullRequestId: String): String {
-        return azdoBaseUriBuilder()
+    fun pullRequestUrl(repositoryName: String, pullRequestId: String): String =
+        azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .path("pullrequest")
             .path(pullRequestId)
             .build()
             .toASCIIString()
-    }
 
     private fun azdoBaseUriBuilder() = UriBuilder.fromUri(azureDevopsBaseUrl)
         .path(pluginConfig.organization)

@@ -31,17 +31,15 @@ class RepositoryCommand(
             completionCandidates = RepositoryCompletionCandidates::class,
         ) repositoryName: String?,
     ) {
-        val repository = repositoryName ?: retContext.gitRepository
-            ?: throw IllegalArgumentException("No repository provided and ret cannot get repository from context.")
+        val repository = requireNotNull(repositoryName ?: retContext.gitRepository) {
+            "No repository provided and ret cannot get repository from context."
+        }
 
         val repositories = azureDevopsClient.getAllRepositories().value
 
-        if (repositories.any { it.name == repository }) {
-            val repoUrl = azureDevopsUrlFactory.createRepositoryUrl(repository)
-            browserUtils.openUrl(repoUrl)
-        } else {
-            throw IllegalArgumentException("No repository found with name $repository.")
-        }
+        require(repositories.any { it.name == repository }) { "No repository found with name $repository." }
+
+        browserUtils.openUrl(azureDevopsUrlFactory.createRepositoryUrl(repository))
     }
 }
 

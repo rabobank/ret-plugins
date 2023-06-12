@@ -9,23 +9,15 @@ class ExceptionMessageHandler(private val outputHandler: OutputHandler) : Comman
         exception: Exception,
         commandLine: CommandLine,
         parseResult: CommandLine.ParseResult,
-    ): Int {
-        val exitCode = when (exception) {
-            is IllegalArgumentException -> {
-                Log.warn("Input error occurred", exception)
+    ) = if (exception is IllegalArgumentException) {
+        Log.warn("Input error occurred", exception)
 
-                exception.message?.let { outputHandler.error(it) }
-                outputHandler.error(commandLine.usageMessage)
-                commandLine.commandSpec.exitCodeOnInvalidInput()
-            }
-
-            else -> {
-                exception.message?.let { outputHandler.error(it) }
-                Log.error("An error occurred", exception)
-                commandLine.commandSpec.exitCodeOnExecutionException()
-            }
-        }
-
-        return exitCode
+        exception.message?.let { outputHandler.error(it) }
+        outputHandler.error(commandLine.usageMessage)
+        commandLine.commandSpec.exitCodeOnInvalidInput()
+    } else {
+        exception.message?.let { outputHandler.error(it) }
+        Log.error("An error occurred", exception)
+        commandLine.commandSpec.exitCodeOnExecutionException()
     }
 }

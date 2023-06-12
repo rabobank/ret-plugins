@@ -32,27 +32,23 @@ class PipelineCommand(
             completionCandidates = PipelineRunCompletionCandidates::class,
         ) pipelineRunId: String?,
     ) {
-        val url = when (pipelineId) {
-            null -> azureDevopsUrlFactory.createPipelineDashboardUrl()
-            else -> when (pipelineRunId) {
-                null -> {
-                    val resolvedPipelineId = if (pipelineId.matches(DIGITS_PATTERN)) {
-                        pipelineId
-                    } else {
-                        (getPipelineByUniqueName(pipelineId)).id.toString()
-                    }
-                    azureDevopsUrlFactory.createPipelineUrl(resolvedPipelineId)
-                }
-
-                else -> azureDevopsUrlFactory.createPipelineRunUrl(pipelineRunId)
+        val url = if (pipelineId == null) azureDevopsUrlFactory.createPipelineDashboardUrl()
+        else if (pipelineRunId == null) {
+            val resolvedPipelineId = if (pipelineId.matches(DIGITS_PATTERN)) {
+                pipelineId
+            } else {
+                getPipelineByUniqueName(pipelineId).id.toString()
             }
-        }
+            azureDevopsUrlFactory.createPipelineUrl(resolvedPipelineId)
+        } else azureDevopsUrlFactory.createPipelineRunUrl(pipelineRunId)
+
         browserUtils.openUrl(url)
     }
 
-    private fun getPipelineByUniqueName(pipelineId: String?) = azureDevopsClient.getAllPipelines().value
-        .firstOrNull { it.uniqueName == pipelineId }
-        ?: throw IllegalArgumentException("Could not find pipeline id by <folder>\\<pipeline-name> combination: '$pipelineId'")
+    private fun getPipelineByUniqueName(pipelineId: String?) =
+        requireNotNull(azureDevopsClient.getAllPipelines().value.firstOrNull { it.uniqueName == pipelineId }) {
+            "Could not find pipeline id by <folder>\\<pipeline-name> combination: '$pipelineId'"
+        }
 }
 
 internal class PipelineCompletionCandidates : Iterable<String> {
