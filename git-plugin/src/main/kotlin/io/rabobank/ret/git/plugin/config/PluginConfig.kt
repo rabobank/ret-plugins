@@ -5,13 +5,6 @@ import io.rabobank.ret.configuration.ConfigurationProperty
 import io.rabobank.ret.configuration.RetConfig
 import jakarta.enterprise.context.ApplicationScoped
 
-private const val EMAIL = "azure_devops_email"
-
-private const val PAT = "azure_devops_pat"
-
-private const val PROJECT = "azure_devops_project"
-
-private const val ORGANIZATION = "azure_devops_organization"
 @ApplicationScoped
 class PluginConfig(retConfig: RetConfig) : Configurable {
     val email: String = retConfig[EMAIL].orEmpty()
@@ -25,4 +18,11 @@ class PluginConfig(retConfig: RetConfig) : Configurable {
         ConfigurationProperty(PROJECT, "Enter your Azure project"),
         ConfigurationProperty(ORGANIZATION, "Enter your Azure organization"),
     )
+
+    private companion object {
+        private const val EMAIL = "azure_devops_email"
+        private const val PAT = "azure_devops_pat"
+        private const val PROJECT = "azure_devops_project"
+        private const val ORGANIZATION = "azure_devops_organization"
+    }
 }

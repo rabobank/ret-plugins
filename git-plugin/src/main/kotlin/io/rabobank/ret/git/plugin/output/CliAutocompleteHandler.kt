@@ -9,13 +9,6 @@ import io.rabobank.ret.git.plugin.azure.PullRequest
 import io.rabobank.ret.git.plugin.azure.Repository
 
 class CliAutocompleteHandler(private val retConsole: RetConsole) : OutputHandler {
-
-    override fun println(message: String) {
-    }
-
-    override fun error(message: String) {
-    }
-
     override fun listPRs(list: List<PullRequest>) {
         list.map { "${it.id}:${it.repository.name}: ${it.title}" }.forEach(retConsole::out)
     }

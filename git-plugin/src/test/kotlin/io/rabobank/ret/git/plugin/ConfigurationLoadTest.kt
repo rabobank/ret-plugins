@@ -14,8 +14,8 @@ class ConfigurationLoadTest {
 
     @Test
     fun shouldLoadConfiguration() {
-        val osUtils: OsUtils = mock()
-        val configurables: Instance<Configurable> = mock()
+        val osUtils = mock<OsUtils>()
+        val configurables = mock<Instance<Configurable>>()
         whenever(osUtils.getHomeDirectory()).thenReturn("src/test/resources")
 
         val pluginConfig = PluginConfig(RetConfig(osUtils, configurables, "1.0.0"))
@@ -28,8 +28,8 @@ class ConfigurationLoadTest {
 
     @Test
     fun shouldLoadCorrectlyWithEmptyConfiguration() {
-        val osUtils: OsUtils = mock()
-        val configurables: Instance<Configurable> = mock()
+        val osUtils = mock<OsUtils>()
+        val configurables = mock<Instance<Configurable>>()
         whenever(osUtils.getHomeDirectory()).thenReturn("src/test/resources/nonexisting")
 
         val pluginConfig = PluginConfig(RetConfig(osUtils, configurables, "1.0.0"))

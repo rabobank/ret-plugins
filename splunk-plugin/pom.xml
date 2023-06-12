@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.rabobank</groupId>
@@ -58,16 +59,6 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-            </plugin>
-
         </plugins>
     </build>
 
@@ -105,17 +96,19 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
                                 <configuration>
                                     <target>
-                                        <exec failonerror="true" executable="/bin/bash" dir="${project.build.directory}/native-sources">
-                                            <arg value="-c" />
-                                            <arg value="native-image $(cat native-image.args)" />
+                                        <exec failonerror="true" executable="/bin/bash"
+                                              dir="${project.build.directory}/native-sources">
+                                            <arg value="-c"/>
+                                            <arg value="native-image $(cat native-image.args)"/>
                                         </exec>
-                                        <copy file="${project.build.directory}/native-sources/${project.build.finalName}.${lib.extension}" tofile="${project.build.directory}/${project.build.finalName}.${lib.extension}" />
+                                        <copy
+                                            file="${project.build.directory}/native-sources/${project.build.finalName}.${lib.extension}"
+                                            tofile="${project.build.directory}/${project.build.finalName}.${lib.extension}"/>
                                     </target>
                                 </configuration>
                                 <goals>
@@ -130,7 +123,8 @@
                         <configuration>
                             <attach>false</attach>
                             <appendAssemblyId>false</appendAssemblyId>
-                            <finalName>${project.build.finalName}-${project.version}-${os.detected.classifier}</finalName>
+                            <finalName>${project.build.finalName}-${project.version}-${os.detected.classifier}
+                            </finalName>
                             <outputDirectory>${project.build.directory}/distributions</outputDirectory>
                             <workDirectory>${project.build.directory}/assembly/work</workDirectory>
                             <descriptors>

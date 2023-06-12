@@ -1,8 +1,6 @@
 package io.rabobank.ret.git.plugin
 
 import io.quarkus.test.junit.QuarkusTest
-import io.rabobank.ret.RetConsole
-import io.rabobank.ret.RetContext
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
 import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
@@ -32,26 +30,19 @@ private const val AZURE_DEVOPS_BASE_URL = "azdo.com"
 @QuarkusTest
 internal class PullRequestOpenCommandTest {
 
-    private lateinit var mockedAzureDevopsClient: AzureDevopsClient
-    private lateinit var mockedBrowserUtils: BrowserUtils
-    private lateinit var mockedRetContext: RetContext
+    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val mockedBrowserUtils = mock<BrowserUtils>()
+    private val outputHandler = mock<OutputHandler>()
     private lateinit var commandLine: CommandLine
-    private lateinit var outputHandler: OutputHandler
-    private lateinit var retConsole: RetConsole
 
     @BeforeEach
     fun before() {
-        val configurables: Instance<Configurable> = mock()
+        val configurables = mock<Instance<Configurable>>()
         val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
         retConfig["azure_devops_email"] = "manks@live.com"
         retConfig["azure_devops_pat"] = "pat"
         retConfig["azure_devops_project"] = "projectId"
         retConfig["azure_devops_organization"] = "organization"
-
-        outputHandler = mock()
-        mockedAzureDevopsClient = mock()
-        mockedBrowserUtils = mock()
-        mockedRetContext = mock()
 
         val command = PullRequestOpenCommand(
             mockedAzureDevopsClient,
@@ -62,7 +53,6 @@ internal class PullRequestOpenCommandTest {
 
         command.contextAwareness = ContextAwareness()
 
-        retConsole = mock()
         commandLine = spy(CommandLine(command))
     }
 

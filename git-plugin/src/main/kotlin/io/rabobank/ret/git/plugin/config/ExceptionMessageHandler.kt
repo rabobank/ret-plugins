@@ -5,7 +5,11 @@ import io.rabobank.ret.git.plugin.output.OutputHandler
 import picocli.CommandLine
 
 class ExceptionMessageHandler(private val outputHandler: OutputHandler) : CommandLine.IExecutionExceptionHandler {
-    override fun handleExecutionException(exception: Exception, commandLine: CommandLine, parseResult: CommandLine.ParseResult): Int {
+    override fun handleExecutionException(
+        exception: Exception,
+        commandLine: CommandLine,
+        parseResult: CommandLine.ParseResult,
+    ): Int {
         val exitCode = when (exception) {
             is IllegalArgumentException -> {
                 Log.warn("Input error occurred", exception)

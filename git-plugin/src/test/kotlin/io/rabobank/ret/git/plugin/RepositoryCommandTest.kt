@@ -34,27 +34,21 @@ import picocli.CommandLine
 @QuarkusTest
 internal class RepositoryCommandTest {
 
-    private lateinit var mockedAzureDevopsClient: AzureDevopsClient
-    private lateinit var mockedBrowserUtils: BrowserUtils
-    private lateinit var mockedRetContext: RetContext
+    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val mockedBrowserUtils = mock<BrowserUtils>()
+    private val mockedRetContext = mock<RetContext>()
+    private val outputHandler = mock<OutputHandler>()
+    private val mockedRetConsole = mock<RetConsole>()
     private lateinit var commandLine: CommandLine
-    private lateinit var outputHandler: OutputHandler
-    private lateinit var mockedRetConsole: RetConsole
 
     @BeforeEach
     fun before() {
-        val configurables: Instance<Configurable> = mock()
+        val configurables = mock<Instance<Configurable>>()
         val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
         retConfig["azure_devops_email"] = "manks@live.com"
         retConfig["azure_devops_pat"] = "pat"
         retConfig["azure_devops_project"] = "projectId"
         retConfig["azure_devops_organization"] = "organization"
-
-        mockedRetConsole = mock()
-        mockedAzureDevopsClient = mock()
-        mockedBrowserUtils = mock()
-        mockedRetContext = mock()
-        outputHandler = mock()
 
         val command = RepositoryCommand(
             mockedAzureDevopsClient,

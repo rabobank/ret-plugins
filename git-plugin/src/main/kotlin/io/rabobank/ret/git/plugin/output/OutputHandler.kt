@@ -7,8 +7,14 @@ import io.rabobank.ret.git.plugin.azure.PullRequest
 import io.rabobank.ret.git.plugin.azure.Repository
 
 interface OutputHandler {
-    fun println(message: String)
-    fun error(message: String)
+    fun println(message: String) {
+        // No-op
+    }
+
+    fun error(message: String) {
+        // No-op
+    }
+
     fun listPRs(list: List<PullRequest>)
     fun listRepositories(list: List<Repository>)
     fun listBranches(list: List<Branch>)

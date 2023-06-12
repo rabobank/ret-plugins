@@ -6,14 +6,14 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_size = 4
 indent_style = space
-max_line_length = 200
+max_line_length = 120
 
-[{*.yml, *.yaml, *.feature, *.json}]
+[{*.yml,*.yaml,*.feature,*.json}]
 indent_size = 2
 ij_yaml_keep_indents_on_empty_lines = false
 ij_yaml_keep_line_breaks = true
 
-[{*.java, *.kt}]
+[{*.java,*.kt}]
 ij_java_imports_layout = *, |, javax.**, java.**, |, $*
 ij_java_names_count_to_use_import_on_demand = 999
 ij_java_class_count_to_use_import_on_demand = 999

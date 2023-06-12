@@ -20,23 +20,18 @@ import org.mockito.kotlin.whenever
 import picocli.CommandLine
 import picocli.CommandLine.IFactory
 
-private const val SPLUNK_URL = "splunk.base.url/en-GB/app/appName/search"
-
 class SplunkEntryCommandTest {
 
-    private lateinit var mockedBrowserUtils: BrowserUtils
+    private val mockedBrowserUtils = mock<BrowserUtils>()
+    private val mockedRetContext = mock<RetContext>()
     private lateinit var commandLine: CommandLine
-    private lateinit var mockedRetContext: RetContext
 
     @BeforeEach
     fun before() {
-        val configurables: Instance<Configurable> = mock()
+        val configurables = mock<Instance<Configurable>>()
         val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
         retConfig["splunk_base_url"] = "splunk.base.url"
         retConfig["splunk_app"] = "appName"
-
-        mockedBrowserUtils = mock()
-        mockedRetContext = mock()
 
         val splunkCommand = SplunkEntryCommand(
             mockedBrowserUtils,
@@ -141,15 +136,19 @@ class SplunkEntryCommandTest {
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
+
+    private companion object {
+        private const val SPLUNK_URL = "splunk.base.url/en-GB/app/appName/search"
+    }
 }
 
 class CustomInitializationFactory : IFactory {
-    private val pluginInitializeCommand: PluginInitializeCommand = mock()
-    override fun <K : Any?> create(cls: Class<K>?): K {
-        return if (cls?.isInstance(pluginInitializeCommand) == true) {
+    private val pluginInitializeCommand = mock<PluginInitializeCommand>()
+
+    override fun <K : Any?> create(cls: Class<K>?): K =
+        if (cls?.isInstance(pluginInitializeCommand) == true) {
             cls.cast(pluginInitializeCommand)
         } else {
             CommandLine.defaultFactory().create(cls)
         }
-    }
 }
