@@ -88,14 +88,18 @@ class AutoCompleteCommandTest {
             ),
         )
         allMockedPullRequests = listOf(
-            PullRequest("1234",
+            PullRequest(
+                "1234",
                 "PR Title",
                 Repository("repo", "refs/heads/master"),
-                listOf(Reviewer("manks@live.com"))),
-            PullRequest("1235",
+                listOf(Reviewer("manks@live.com")),
+            ),
+            PullRequest(
+                "1235",
                 "Add logo",
                 Repository("generic-project", "refs/heads/master"),
-                listOf(Reviewer("manks@live.com"))),
+                listOf(Reviewer("manks@live.com")),
+            ),
             PullRequest("1241", "NOJIRA: ahum", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
             PullRequest("1271", "NOJIRA: MANKS", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
             PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
@@ -375,11 +379,13 @@ class AutoCompleteCommandTest {
     @Test
     fun `should autocomplete pipeline-runs using the pipeline folder and name as well as id`() {
         val pipeline = Pipeline(123456, "pipeline_name", "\\folder")
-        val expectedResponse = PipelineRun(123,
+        val expectedResponse = PipelineRun(
+            123,
             "name",
             staticCreatedDate,
             PipelineRunState.COMPLETED,
-            PipelineRunResult.CANCELED)
+            PipelineRunResult.CANCELED,
+        )
         whenever(azureDevopsClient.getAllPipelines()).thenReturn(
             AzureResponse.of(
                 pipeline,
@@ -414,7 +420,7 @@ class AutoCompleteCommandTest {
                 "service",
                 listOf(
                     Repository("admin-service", "refs/heads/master"),
-                    Repository("client-service", "refs/heads/master")
+                    Repository("client-service", "refs/heads/master"),
                 ),
             ),
         )

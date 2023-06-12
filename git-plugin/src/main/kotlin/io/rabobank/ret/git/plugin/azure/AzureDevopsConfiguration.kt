@@ -15,8 +15,8 @@ class AzureDevopsConfiguration(
 ) {
 
     @Produces
-    fun azureDevopsRestClient(): AzureDevopsClient {
-        return RestClientBuilder.newBuilder()
+    fun azureDevopsRestClient(): AzureDevopsClient =
+        RestClientBuilder.newBuilder()
             .baseUrl(
                 UriBuilder.fromUri(URI.create(azureDevopsBaseUrl))
                     .path(pluginConfig.organization)
@@ -26,5 +26,4 @@ class AzureDevopsConfiguration(
                     .toURL(),
             )
             .build(AzureDevopsClient::class.java)
-    }
 }

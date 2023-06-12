@@ -51,10 +51,9 @@ class PullRequestOpenCommand(
 
             browserUtils.openUrl(prURL)
         } catch (e: ClientWebApplicationException) {
-            when (e.response.status) {
-                NOT_FOUND -> outputHandler.error("Pull request with id '$pullRequestId' could not be found")
-                else -> outputHandler.error("Something failed when fetching pull request with id: $pullRequestId")
-            }
+            if (e.response.status == NOT_FOUND) outputHandler.error("Pull request with id '$pullRequestId' could not be found")
+            else outputHandler.error("Something failed when fetching pull request with id: $pullRequestId")
+
             Log.error("Unable to open pr with id $pullRequestId", e)
             // Only for causing an exitcode "1", exitProcess does not have the same effect
             throw e
