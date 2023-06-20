@@ -7,7 +7,6 @@ import io.rabobank.ret.git.plugin.command.PullRequestOpenCommand
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
-import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 import io.rabobank.ret.git.plugin.provider.Reviewer
@@ -47,7 +46,6 @@ internal class PullRequestOpenCommandTest {
 
         val command = PullRequestOpenCommand(
             mockedGitProvider,
-            AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"),
             mockedBrowserUtils,
             outputHandler,
         )
@@ -55,6 +53,8 @@ internal class PullRequestOpenCommandTest {
         command.contextAwareness = ContextAwareness()
 
         commandLine = spy(CommandLine(command))
+
+        whenever(mockedGitProvider.urlFactory).thenReturn(AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"))
     }
 
     @Test
