@@ -3,8 +3,6 @@ package io.rabobank.ret.git.plugin
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.configuration.Configurable
-import io.rabobank.ret.configuration.RetConfig
 import io.rabobank.ret.git.plugin.provider.Branch
 import io.rabobank.ret.git.plugin.provider.Pipeline
 import io.rabobank.ret.git.plugin.provider.PipelineRun
@@ -14,12 +12,9 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 import io.rabobank.ret.git.plugin.provider.Reviewer
 import io.rabobank.ret.git.plugin.command.AutoCompleteCommand
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
-import io.rabobank.ret.util.OsUtils
-import jakarta.enterprise.inject.Instance
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -48,16 +43,8 @@ class AutoCompleteCommandTest {
 
     @BeforeEach
     fun beforeEach() {
-        val configurables = mock<Instance<Configurable>>()
-        val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
-        retConfig["azure_devops_email"] = "manks@live.com"
-        retConfig["azure_devops_pat"] = "pat"
-        retConfig["azure_devops_project"] = "projectId"
-        retConfig["azure_devops_organization"] = "organization"
-
         val command = AutoCompleteCommand(
             gitProvider,
-            PluginConfig(retConfig),
             IntelliSearch(),
             outputHandler,
             mockedRetContext,
@@ -107,7 +94,7 @@ class AutoCompleteCommandTest {
     }
 
     @Test
-    fun `should return all repository names in azdo project`() {
+    fun `should return all repository names in project`() {
         val exitCode = commandLine.execute("git-repository")
         assertThat(exitCode).isEqualTo(0)
 
