@@ -4,7 +4,7 @@ import io.rabobank.ret.git.plugin.command.PipelineCommand
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.Pipeline
-import io.rabobank.ret.git.plugin.utitilies.TestUrlFactory
+import io.rabobank.ret.git.plugin.utilities.TestUrlFactory
 import io.rabobank.ret.util.BrowserUtils
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
