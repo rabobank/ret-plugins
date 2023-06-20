@@ -4,13 +4,12 @@ import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
 import io.rabobank.ret.git.plugin.command.PullRequestOpenCommand
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 import io.rabobank.ret.git.plugin.provider.Reviewer
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.utitilies.TestUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
@@ -25,7 +24,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
 
-private const val AZURE_DEVOPS_BASE_URL = "azdo.com"
+private const val BASE_URL = "https://test.git"
 
 @QuarkusTest
 internal class PullRequestOpenCommandTest {
@@ -54,7 +53,7 @@ internal class PullRequestOpenCommandTest {
 
         commandLine = spy(CommandLine(command))
 
-        whenever(mockedGitProvider.urlFactory).thenReturn(AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"))
+        whenever(mockedGitProvider.urlFactory).thenReturn(TestUrlFactory("https://test.git"))
     }
 
     @Test
@@ -70,7 +69,7 @@ internal class PullRequestOpenCommandTest {
 
         val exitCode = commandLine.execute("1234")
         assertThat(exitCode).isEqualTo(0)
-        val expectedURL = "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/repo/pullrequest/1234"
+        val expectedURL = "$BASE_URL/pullrequest/repo/1234"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
