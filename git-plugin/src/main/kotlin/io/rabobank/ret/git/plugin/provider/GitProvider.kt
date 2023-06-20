@@ -7,7 +7,13 @@ interface GitProvider {
 
     fun getPullRequestById(id: String): PullRequest
 
-    fun createPullRequest(repository: String, apiVersion: String, createPullRequest: CreatePullRequest): PullRequestCreated
+    fun createPullRequest(
+        repository: String,
+        sourceRefName: String,
+        targetRefName: String,
+        title: String,
+        description: String,
+    ): PullRequestCreated
 
     fun getAllRepositories(): List<Repository>
 

@@ -2,20 +2,15 @@ package io.rabobank.ret.git.plugin
 
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.configuration.Configurable
-import io.rabobank.ret.configuration.RetConfig
 import io.rabobank.ret.git.plugin.command.PullRequestCreateCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
-import io.rabobank.ret.git.plugin.provider.CreatePullRequest
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 import io.rabobank.ret.git.plugin.provider.Repository
 import io.rabobank.ret.git.plugin.utitilies.TestUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
-import io.rabobank.ret.util.OsUtils
-import jakarta.enterprise.inject.Instance
 import jakarta.ws.rs.core.Response
 import org.assertj.core.api.Assertions.assertThat
 import org.jboss.resteasy.reactive.ClientWebApplicationException
@@ -26,7 +21,6 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.contains
 import org.mockito.Mockito.spy
-import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -155,13 +149,10 @@ internal class PullRequestCreateCommandTest {
         whenever(
             gitProvider.createPullRequest(
                 repo,
-                "6.0",
-                CreatePullRequest(
-                    "refs/heads/$branch",
-                    defaultBranch,
-                    "Merge $branch into $defaultBranch",
-                    "PR created by RET using `ret pr create --no-prompt`.",
-                ),
+                "refs/heads/$branch",
+                defaultBranch,
+                "Merge $branch into $defaultBranch",
+                "PR created by RET using `ret pr create --no-prompt`.",
             ),
         ).thenReturn(PullRequestCreated(createdPullRequestId))
 
@@ -178,7 +169,7 @@ internal class PullRequestCreateCommandTest {
         val defaultBranch = "defaultBranch"
 
         whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
-        whenever(gitProvider.createPullRequest(anyString(), anyString(), anyOrNull()))
+        whenever(gitProvider.createPullRequest(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenThrow(ClientWebApplicationException(Response.Status.CONFLICT))
 
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
