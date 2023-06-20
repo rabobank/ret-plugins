@@ -44,9 +44,6 @@ data class CreatePullRequest(
     @JsonProperty("description") val description: String,
 )
 
-fun io.rabobank.ret.git.plugin.provider.CreatePullRequest.fromGenericDomain() =
-    CreatePullRequest(this.sourceRefName, this.targetRefName, this.title, this.description)
-
 data class Reviewer(@JsonProperty("uniqueName") val uniqueName: String) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.Reviewer> {
     override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.Reviewer(uniqueName)
 }

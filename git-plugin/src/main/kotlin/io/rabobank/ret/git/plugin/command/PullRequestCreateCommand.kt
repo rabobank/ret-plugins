@@ -1,7 +1,6 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.provider.CreatePullRequest
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
@@ -73,21 +72,15 @@ class PullRequestCreateCommand(
                 "Could not create PR. Source branch is the same as the default branch."
             }
 
-            val createPullRequest = CreatePullRequest(
-                "refs/heads/$sourceBranch",
-                defaultBranch,
-                "Merge $sourceBranch into ${repository.defaultBranch}",
-                "PR created by RET using `ret pr create --no-prompt`.",
-            )
-
             try {
                 val createPullRequestResponse = gitProvider.createPullRequest(
                     repositoryName,
-                    "6.0",
-                    createPullRequest,
+                    "refs/heads/$sourceBranch",
+                    defaultBranch,
+                    "Merge $sourceBranch into ${repository.defaultBranch}",
+                    "PR created by RET using `ret pr create --no-prompt`.",
                 )
-                val pullRequestUrl =
-                    gitProvider.urlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
+                val pullRequestUrl = gitProvider.urlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
                 val message = if (e.response.status == CONFLICT) "A pull request for this branch already exists!"
