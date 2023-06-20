@@ -3,14 +3,15 @@ package io.rabobank.ret.git.plugin
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.provider.azure.PullRequest
-import io.rabobank.ret.git.plugin.provider.azure.Repository
-import io.rabobank.ret.git.plugin.provider.azure.Reviewer
 import io.rabobank.ret.git.plugin.command.PullRequestOpenCommand
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
+import io.rabobank.ret.git.plugin.provider.GitUrlFactory
+import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.Repository
+import io.rabobank.ret.git.plugin.provider.Reviewer
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
@@ -30,7 +31,7 @@ private const val AZURE_DEVOPS_BASE_URL = "azdo.com"
 @QuarkusTest
 internal class PullRequestOpenCommandTest {
 
-    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val mockedGitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val outputHandler = mock<OutputHandler>()
     private lateinit var commandLine: CommandLine
@@ -45,7 +46,7 @@ internal class PullRequestOpenCommandTest {
         retConfig["azure_devops_organization"] = "organization"
 
         val command = PullRequestOpenCommand(
-            mockedAzureDevopsClient,
+            mockedGitProvider,
             AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"),
             mockedBrowserUtils,
             outputHandler,
@@ -58,7 +59,7 @@ internal class PullRequestOpenCommandTest {
 
     @Test
     fun pullRequestsCanBeOpened() {
-        whenever(mockedAzureDevopsClient.getPullRequestById("1234")).thenReturn(
+        whenever(mockedGitProvider.getPullRequestById("1234")).thenReturn(
             PullRequest(
                 "1234",
                 "PR Title",
@@ -76,7 +77,7 @@ internal class PullRequestOpenCommandTest {
 
     @Test
     fun pullRequestsCannotBeOpenedWhenItDoesNotExist() {
-        whenever(mockedAzureDevopsClient.getPullRequestById("12345")).thenThrow(
+        whenever(mockedGitProvider.getPullRequestById("12345")).thenThrow(
             ClientWebApplicationException(404),
         )
 

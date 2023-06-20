@@ -1,11 +1,11 @@
 package io.rabobank.ret.git.plugin
 
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.provider.azure.AzureResponse
-import io.rabobank.ret.git.plugin.provider.azure.Pipeline
 import io.rabobank.ret.git.plugin.command.PipelineCommand
 import io.rabobank.ret.git.plugin.config.PluginConfig
+import io.rabobank.ret.git.plugin.provider.GitProvider
+import io.rabobank.ret.git.plugin.provider.GitUrlFactory
+import io.rabobank.ret.git.plugin.provider.Pipeline
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
 import io.rabobank.ret.util.BrowserUtils
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,14 +21,14 @@ internal class PipelineCommandTest {
 
     private val pluginConfigMock = mock<PluginConfig>()
     private val browserUtilsMock = mock<BrowserUtils>()
-    private val azureDevopsClientMock = mock<AzureDevopsClient>()
-    private lateinit var azureDevopsUrlFactory: AzureDevopsUrlFactory
+    private val gitProviderMock = mock<GitProvider>()
+    private lateinit var gitUrlFactory: GitUrlFactory
     private lateinit var commandLine: CommandLine
 
     @BeforeEach
     fun before() {
-        azureDevopsUrlFactory = AzureDevopsUrlFactory(pluginConfigMock, "https://dev.azure.com/my-organization")
-        val command = PipelineCommand(azureDevopsUrlFactory, browserUtilsMock, azureDevopsClientMock)
+        gitUrlFactory = AzureDevopsUrlFactory(pluginConfigMock, "https://dev.azure.com/my-organization")
+        val command = PipelineCommand(gitUrlFactory, browserUtilsMock, gitProviderMock)
 
         commandLine = CommandLine(command)
 
@@ -59,8 +59,8 @@ internal class PipelineCommandTest {
     fun `should open browser for correct pipeline by folder and name`() {
         val pipelineId = "folder\\pipeline_name"
         val expectedPipelineRunURL = "https://dev.azure.com/my-organization/org/proj/_build?definitionId=123"
-        whenever(azureDevopsClientMock.getAllPipelines()).thenReturn(
-            AzureResponse.of(
+        whenever(gitProviderMock.getAllPipelines()).thenReturn(
+            listOf(
                 Pipeline(123, "pipeline_name", "\\folder"),
                 Pipeline(234, "other_pipeline_name", "\\folder"),
                 Pipeline(345, "pipeline_name", "\\folder2"),
@@ -75,8 +75,8 @@ internal class PipelineCommandTest {
     @Test
     fun `should not open browser for pipeline by folder and name when name is incorrect`() {
         val pipelineId = "folder/pipeline_name2"
-        whenever(azureDevopsClientMock.getAllPipelines()).thenReturn(
-            AzureResponse.of(
+        whenever(gitProviderMock.getAllPipelines()).thenReturn(
+            listOf(
                 Pipeline(123, "pipeline_name", "\\folder"),
             ),
         )

@@ -1,9 +1,9 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.quarkus.logging.Log
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import org.jboss.resteasy.reactive.ClientWebApplicationException
@@ -19,8 +19,8 @@ import picocli.CommandLine.ScopeType
     description = ["Navigate to a pull request in Git"],
 )
 class PullRequestOpenCommand(
-    private val azureDevopsClient: AzureDevopsClient,
-    private val azureDevopsUrlFactory: AzureDevopsUrlFactory,
+    private val gitProvider: GitProvider,
+    private val urlFactory: GitUrlFactory,
     private val browserUtils: BrowserUtils,
     private val outputHandler: OutputHandler,
 ) : Runnable {
@@ -46,8 +46,8 @@ class PullRequestOpenCommand(
 
     override fun run() {
         try {
-            val pullRequest = azureDevopsClient.getPullRequestById(pullRequestId)
-            val prURL = azureDevopsUrlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id)
+            val pullRequest = gitProvider.getPullRequestById(pullRequestId)
+            val prURL = urlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id)
 
             browserUtils.openUrl(prURL)
         } catch (e: ClientWebApplicationException) {
