@@ -1,4 +1,4 @@
-package io.rabobank.ret.git.plugin.utitilies
+package io.rabobank.ret.git.plugin.utilities
 
 import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 
