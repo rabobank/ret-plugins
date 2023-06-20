@@ -2,7 +2,6 @@ package io.rabobank.ret.git.plugin.provider.azure
 
 import io.rabobank.ret.git.plugin.provider.*
 import io.rabobank.ret.git.plugin.provider.Branch
-import io.rabobank.ret.git.plugin.provider.CreatePullRequest
 import io.rabobank.ret.git.plugin.provider.Pipeline
 import io.rabobank.ret.git.plugin.provider.PipelineRun
 import io.rabobank.ret.git.plugin.provider.PullRequest
@@ -29,9 +28,15 @@ class AzureDevopsProvider(
         return azureDevopsClient.getPullRequestById(id).toGenericDomain()
     }
 
-    // TODO decouple from Azure domain
-    override fun createPullRequest(repository: String, apiVersion: String, createPullRequest: CreatePullRequest): PullRequestCreated {
-        return azureDevopsClient.createPullRequest(repository, apiVersion, createPullRequest.fromGenericDomain()).toGenericDomain()
+    override fun createPullRequest(
+        repository: String,
+        sourceRefName: String,
+        targetRefName: String,
+        title: String,
+        description: String,
+    ): PullRequestCreated {
+        val creationDTO = CreatePullRequest(sourceRefName, targetRefName, title, description)
+        return azureDevopsClient.createPullRequest(repository, "6.0", creationDTO).toGenericDomain()
     }
 
     override fun getAllRepositories(): List<Repository> {

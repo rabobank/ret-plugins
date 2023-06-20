@@ -19,13 +19,6 @@ data class PullRequestCreated(
     val pullRequestId: String,
 ) : GitDomain
 
-data class CreatePullRequest(
-    val sourceRefName: String,
-    val targetRefName: String,
-    val title: String,
-    val description: String,
-) : GitDomain
-
 data class Reviewer(val uniqueName: String) : GitDomain
 
 data class Repository(
