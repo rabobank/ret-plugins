@@ -8,7 +8,7 @@ import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 import io.rabobank.ret.git.plugin.provider.Repository
-import io.rabobank.ret.git.plugin.utitilies.TestUrlFactory
+import io.rabobank.ret.git.plugin.utilities.TestUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import jakarta.ws.rs.core.Response
