@@ -2,8 +2,17 @@ package io.rabobank.ret.git.plugin.provider.azure
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.quarkus.runtime.annotations.RegisterForReflection
+import io.rabobank.ret.git.plugin.provider.Branch as GenericBranch
 import io.rabobank.ret.git.plugin.provider.GitDomain
 import io.rabobank.ret.git.plugin.provider.GitDomainConvertible
+import io.rabobank.ret.git.plugin.provider.Pipeline as GenericPipeline
+import io.rabobank.ret.git.plugin.provider.PipelineRun as GenericPipelineRun
+import io.rabobank.ret.git.plugin.provider.PipelineRunState as GenericPipelineRunState
+import io.rabobank.ret.git.plugin.provider.PipelineRunResult as GenericPipelineRunResult
+import io.rabobank.ret.git.plugin.provider.PullRequest as GenericPullRequest
+import io.rabobank.ret.git.plugin.provider.PullRequestCreated as GenericPullRequestCreated
+import io.rabobank.ret.git.plugin.provider.Reviewer as GenericReviewer
+import io.rabobank.ret.git.plugin.provider.Repository as GenericRepository
 import java.time.ZonedDateTime
 
 data class AzureResponse<T>(
@@ -21,8 +30,8 @@ data class PullRequest(
     @JsonProperty("title") val title: String,
     @JsonProperty("repository") val repository: Repository,
     @JsonProperty("reviewers") val reviewers: List<Reviewer>,
-) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.PullRequest> {
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.PullRequest(
+) : GitDomainConvertible<GenericPullRequest> {
+    override fun toGenericDomain() = GenericPullRequest(
         id,
         title,
         repository.toGenericDomain(),
@@ -32,8 +41,8 @@ data class PullRequest(
 
 data class PullRequestCreated(
     @JsonProperty("pullRequestId") val pullRequestId: String,
-) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.PullRequestCreated> {
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.PullRequestCreated(pullRequestId)
+) : GitDomainConvertible<GenericPullRequestCreated> {
+    override fun toGenericDomain() = GenericPullRequestCreated(pullRequestId)
 }
 
 @RegisterForReflection
@@ -44,30 +53,30 @@ data class CreatePullRequest(
     @JsonProperty("description") val description: String,
 )
 
-data class Reviewer(@JsonProperty("uniqueName") val uniqueName: String) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.Reviewer> {
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.Reviewer(uniqueName)
+data class Reviewer(@JsonProperty("uniqueName") val uniqueName: String) : GitDomainConvertible<GenericReviewer> {
+    override fun toGenericDomain() = GenericReviewer(uniqueName)
 }
 
 data class Repository(
     @JsonProperty("name") val name: String,
     @JsonProperty("defaultBranch") val defaultBranch: String?,
-) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.Repository> {
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.Repository(name, defaultBranch)
+) : GitDomainConvertible<GenericRepository> {
+    override fun toGenericDomain() = GenericRepository(name, defaultBranch)
 }
 
-data class Branch(@JsonProperty("name") val name: String) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.Branch> {
+data class Branch(@JsonProperty("name") val name: String) : GitDomainConvertible<GenericBranch> {
     val shortName = name.substringAfter("refs/heads/")
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.Branch(name)
+    override fun toGenericDomain() = GenericBranch(name)
 }
 
 data class Pipeline(
     @JsonProperty("id") val id: Int,
     @JsonProperty("name") val name: String,
     @JsonProperty("folder") val folder: String,
-) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.Pipeline> {
+) : GitDomainConvertible<GenericPipeline> {
     val cleanedFolder = folder.removePrefix("\\")
     val uniqueName = "$cleanedFolder\\$name"
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.Pipeline(id, name, folder)
+    override fun toGenericDomain() = GenericPipeline(id, name, folder)
 }
 
 data class PipelineRun(
@@ -76,39 +85,39 @@ data class PipelineRun(
     @JsonProperty("createdDate") val createdDate: ZonedDateTime,
     @JsonProperty("state") val state: PipelineRunState,
     @JsonProperty("result") val result: PipelineRunResult?,
-) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.PipelineRun> {
-    override fun toGenericDomain() = io.rabobank.ret.git.plugin.provider.PipelineRun(id, name, createdDate, state.toGenericDomain(), result?.toGenericDomain())
+) : GitDomainConvertible<GenericPipelineRun> {
+    override fun toGenericDomain() = GenericPipelineRun(id, name, createdDate, state.toGenericDomain(), result?.toGenericDomain())
 }
 
-enum class PipelineRunState(private val genericEquivalent: io.rabobank.ret.git.plugin.provider.PipelineRunState) :
-    GitDomainConvertible<io.rabobank.ret.git.plugin.provider.PipelineRunState> {
+enum class PipelineRunState(private val genericEquivalent: GenericPipelineRunState) :
+    GitDomainConvertible<GenericPipelineRunState> {
     @JsonProperty("canceling")
-    CANCELING(io.rabobank.ret.git.plugin.provider.PipelineRunState.CANCELING),
+    CANCELING(GenericPipelineRunState.CANCELING),
 
     @JsonProperty("completed")
-    COMPLETED(io.rabobank.ret.git.plugin.provider.PipelineRunState.COMPLETED),
+    COMPLETED(GenericPipelineRunState.COMPLETED),
 
     @JsonProperty("inProgress")
-    IN_PROGRESS(io.rabobank.ret.git.plugin.provider.PipelineRunState.IN_PROGRESS),
+    IN_PROGRESS(GenericPipelineRunState.IN_PROGRESS),
 
     @JsonProperty("unknown")
-    UNKNOWN(io.rabobank.ret.git.plugin.provider.PipelineRunState.UNKNOWN);
+    UNKNOWN(GenericPipelineRunState.UNKNOWN);
 
     override fun toGenericDomain() = genericEquivalent
 }
 
-enum class PipelineRunResult(private val genericEquivalent: io.rabobank.ret.git.plugin.provider.PipelineRunResult) : GitDomainConvertible<io.rabobank.ret.git.plugin.provider.PipelineRunResult> {
+enum class PipelineRunResult(private val genericEquivalent: GenericPipelineRunResult) : GitDomainConvertible<GenericPipelineRunResult> {
     @JsonProperty("canceled")
-    CANCELED(io.rabobank.ret.git.plugin.provider.PipelineRunResult.CANCELED),
+    CANCELED(GenericPipelineRunResult.CANCELED),
 
     @JsonProperty("failed")
-    FAILED(io.rabobank.ret.git.plugin.provider.PipelineRunResult.FAILED),
+    FAILED(GenericPipelineRunResult.FAILED),
 
     @JsonProperty("succeeded")
-    SUCCEEDED(io.rabobank.ret.git.plugin.provider.PipelineRunResult.SUCCEEDED),
+    SUCCEEDED(GenericPipelineRunResult.SUCCEEDED),
 
     @JsonProperty("unknown")
-    UNKNOWN(io.rabobank.ret.git.plugin.provider.PipelineRunResult.UNKNOWN);
+    UNKNOWN(GenericPipelineRunResult.UNKNOWN);
 
     override fun toGenericDomain() = genericEquivalent
 }

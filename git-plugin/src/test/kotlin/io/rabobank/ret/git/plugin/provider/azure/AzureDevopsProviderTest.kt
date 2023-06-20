@@ -1,6 +1,8 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
-import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.PullRequest as GenericPullRequest
+import io.rabobank.ret.git.plugin.provider.Repository as GenericRepository
+import io.rabobank.ret.git.plugin.provider.Reviewer as GenericReviewer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -31,8 +33,8 @@ class AzureDevopsProviderTest {
 
         assertThat(pullRequests)
             .containsExactlyInAnyOrder(
-                PullRequest("1", "title", io.rabobank.ret.git.plugin.provider.Repository("repo", "master"), listOf()),
-                PullRequest("3", "title", io.rabobank.ret.git.plugin.provider.Repository("repo", "master"), listOf(io.rabobank.ret.git.plugin.provider.Reviewer("other-manks@live.com"))))
+                GenericPullRequest("1", "title", GenericRepository("repo", "master"), listOf()),
+                GenericPullRequest("3", "title", GenericRepository("repo", "master"), listOf(GenericReviewer("other-manks@live.com"))))
     }
 
     @Test
