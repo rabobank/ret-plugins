@@ -232,29 +232,29 @@ class AutoCompleteCommandTest {
     }
 
     @Test
-    fun azureDevopsReturnsPullRequestsAutocomplete() {
+    fun gitProviderReturnsPullRequestsAutocomplete() {
         verifyPullRequestsOutputted(setOf("1235"), "git-pullrequest", "--word=logo")
     }
 
     @Test
-    fun azureDevopsReturnsPullRequestsAutocompleteIntelligentlyOnFirstLetters() {
+    fun gitProviderReturnsPullRequestsAutocompleteIntelligentlyOnFirstLetters() {
         verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", "--word=ret")
     }
 
     @Test
-    fun azureDevopsReturnsPullRequestsAutocompleteIntelligentlyOnPartialWords() {
+    fun gitProviderReturnsPullRequestsAutocompleteIntelligentlyOnPartialWords() {
         verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", "--word=retengt")
     }
 
     @Test
-    fun azureDevopsReturnsPullRequestsFilterRepoOnContextAware() {
+    fun gitProviderReturnsPullRequestsFilterRepoOnContextAware() {
         whenever(mockedRetContext.gitRepository).thenReturn("generic-project")
 
         verifyPullRequestsOutputted(setOf("1235"), "git-pullrequest")
     }
 
     @Test
-    fun azureDevopsReturnsPullRequestsFilterRepoOnFlagIgnoresContextAware() {
+    fun gitProviderReturnsPullRequestsFilterRepoOnFlagIgnoresContextAware() {
         whenever(mockedRetContext.gitRepository).thenReturn("generic-project")
 
         verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", "-r=ret-engineering-tools")
@@ -270,32 +270,32 @@ class AutoCompleteCommandTest {
     }
 
     @Test
-    fun azureDevopsReturnsPullRequests() {
+    fun gitProviderReturnsPullRequests() {
         verifyPullRequestsOutputted(allMockedPullRequests.map { it.id }.toSet(), "git-pullrequest")
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["-n", "--not-reviewed"])
-    fun azureDevopsReturnsPullRequestsNotReviewed(flag: String) {
+    fun gitProviderReturnsPullRequestsNotReviewed(flag: String) {
         verifyPullRequestsOutputted(setOf("1241", "1271", "1272"), "git-pullrequest", flag)
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["--ignore-context-aware", "-ica"])
-    fun azureDevopsReturnsPullRequestsFilterRepoIgnoreContextAware(flag: String) {
+    fun gitProviderReturnsPullRequestsFilterRepoIgnoreContextAware(flag: String) {
         whenever(mockedRetContext.gitRepository).thenReturn("generic-project")
 
         verifyPullRequestsOutputted(allMockedPullRequests.map { it.id }.toSet(), flag, "git-pullrequest")
     }
 
     @Test
-    fun azureDevopsReturnsPullRequestsAutocompleteIntelligentlyOnPartialWords2() {
+    fun gitProviderReturnsPullRequestsAutocompleteIntelligentlyOnPartialWords2() {
         verifyPullRequestsOutputted(setOf("1272"), "git-pullrequest", "--word=upda")
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["-r=ret-engineering-tools", "--repository=ret-engineering-tools"])
-    fun azureDevopsReturnsPullRequestsFilterRepoOnFlag(flag: String) {
+    fun gitProviderReturnsPullRequestsFilterRepoOnFlag(flag: String) {
         verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", flag)
     }
 
