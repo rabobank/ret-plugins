@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin.command
 
-import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
@@ -12,7 +11,6 @@ import picocli.CommandLine.Parameters
     description = ["Open a recent pipeline run"],
 )
 class PipelineCommand(
-    private val urlFactory: GitUrlFactory,
     private val browserUtils: BrowserUtils,
     private val gitProvider: GitProvider,
 ) {
@@ -32,15 +30,15 @@ class PipelineCommand(
             completionCandidates = PipelineRunCompletionCandidates::class,
         ) pipelineRunId: String?,
     ) {
-        val url = if (pipelineId == null) urlFactory.createPipelineDashboardUrl()
+        val url = if (pipelineId == null) gitProvider.urlFactory.createPipelineDashboardUrl()
         else if (pipelineRunId == null) {
             val resolvedPipelineId = if (pipelineId.matches(DIGITS_PATTERN)) {
                 pipelineId
             } else {
                 getPipelineByUniqueName(pipelineId).id.toString()
             }
-            urlFactory.createPipelineUrl(resolvedPipelineId)
-        } else urlFactory.createPipelineRunUrl(pipelineRunId)
+            gitProvider.urlFactory.createPipelineUrl(resolvedPipelineId)
+        } else gitProvider.urlFactory.createPipelineRunUrl(pipelineRunId)
 
         browserUtils.openUrl(url)
     }

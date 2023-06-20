@@ -1,7 +1,6 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
@@ -15,7 +14,6 @@ import picocli.CommandLine.Parameters
 )
 class RepositoryCommand(
     private val gitProvider: GitProvider,
-    private val urlFactory: GitUrlFactory,
     private val browserUtils: BrowserUtils,
     private val retContext: RetContext,
 ) {
@@ -39,7 +37,7 @@ class RepositoryCommand(
 
         require(repositories.any { it.name == repository }) { "No repository found with name $repository." }
 
-        browserUtils.openUrl(urlFactory.createRepositoryUrl(repository))
+        browserUtils.openUrl(gitProvider.urlFactory.createRepositoryUrl(repository))
     }
 }
 

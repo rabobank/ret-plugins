@@ -9,7 +9,6 @@ import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
-import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.CreatePullRequest
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 import io.rabobank.ret.git.plugin.provider.Repository
@@ -56,7 +55,6 @@ internal class PullRequestCreateCommandTest {
 
         val command = PullRequestCreateCommand(
             gitProvider,
-            AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"),
             mockedBrowserUtils,
             outputHandler,
             mockedRetContext,
@@ -66,6 +64,7 @@ internal class PullRequestCreateCommandTest {
 
         commandLine = spy(CommandLine(command))
         commandLine.executionExceptionHandler = ExceptionMessageHandler(outputHandler)
+        whenever(gitProvider.urlFactory).thenReturn(AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"))
     }
 
     @Test
