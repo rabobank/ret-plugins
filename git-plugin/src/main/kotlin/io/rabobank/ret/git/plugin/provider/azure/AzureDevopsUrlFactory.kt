@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.ws.rs.core.UriBuilder
@@ -8,7 +7,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 
 @ApplicationScoped
 class AzureDevopsUrlFactory(
-    private val pluginConfig: PluginConfig,
+    private val pluginConfig: AzureDevopsPluginConfig,
     @ConfigProperty(name = "azure.devops.baseUrl") private val azureDevopsBaseUrl: String,
 ) : GitUrlFactory {
 

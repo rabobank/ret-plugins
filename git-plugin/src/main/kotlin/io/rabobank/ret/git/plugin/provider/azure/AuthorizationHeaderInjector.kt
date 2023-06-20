@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import jakarta.inject.Singleton
 import jakarta.ws.rs.core.MultivaluedHashMap
 import jakarta.ws.rs.core.MultivaluedMap
@@ -8,7 +7,7 @@ import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory
 import java.util.Base64
 
 @Singleton
-class AuthorizationHeaderInjector(private val pluginConfig: PluginConfig) : ClientHeadersFactory {
+class AuthorizationHeaderInjector(private val pluginConfig: AzureDevopsPluginConfig) : ClientHeadersFactory {
 
     override fun update(
         incomingHeaders: MultivaluedMap<String, String>,
