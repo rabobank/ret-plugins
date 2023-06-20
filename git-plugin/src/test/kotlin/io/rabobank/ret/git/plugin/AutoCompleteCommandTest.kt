@@ -91,6 +91,7 @@ class AutoCompleteCommandTest {
             PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
         )
         whenever(gitProvider.getAllPullRequests()).thenReturn(allMockedPullRequests)
+        whenever(gitProvider.getPullRequestsNotReviewedByUser()).thenReturn(allMockedPullRequests.filter { it.reviewers.all { r -> r.uniqueName != "manks@live.com" } })
     }
 
     @Test

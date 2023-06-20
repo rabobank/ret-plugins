@@ -104,7 +104,7 @@ class AutoCompleteCommand(
         )
         filterRepository: String? = null,
     ) {
-        val prs = if (notReviewed) gitProvider.getAllPullRequests() else gitProvider.getPullRequestsNotReviewedByUser()
+        val prs = if (!notReviewed) gitProvider.getAllPullRequests() else gitProvider.getPullRequestsNotReviewedByUser()
         val filteredPrs = prs
             .filter { it.isFromRepository(filterRepository) }
             .filter {
