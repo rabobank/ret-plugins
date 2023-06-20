@@ -2,12 +2,12 @@ package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.Pipeline
-import io.rabobank.ret.git.plugin.provider.azure.PipelineRun
-import io.rabobank.ret.git.plugin.provider.azure.PullRequest
+import io.rabobank.ret.git.plugin.provider.Pipeline
+import io.rabobank.ret.git.plugin.provider.PipelineRun
+import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
 import picocli.CommandLine.Command
@@ -17,7 +17,7 @@ import picocli.CommandLine.ScopeType
 
 @Command(name = "autocomplete", hidden = true)
 class AutoCompleteCommand(
-    private val azureDevopsClient: AzureDevopsClient,
+    private val gitProvider: GitProvider,
     private val pluginConfig: PluginConfig,
     private val intelliSearch: IntelliSearch,
     private val outputHandler: OutputHandler,
@@ -32,10 +32,10 @@ class AutoCompleteCommand(
 
     @Command(name = "git-pipeline")
     fun printPipelines(@Option(names = ["--word", "-w"]) word: String?) {
-        val pipelines = azureDevopsClient.getAllPipelines()
+        val pipelines = gitProvider.getAllPipelines()
 
         outputHandler.listPipelines(
-            pipelines.value.filter { it.matches(word) }
+            pipelines.filter { it.matches(word) }
                 .sortedWith(compareBy({ it.folder }, { it.name })),
         )
     }
@@ -55,10 +55,10 @@ class AutoCompleteCommand(
             getPipelineByUniqueName(pipelineIdFlag).id.toString()
         }
 
-        val pipelineRuns = azureDevopsClient.getPipelineRuns(pipelineId)
+        val pipelineRuns = gitProvider.getPipelineRuns(pipelineId)
 
         outputHandler.listPipelineRuns(
-            pipelineRuns.value.filter { it.matches(word) }
+            pipelineRuns.filter { it.matches(word) }
                 .sortedByDescending { it.createdDate }
                 .take(TOP_20_PIPELINES),
         )
@@ -66,10 +66,10 @@ class AutoCompleteCommand(
 
     @Command(name = "git-repository")
     fun printRepositories(@Option(names = ["--word", "-w"]) word: String?) {
-        val repositories = azureDevopsClient.getAllRepositories()
+        val repositories = gitProvider.getAllRepositories()
 
         outputHandler.listRepositories(
-            repositories.value.filter {
+            repositories.filter {
                 word == null || intelliSearch.matches(word, it.name)
             },
         )
@@ -85,7 +85,7 @@ class AutoCompleteCommand(
 
         repository?.let { repo ->
             outputHandler.listBranches(
-                azureDevopsClient.getAllRefs(repo, "heads/").value
+                gitProvider.getAllRefs(repo, "heads/")
                     .filter { word == null || intelliSearch.matches(word, it.shortName) },
             )
         } ?: outputHandler.error("No repository could be determined")
@@ -106,7 +106,7 @@ class AutoCompleteCommand(
         )
         filterRepository: String? = null,
     ) {
-        val prs = azureDevopsClient.getAllPullRequests().value
+        val prs = gitProvider.getAllPullRequests()
             .filter { !notReviewed || !it.reviewers.any { r -> r.uniqueName.equals(pluginConfig.email, true) } }
             .filter { it.isFromRepository(filterRepository) }
         val filteredPrs = prs.filter {
@@ -135,7 +135,7 @@ class AutoCompleteCommand(
             intelliSearch.matches(word, state.toString()) || intelliSearch.matches(word, result.toString())
 
     private fun getPipelineByUniqueName(pipelineIdFlag: String) =
-        requireNotNull(azureDevopsClient.getAllPipelines().value.firstOrNull { it.uniqueName == pipelineIdFlag }) {
+        requireNotNull(gitProvider.getAllPipelines().firstOrNull { it.uniqueName == pipelineIdFlag }) {
             "Could not find pipeline id by <folder>\\<pipeline-name> combination: '$pipelineIdFlag'"
         }
 }
