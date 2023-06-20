@@ -28,12 +28,13 @@ internal class PipelineCommandTest {
     @BeforeEach
     fun before() {
         gitUrlFactory = AzureDevopsUrlFactory(pluginConfigMock, "https://dev.azure.com/my-organization")
-        val command = PipelineCommand(gitUrlFactory, browserUtilsMock, gitProviderMock)
+        val command = PipelineCommand(browserUtilsMock, gitProviderMock)
 
         commandLine = CommandLine(command)
 
         whenever(pluginConfigMock.organization).thenReturn("org")
         whenever(pluginConfigMock.projectId).thenReturn("proj")
+        whenever(gitProviderMock.urlFactory).thenReturn(gitUrlFactory)
     }
 
     @Test

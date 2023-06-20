@@ -1,7 +1,6 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.CreatePullRequest
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
@@ -21,7 +20,6 @@ import picocli.CommandLine.ScopeType
 )
 class PullRequestCreateCommand(
     private val gitProvider: GitProvider,
-    private val urlFactory: GitUrlFactory,
     private val browserUtils: BrowserUtils,
     private val outputHandler: OutputHandler,
     private val retContext: RetContext,
@@ -64,7 +62,7 @@ class PullRequestCreateCommand(
         if (!noPrompt) {
             val branch = if (autofillBranchRequired(filterRepository, providedBranch, contextBranch)) sourceBranch else null
 
-            val prCreateURL = urlFactory.createPullRequestCreateUrl(repositoryName, branch)
+            val prCreateURL = gitProvider.urlFactory.createPullRequestCreateUrl(repositoryName, branch)
             browserUtils.openUrl(prCreateURL)
         } else {
             requireNotNull(sourceBranch) { "Could not determine branch from context. Please provide the branch." }
@@ -89,7 +87,7 @@ class PullRequestCreateCommand(
                     createPullRequest,
                 )
                 val pullRequestUrl =
-                    urlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
+                    gitProvider.urlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
                 val message = if (e.response.status == CONFLICT) "A pull request for this branch already exists!"

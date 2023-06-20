@@ -20,7 +20,6 @@ import picocli.CommandLine.ScopeType
 )
 class PullRequestOpenCommand(
     private val gitProvider: GitProvider,
-    private val urlFactory: GitUrlFactory,
     private val browserUtils: BrowserUtils,
     private val outputHandler: OutputHandler,
 ) : Runnable {
@@ -47,7 +46,7 @@ class PullRequestOpenCommand(
     override fun run() {
         try {
             val pullRequest = gitProvider.getPullRequestById(pullRequestId)
-            val prURL = urlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id)
+            val prURL = gitProvider.urlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id)
 
             browserUtils.openUrl(prURL)
         } catch (e: ClientWebApplicationException) {

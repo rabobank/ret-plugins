@@ -9,7 +9,7 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 import io.rabobank.ret.git.plugin.provider.Repository
 
-class AzureDevopsProvider(private val azureDevopsClient: AzureDevopsClient, private val gitUrlFactory: GitUrlFactory) : GitProvider {
+class AzureDevopsProvider(private val azureDevopsClient: AzureDevopsClient, override val urlFactory: AzureDevopsUrlFactory) : GitProvider {
     override fun getAllPullRequests(): List<PullRequest> {
         return azureDevopsClient.getAllPullRequests().value.toGenericDomain()
     }
@@ -41,7 +41,5 @@ class AzureDevopsProvider(private val azureDevopsClient: AzureDevopsClient, priv
     override fun getPipelineRuns(pipelineId: String): List<PipelineRun> {
         return azureDevopsClient.getPipelineRuns(pipelineId).value.toGenericDomain()
     }
-
-    override fun getUrlFactory() = gitUrlFactory
 
 }

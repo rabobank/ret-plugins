@@ -51,7 +51,6 @@ internal class RepositoryCommandTest {
 
         val command = RepositoryCommand(
             mockedGitProvider,
-            AzureDevopsUrlFactory(PluginConfig(retConfig), "https://dev.azure.com"),
             mockedBrowserUtils,
             mockedRetContext,
         )
@@ -70,6 +69,7 @@ internal class RepositoryCommandTest {
                 Repository("generic-project", "refs/heads/master"),
             ),
         )
+        whenever(mockedGitProvider.urlFactory).thenReturn(AzureDevopsUrlFactory(PluginConfig(retConfig), "https://dev.azure.com"))
     }
 
     @AfterEach
