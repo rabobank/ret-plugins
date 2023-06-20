@@ -5,10 +5,10 @@ import io.rabobank.ret.RetConsole
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.AzureResponse
-import io.rabobank.ret.git.plugin.azure.Repository
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.azure.AzureResponse
+import io.rabobank.ret.git.plugin.provider.azure.Repository
 import io.rabobank.ret.git.plugin.command.RepositoryCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
 import io.rabobank.ret.git.plugin.config.PluginConfig
