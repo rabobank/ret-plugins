@@ -5,7 +5,7 @@ import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.Pipeline
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.utitilies.TestUrlFactory
 import io.rabobank.ret.util.BrowserUtils
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ internal class PipelineCommandTest {
 
     @BeforeEach
     fun before() {
-        gitUrlFactory = AzureDevopsUrlFactory(pluginConfigMock, "https://dev.azure.com/my-organization")
+        gitUrlFactory = TestUrlFactory("https://test.git")
         val command = PipelineCommand(browserUtilsMock, gitProviderMock)
 
         commandLine = CommandLine(command)
@@ -38,7 +38,7 @@ internal class PipelineCommandTest {
 
     @Test
     fun `should open browser for the pipeline dashboard`() {
-        val expectedPipelineRunURL = "https://dev.azure.com/my-organization/org/proj/_build"
+        val expectedPipelineRunURL = "https://test.git/pipeline"
 
         commandLine.execute("open")
 
@@ -48,7 +48,7 @@ internal class PipelineCommandTest {
     @Test
     fun `should open browser for correct pipeline`() {
         val pipelineId = "123"
-        val expectedPipelineRunURL = "https://dev.azure.com/my-organization/org/proj/_build?definitionId=$pipelineId"
+        val expectedPipelineRunURL = "https://test.git/pipeline/$pipelineId"
 
         commandLine.execute("open", pipelineId)
 
@@ -58,7 +58,7 @@ internal class PipelineCommandTest {
     @Test
     fun `should open browser for correct pipeline by folder and name`() {
         val pipelineId = "folder\\pipeline_name"
-        val expectedPipelineRunURL = "https://dev.azure.com/my-organization/org/proj/_build?definitionId=123"
+        val expectedPipelineRunURL = "https://test.git/pipeline/123"
         whenever(gitProviderMock.getAllPipelines()).thenReturn(
             listOf(
                 Pipeline(123, "pipeline_name", "\\folder"),
@@ -91,7 +91,7 @@ internal class PipelineCommandTest {
         val pipelineId = "not_used"
         val pipelineRunId = "123456"
         val expectedPipelineRunURL =
-            "https://dev.azure.com/my-organization/org/proj/_build/results?buildId=$pipelineRunId"
+            "https://test.git/pipeline/run/$pipelineRunId"
 
         commandLine.execute("open", pipelineId, pipelineRunId)
 
