@@ -6,13 +6,12 @@ import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
 import io.rabobank.ret.git.plugin.command.PullRequestCreateCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.CreatePullRequest
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 import io.rabobank.ret.git.plugin.provider.Repository
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.utitilies.TestUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
@@ -33,7 +32,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
 
-private const val AZURE_DEVOPS_BASE_URL = "azdo.com"
+private const val BASE_URL = "https://test.git"
 
 @QuarkusTest
 internal class PullRequestCreateCommandTest {
@@ -64,7 +63,7 @@ internal class PullRequestCreateCommandTest {
 
         commandLine = spy(CommandLine(command))
         commandLine.executionExceptionHandler = ExceptionMessageHandler(outputHandler)
-        whenever(gitProvider.urlFactory).thenReturn(AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"))
+        whenever(gitProvider.urlFactory).thenReturn(TestUrlFactory("https://test.git"))
     }
 
     @Test
@@ -78,7 +77,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate?sourceRef=feature%2Fmy-branch"
+            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -92,7 +91,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate?sourceRef=feature%2Fmy-branch"
+            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -105,7 +104,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute(flag, repo)
         assertThat(exitCode).isEqualTo(0)
 
-        val expectedURL = "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate"
+        val expectedURL = "$BASE_URL/pullrequest/create/$repo/"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -122,7 +121,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute(flag, repo)
         assertThat(exitCode).isEqualTo(0)
 
-        val expectedURL = "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate"
+        val expectedURL = "$BASE_URL/pullrequest/create/$repo/"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -137,7 +136,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate?sourceRef=feature%2Fmy-branch"
+            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -176,7 +175,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
         assertThat(exitCode).isEqualTo(0)
         verify(outputHandler)
-            .println("$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequest/$createdPullRequestId")
+            .println("$BASE_URL/pullrequest/$repo/$createdPullRequestId")
     }
 
     @Test
