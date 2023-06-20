@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.provider.*
 import io.rabobank.ret.git.plugin.provider.Branch
 import io.rabobank.ret.git.plugin.provider.CreatePullRequest
@@ -12,7 +11,7 @@ import io.rabobank.ret.git.plugin.provider.Repository
 
 class AzureDevopsProvider(
     private val azureDevopsClient: AzureDevopsClient,
-    private val pluginConfig: PluginConfig,
+    private val pluginConfig: AzureDevopsPluginConfig,
     override val urlFactory: AzureDevopsUrlFactory
 ) : GitProvider {
 
