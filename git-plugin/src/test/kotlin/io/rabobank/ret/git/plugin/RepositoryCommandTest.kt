@@ -5,14 +5,13 @@ import io.rabobank.ret.RetConsole
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.provider.azure.AzureResponse
-import io.rabobank.ret.git.plugin.provider.azure.Repository
 import io.rabobank.ret.git.plugin.command.RepositoryCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
+import io.rabobank.ret.git.plugin.provider.Repository
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
@@ -34,7 +33,7 @@ import picocli.CommandLine
 @QuarkusTest
 internal class RepositoryCommandTest {
 
-    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val mockedGitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val mockedRetContext = mock<RetContext>()
     private val outputHandler = mock<OutputHandler>()
@@ -51,7 +50,7 @@ internal class RepositoryCommandTest {
         retConfig["azure_devops_organization"] = "organization"
 
         val command = RepositoryCommand(
-            mockedAzureDevopsClient,
+            mockedGitProvider,
             AzureDevopsUrlFactory(PluginConfig(retConfig), "https://dev.azure.com"),
             mockedBrowserUtils,
             mockedRetContext,
@@ -62,8 +61,8 @@ internal class RepositoryCommandTest {
         commandLine = spy(CommandLine(command))
         commandLine.executionExceptionHandler = ExceptionMessageHandler(outputHandler)
 
-        whenever(mockedAzureDevopsClient.getAllRepositories()).thenReturn(
-            AzureResponse.of(
+        whenever(mockedGitProvider.getAllRepositories()).thenReturn(
+            listOf(
                 Repository("client-service", "refs/heads/master"),
                 Repository("admin-service", "refs/heads/master"),
                 Repository("bto-apmd", "refs/heads/master"),

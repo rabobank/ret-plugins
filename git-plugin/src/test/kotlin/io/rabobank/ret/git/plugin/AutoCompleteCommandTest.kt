@@ -5,19 +5,18 @@ import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureResponse
-import io.rabobank.ret.git.plugin.provider.azure.Branch
-import io.rabobank.ret.git.plugin.provider.azure.Pipeline
-import io.rabobank.ret.git.plugin.provider.azure.PipelineRun
-import io.rabobank.ret.git.plugin.provider.azure.PipelineRunResult
-import io.rabobank.ret.git.plugin.provider.azure.PipelineRunState
-import io.rabobank.ret.git.plugin.provider.azure.PullRequest
-import io.rabobank.ret.git.plugin.provider.azure.Repository
-import io.rabobank.ret.git.plugin.provider.azure.Reviewer
+import io.rabobank.ret.git.plugin.provider.Branch
+import io.rabobank.ret.git.plugin.provider.Pipeline
+import io.rabobank.ret.git.plugin.provider.PipelineRun
+import io.rabobank.ret.git.plugin.provider.PipelineRunResult
+import io.rabobank.ret.git.plugin.provider.PipelineRunState
+import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.Repository
+import io.rabobank.ret.git.plugin.provider.Reviewer
 import io.rabobank.ret.git.plugin.command.AutoCompleteCommand
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.OsUtils
 import jakarta.enterprise.inject.Instance
@@ -40,7 +39,7 @@ import java.time.ZonedDateTime
 @QuarkusTest
 class AutoCompleteCommandTest {
     private lateinit var commandLine: CommandLine
-    private val azureDevopsClient = mock<AzureDevopsClient>()
+    private val gitProvider = mock<GitProvider>()
     private val output = StringWriter()
     private val outputHandler = mock<OutputHandler>()
     private val mockedRetContext = mock<RetContext>()
@@ -57,7 +56,7 @@ class AutoCompleteCommandTest {
         retConfig["azure_devops_organization"] = "organization"
 
         val command = AutoCompleteCommand(
-            azureDevopsClient,
+            gitProvider,
             PluginConfig(retConfig),
             IntelliSearch(),
             outputHandler,
@@ -74,14 +73,14 @@ class AutoCompleteCommandTest {
             Repository("generic-project", "refs/heads/master"),
             Repository("open-source-tool", "refs/heads/master"),
         )
-        whenever(azureDevopsClient.getAllRepositories()).thenReturn(AzureResponse.of(allMockedRepositories))
+        whenever(gitProvider.getAllRepositories()).thenReturn(allMockedRepositories)
         whenever(
-            azureDevopsClient.getAllRefs(
+            gitProvider.getAllRefs(
                 "admin-service",
                 "heads/",
             ),
         ).thenReturn(
-            AzureResponse.of(
+            listOf(
                 Branch("refs/heads/feature/abc"),
                 Branch("refs/heads/feature/ahum"),
                 Branch("refs/heads/feature/def"),
@@ -104,7 +103,7 @@ class AutoCompleteCommandTest {
             PullRequest("1271", "NOJIRA: MANKS", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
             PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
         )
-        whenever(azureDevopsClient.getAllPullRequests()).thenReturn(AzureResponse.of(allMockedPullRequests))
+        whenever(gitProvider.getAllPullRequests()).thenReturn(allMockedPullRequests)
     }
 
     @Test
@@ -218,12 +217,12 @@ class AutoCompleteCommandTest {
     @Test
     fun `should return no branches if repository does not exist`() {
         whenever(
-            azureDevopsClient.getAllRefs(
+            gitProvider.getAllRefs(
                 "client-service-encryption",
                 "heads/",
             ),
         ).thenReturn(
-            AzureResponse.of(),
+            listOf(),
         )
 
         verifyBranchesOutputted(
@@ -263,8 +262,8 @@ class AutoCompleteCommandTest {
 
     @Test
     fun noResultsReturned() {
-        whenever(azureDevopsClient.getAllPullRequests()).thenReturn(
-            AzureResponse.of(),
+        whenever(gitProvider.getAllPullRequests()).thenReturn(
+            listOf(),
         )
 
         verifyPullRequestsOutputted(emptySet(), "git-pullrequest")
@@ -302,8 +301,8 @@ class AutoCompleteCommandTest {
 
     @Test
     fun `should autocomplete pipelines (name, folder) on word`() {
-        whenever(azureDevopsClient.getAllPipelines()).thenReturn(
-            AzureResponse.of(
+        whenever(gitProvider.getAllPipelines()).thenReturn(
+            listOf(
                 Pipeline(1, "admin-service deployment", "\\blabla"),
                 Pipeline(2, "blabla", "\\admin-service"),
                 Pipeline(3, "blabla", "\\blabla"),
@@ -327,8 +326,8 @@ class AutoCompleteCommandTest {
 
     @Test
     fun `should autocomplete pipelines on folder and unique name`() {
-        whenever(azureDevopsClient.getAllPipelines()).thenReturn(
-            AzureResponse.of(
+        whenever(gitProvider.getAllPipelines()).thenReturn(
+            listOf(
                 Pipeline(1, "blabla", "\\admin-service"),
             ),
         )
@@ -350,8 +349,8 @@ class AutoCompleteCommandTest {
         expectedOutcome: List<PipelineRun>,
     ) {
         val pipelineId = "123456"
-        whenever(azureDevopsClient.getPipelineRuns(pipelineId)).thenReturn(
-            AzureResponse.of(
+        whenever(gitProvider.getPipelineRuns(pipelineId)).thenReturn(
+            listOf(
                 PipelineRun(123, "name", staticCreatedDate, PipelineRunState.COMPLETED, PipelineRunResult.CANCELED),
                 PipelineRun(
                     456,
@@ -386,13 +385,13 @@ class AutoCompleteCommandTest {
             PipelineRunState.COMPLETED,
             PipelineRunResult.CANCELED,
         )
-        whenever(azureDevopsClient.getAllPipelines()).thenReturn(
-            AzureResponse.of(
+        whenever(gitProvider.getAllPipelines()).thenReturn(
+            listOf(
                 pipeline,
             ),
         )
-        whenever(azureDevopsClient.getPipelineRuns(pipeline.id.toString()))
-            .thenReturn(AzureResponse.of(expectedResponse))
+        whenever(gitProvider.getPipelineRuns(pipeline.id.toString()))
+            .thenReturn(listOf(expectedResponse))
 
         val exitCode = commandLine.execute("git-pipeline-run", "--pipeline-id", "folder\\pipeline_name")
         assertThat(exitCode).isEqualTo(0)

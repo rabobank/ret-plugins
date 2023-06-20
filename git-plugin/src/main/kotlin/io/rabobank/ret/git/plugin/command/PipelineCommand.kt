@@ -1,7 +1,7 @@
 package io.rabobank.ret.git.plugin.command
 
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.GitUrlFactory
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
 import picocli.CommandLine.Command
@@ -12,9 +12,9 @@ import picocli.CommandLine.Parameters
     description = ["Open a recent pipeline run"],
 )
 class PipelineCommand(
-    private val azureDevopsUrlFactory: AzureDevopsUrlFactory,
+    private val urlFactory: GitUrlFactory,
     private val browserUtils: BrowserUtils,
-    private val azureDevopsClient: AzureDevopsClient,
+    private val gitProvider: GitProvider,
 ) {
 
     @Command(name = "open", description = ["Open the pipeline dashboard, or a specific pipeline or run"])
@@ -32,21 +32,21 @@ class PipelineCommand(
             completionCandidates = PipelineRunCompletionCandidates::class,
         ) pipelineRunId: String?,
     ) {
-        val url = if (pipelineId == null) azureDevopsUrlFactory.createPipelineDashboardUrl()
+        val url = if (pipelineId == null) urlFactory.createPipelineDashboardUrl()
         else if (pipelineRunId == null) {
             val resolvedPipelineId = if (pipelineId.matches(DIGITS_PATTERN)) {
                 pipelineId
             } else {
                 getPipelineByUniqueName(pipelineId).id.toString()
             }
-            azureDevopsUrlFactory.createPipelineUrl(resolvedPipelineId)
-        } else azureDevopsUrlFactory.createPipelineRunUrl(pipelineRunId)
+            urlFactory.createPipelineUrl(resolvedPipelineId)
+        } else urlFactory.createPipelineRunUrl(pipelineRunId)
 
         browserUtils.openUrl(url)
     }
 
     private fun getPipelineByUniqueName(pipelineId: String?) =
-        requireNotNull(azureDevopsClient.getAllPipelines().value.firstOrNull { it.uniqueName == pipelineId }) {
+        requireNotNull(gitProvider.getAllPipelines().firstOrNull { it.uniqueName == pipelineId }) {
             "Could not find pipeline id by <folder>\\<pipeline-name> combination: '$pipelineId'"
         }
 }

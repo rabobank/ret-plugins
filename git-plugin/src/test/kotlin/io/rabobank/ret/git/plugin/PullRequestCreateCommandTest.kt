@@ -4,15 +4,16 @@ import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.provider.azure.CreatePullRequest
-import io.rabobank.ret.git.plugin.provider.azure.PullRequestCreated
-import io.rabobank.ret.git.plugin.provider.azure.Repository
 import io.rabobank.ret.git.plugin.command.PullRequestCreateCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
+import io.rabobank.ret.git.plugin.provider.GitUrlFactory
+import io.rabobank.ret.git.plugin.provider.CreatePullRequest
+import io.rabobank.ret.git.plugin.provider.PullRequestCreated
+import io.rabobank.ret.git.plugin.provider.Repository
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
@@ -38,7 +39,7 @@ private const val AZURE_DEVOPS_BASE_URL = "azdo.com"
 @QuarkusTest
 internal class PullRequestCreateCommandTest {
 
-    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val gitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val mockedRetContext = mock<RetContext>()
     private val outputHandler = mock<OutputHandler>()
@@ -54,7 +55,7 @@ internal class PullRequestCreateCommandTest {
         retConfig["azure_devops_organization"] = "organization"
 
         val command = PullRequestCreateCommand(
-            mockedAzureDevopsClient,
+            gitProvider,
             AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"),
             mockedBrowserUtils,
             outputHandler,
@@ -159,9 +160,9 @@ internal class PullRequestCreateCommandTest {
         val defaultBranch = "defaultBranch"
         val createdPullRequestId = "123456"
 
-        whenever(mockedAzureDevopsClient.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
+        whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
         whenever(
-            mockedAzureDevopsClient.createPullRequest(
+            gitProvider.createPullRequest(
                 repo,
                 "6.0",
                 CreatePullRequest(
@@ -185,8 +186,8 @@ internal class PullRequestCreateCommandTest {
         val repo = "generic-project"
         val defaultBranch = "defaultBranch"
 
-        whenever(mockedAzureDevopsClient.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
-        whenever(mockedAzureDevopsClient.createPullRequest(anyString(), anyString(), anyOrNull()))
+        whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
+        whenever(gitProvider.createPullRequest(anyString(), anyString(), anyOrNull()))
             .thenThrow(ClientWebApplicationException(Response.Status.CONFLICT))
 
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
@@ -200,7 +201,7 @@ internal class PullRequestCreateCommandTest {
         val repo = "generic-project"
         val defaultBranch = "defaultBranch"
 
-        whenever(mockedAzureDevopsClient.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
+        whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
 
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
         assertThat(exitCode).isEqualTo(2)
