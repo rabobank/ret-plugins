@@ -1,5 +1,6 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
+import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.provider.*
 import io.rabobank.ret.git.plugin.provider.Branch
 import io.rabobank.ret.git.plugin.provider.CreatePullRequest
@@ -9,15 +10,27 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 import io.rabobank.ret.git.plugin.provider.Repository
 
-class AzureDevopsProvider(private val azureDevopsClient: AzureDevopsClient, override val urlFactory: AzureDevopsUrlFactory) : GitProvider {
+class AzureDevopsProvider(
+    private val azureDevopsClient: AzureDevopsClient,
+    private val pluginConfig: PluginConfig,
+    override val urlFactory: AzureDevopsUrlFactory
+) : GitProvider {
+
     override fun getAllPullRequests(): List<PullRequest> {
         return azureDevopsClient.getAllPullRequests().value.toGenericDomain()
+    }
+
+    override fun getPullRequestsNotReviewedByUser(): List<PullRequest> {
+        return getAllPullRequests().filterNot {
+            it.reviewers.any { reviewer -> reviewer.uniqueName.equals(pluginConfig.email, true) }
+        }
     }
 
     override fun getPullRequestById(id: String): PullRequest {
         return azureDevopsClient.getPullRequestById(id).toGenericDomain()
     }
 
+    // TODO decouple from Azure domain
     override fun createPullRequest(repository: String, apiVersion: String, createPullRequest: CreatePullRequest): PullRequestCreated {
         return azureDevopsClient.createPullRequest(repository, apiVersion, createPullRequest.fromGenericDomain()).toGenericDomain()
     }

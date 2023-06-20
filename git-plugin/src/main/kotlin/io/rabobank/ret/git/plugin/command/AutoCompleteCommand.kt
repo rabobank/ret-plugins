@@ -5,7 +5,6 @@ import io.rabobank.ret.RetContext
 import io.rabobank.ret.git.plugin.provider.Pipeline
 import io.rabobank.ret.git.plugin.provider.PipelineRun
 import io.rabobank.ret.git.plugin.provider.PullRequest
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
@@ -18,7 +17,6 @@ import picocli.CommandLine.ScopeType
 @Command(name = "autocomplete", hidden = true)
 class AutoCompleteCommand(
     private val gitProvider: GitProvider,
-    private val pluginConfig: PluginConfig,
     private val intelliSearch: IntelliSearch,
     private val outputHandler: OutputHandler,
     private val retContext: RetContext,
@@ -106,14 +104,14 @@ class AutoCompleteCommand(
         )
         filterRepository: String? = null,
     ) {
-        val prs = gitProvider.getAllPullRequests()
-            .filter { !notReviewed || !it.reviewers.any { r -> r.uniqueName.equals(pluginConfig.email, true) } }
+        val prs = if (notReviewed) gitProvider.getAllPullRequests() else gitProvider.getPullRequestsNotReviewedByUser()
+        val filteredPrs = prs
             .filter { it.isFromRepository(filterRepository) }
-        val filteredPrs = prs.filter {
-            word == null ||
-                intelliSearch.matches(word, it.title) ||
-                intelliSearch.matches(word, it.repository.name)
-        }
+            .filter {
+                word == null ||
+                        intelliSearch.matches(word, it.title) ||
+                        intelliSearch.matches(word, it.repository.name)
+            }
         outputHandler.listPRs(filteredPrs)
     }
 

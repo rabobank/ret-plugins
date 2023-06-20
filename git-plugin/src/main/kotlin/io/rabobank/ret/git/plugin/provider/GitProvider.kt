@@ -3,6 +3,8 @@ package io.rabobank.ret.git.plugin.provider
 interface GitProvider {
     fun getAllPullRequests(): List<PullRequest>
 
+    fun getPullRequestsNotReviewedByUser(): List<PullRequest>
+
     fun getPullRequestById(id: String): PullRequest
 
     fun createPullRequest(repository: String, apiVersion: String, createPullRequest: CreatePullRequest): PullRequestCreated
