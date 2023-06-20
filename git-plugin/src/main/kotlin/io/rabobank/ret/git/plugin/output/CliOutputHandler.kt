@@ -1,11 +1,11 @@
 package io.rabobank.ret.git.plugin.output
 
 import io.rabobank.ret.RetConsole
-import io.rabobank.ret.git.plugin.azure.Branch
-import io.rabobank.ret.git.plugin.azure.Pipeline
-import io.rabobank.ret.git.plugin.azure.PipelineRun
-import io.rabobank.ret.git.plugin.azure.PullRequest
-import io.rabobank.ret.git.plugin.azure.Repository
+import io.rabobank.ret.git.plugin.provider.azure.Branch
+import io.rabobank.ret.git.plugin.provider.azure.Pipeline
+import io.rabobank.ret.git.plugin.provider.azure.PipelineRun
+import io.rabobank.ret.git.plugin.provider.azure.PullRequest
+import io.rabobank.ret.git.plugin.provider.azure.Repository
 
 class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
 

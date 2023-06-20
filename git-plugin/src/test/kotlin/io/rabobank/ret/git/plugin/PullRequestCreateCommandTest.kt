@@ -4,11 +4,11 @@ import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.CreatePullRequest
-import io.rabobank.ret.git.plugin.azure.PullRequestCreated
-import io.rabobank.ret.git.plugin.azure.Repository
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.azure.CreatePullRequest
+import io.rabobank.ret.git.plugin.provider.azure.PullRequestCreated
+import io.rabobank.ret.git.plugin.provider.azure.Repository
 import io.rabobank.ret.git.plugin.command.PullRequestCreateCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
 import io.rabobank.ret.git.plugin.config.PluginConfig

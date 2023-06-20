@@ -1,4 +1,4 @@
-package io.rabobank.ret.git.plugin.azure
+package io.rabobank.ret.git.plugin.provider.azure
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.quarkus.runtime.annotations.RegisterForReflection

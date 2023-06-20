@@ -1,9 +1,9 @@
 package io.rabobank.ret.git.plugin
 
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.AzureResponse
-import io.rabobank.ret.git.plugin.azure.Pipeline
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.azure.AzureResponse
+import io.rabobank.ret.git.plugin.provider.azure.Pipeline
 import io.rabobank.ret.git.plugin.command.PipelineCommand
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.util.BrowserUtils
