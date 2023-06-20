@@ -1,7 +1,6 @@
 package io.rabobank.ret.git.plugin
 
 import io.rabobank.ret.git.plugin.command.PipelineCommand
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.provider.Pipeline
@@ -19,7 +18,6 @@ import java.net.URL
 
 internal class PipelineCommandTest {
 
-    private val pluginConfigMock = mock<PluginConfig>()
     private val browserUtilsMock = mock<BrowserUtils>()
     private val gitProviderMock = mock<GitProvider>()
     private lateinit var gitUrlFactory: GitUrlFactory
@@ -32,8 +30,6 @@ internal class PipelineCommandTest {
 
         commandLine = CommandLine(command)
 
-        whenever(pluginConfigMock.organization).thenReturn("org")
-        whenever(pluginConfigMock.projectId).thenReturn("proj")
         whenever(gitProviderMock.urlFactory).thenReturn(gitUrlFactory)
     }
 
