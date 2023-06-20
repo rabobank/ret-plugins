@@ -36,13 +36,6 @@ internal class PullRequestOpenCommandTest {
 
     @BeforeEach
     fun before() {
-        val configurables = mock<Instance<Configurable>>()
-        val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
-        retConfig["azure_devops_email"] = "manks@live.com"
-        retConfig["azure_devops_pat"] = "pat"
-        retConfig["azure_devops_project"] = "projectId"
-        retConfig["azure_devops_organization"] = "organization"
-
         val command = PullRequestOpenCommand(
             mockedGitProvider,
             mockedBrowserUtils,
