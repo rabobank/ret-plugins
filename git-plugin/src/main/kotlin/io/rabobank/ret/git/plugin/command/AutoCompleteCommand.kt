@@ -2,10 +2,10 @@ package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.Pipeline
-import io.rabobank.ret.git.plugin.azure.PipelineRun
-import io.rabobank.ret.git.plugin.azure.PullRequest
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.Pipeline
+import io.rabobank.ret.git.plugin.provider.azure.PipelineRun
+import io.rabobank.ret.git.plugin.provider.azure.PullRequest
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.picocli.mixin.ContextAwareness

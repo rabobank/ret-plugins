@@ -3,11 +3,11 @@ package io.rabobank.ret.git.plugin
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.PullRequest
-import io.rabobank.ret.git.plugin.azure.Repository
-import io.rabobank.ret.git.plugin.azure.Reviewer
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.azure.PullRequest
+import io.rabobank.ret.git.plugin.provider.azure.Repository
+import io.rabobank.ret.git.plugin.provider.azure.Reviewer
 import io.rabobank.ret.git.plugin.command.PullRequestOpenCommand
 import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler

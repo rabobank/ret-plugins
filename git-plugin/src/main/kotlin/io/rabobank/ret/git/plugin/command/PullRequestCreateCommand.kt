@@ -1,9 +1,9 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.CreatePullRequest
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.azure.CreatePullRequest
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils

@@ -1,7 +1,7 @@
 package io.rabobank.ret.git.plugin.command
 
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsClient
+import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsUrlFactory
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
 import picocli.CommandLine.Command
