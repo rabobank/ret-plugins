@@ -23,9 +23,4 @@ import picocli.CommandLine.Command
     ],
 )
 @RegisterForReflection(targets = [RetContext::class])
-class GitEntryCommand : Runnable {
-    override fun run() {
-        println("test! ")
-    }
-
-}
+class GitEntryCommand

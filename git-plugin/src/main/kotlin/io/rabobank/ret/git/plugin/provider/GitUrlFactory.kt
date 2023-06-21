@@ -7,5 +7,4 @@ interface GitUrlFactory {
     fun createPipelineDashboardUrl(): String
     fun createPullRequestUrl(repositoryName: String, pullRequestId: String): String
     fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): String
-    fun pullRequestUrl(repositoryName: String, pullRequestId: String): String
 }

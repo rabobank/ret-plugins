@@ -80,7 +80,7 @@ class PullRequestCreateCommand(
                     "Merge $sourceBranch into ${repository.defaultBranch}",
                     "PR created by RET using `ret pr create --no-prompt`.",
                 )
-                val pullRequestUrl = gitProvider.urlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
+                val pullRequestUrl = gitProvider.urlFactory.createPullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
                 val message = if (e.response.status == CONFLICT) "A pull request for this branch already exists!"

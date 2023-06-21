@@ -9,5 +9,4 @@ class TestUrlFactory(private val domain: String) : GitUrlFactory {
     override fun createPipelineDashboardUrl() = "$domain/pipeline"
     override fun createPullRequestUrl(repositoryName: String, pullRequestId: String) = "$domain/pullrequest/$repositoryName/$pullRequestId"
     override fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?) = "$domain/pullrequest/create/$repositoryName/" + (sourceRef ?: "")
-    override fun pullRequestUrl(repositoryName: String, pullRequestId: String) = "$domain/pullrequest/$repositoryName/$pullRequestId"
 }

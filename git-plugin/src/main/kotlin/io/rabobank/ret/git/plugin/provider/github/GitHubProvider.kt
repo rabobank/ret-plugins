@@ -10,17 +10,20 @@ import io.rabobank.ret.git.plugin.provider.Repository
 
 class GitHubProvider(
     private val gitHubClient: GitHubClient,
+    private val pluginConfig: GitHubPluginConfig,
     override val urlFactory: GitUrlFactory
 ) : GitProvider {
     override fun getAllPullRequests(): List<PullRequest> {
-        TODO("Not yet implemented")
+        return gitHubClient.searchIssuesForPullRequests("org:${pluginConfig.organization} is:pull-request state:open").items.toGenericDomain()
     }
 
     override fun getPullRequestsNotReviewedByUser(): List<PullRequest> {
+        // TODO we probably have to search all pull requests and then per PR find the reviewers in a specific call
         TODO("Not yet implemented")
     }
 
     override fun getPullRequestById(id: String): PullRequest {
+        // TODO - the repository name is needed here, as PR numbers/IDs are not unique in the whole organization
         TODO("Not yet implemented")
     }
 
@@ -29,15 +32,16 @@ class GitHubProvider(
     }
 
     override fun getAllRepositories(): List<Repository> {
-        return gitHubClient.getRepositories().toGenericDomain()
+        return gitHubClient.getRepositories(pluginConfig.organization).toGenericDomain()
     }
 
     override fun getRepositoryById(repository: String): Repository {
-        TODO("Not yet implemented")
+        return gitHubClient.getRepository(pluginConfig.organization, repository).toGenericDomain()
     }
 
     override fun getAllRefs(repository: String, filter: String): List<Branch> {
-        TODO("Not yet implemented")
+        return gitHubClient.getBranches(pluginConfig.organization, repository).toGenericDomain()
+        // TODO implement filter
     }
 
     override fun getAllPipelines(): List<Pipeline> {
