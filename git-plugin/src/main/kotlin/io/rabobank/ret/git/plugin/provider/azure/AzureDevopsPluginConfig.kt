@@ -13,7 +13,7 @@ class AzureDevopsPluginConfig(retConfig: RetConfig) : Configurable {
     val organization: String = retConfig[ORGANIZATION].orEmpty()
 
     override fun properties(): List<ConfigurationProperty> = listOf(
-        ConfigurationProperty(EMAIL, "Enter your email-address"),
+        ConfigurationProperty(EMAIL, "Enter your Azure email-address"),
         ConfigurationProperty(PAT, "Enter your Azure Personal Access Token (PAT)"),
         ConfigurationProperty(PROJECT, "Enter your Azure project"),
         ConfigurationProperty(ORGANIZATION, "Enter your Azure organization"),

@@ -8,6 +8,8 @@ interface GitDomainConvertible<T : GitDomain> {
     fun toGenericDomain(): T
 }
 
+fun <T : GitDomain> List<GitDomainConvertible<T>>.toGenericDomain() = this.map { it.toGenericDomain() }
+
 data class PullRequest(
     val id: String,
     val title: String,

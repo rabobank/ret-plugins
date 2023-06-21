@@ -1,5 +1,6 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
+import io.rabobank.ret.git.plugin.provider.utilities.LoggingFilter
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
