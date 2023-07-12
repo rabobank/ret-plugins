@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 
 interface GitDomain
 
-interface GitDomainConvertible<T : GitDomain> {
+fun interface GitDomainConvertible<T : GitDomain> {
     fun toGenericDomain(): T
 }
 

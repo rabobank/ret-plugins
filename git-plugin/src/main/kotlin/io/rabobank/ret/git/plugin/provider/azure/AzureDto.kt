@@ -35,7 +35,7 @@ data class PullRequest(
         id,
         title,
         repository.toGenericDomain(),
-        reviewers.map { it.toGenericDomain() }
+        reviewers.toGenericDomain()
     )
 }
 
@@ -122,4 +122,4 @@ enum class PipelineRunResult(private val genericEquivalent: GenericPipelineRunRe
     override fun toGenericDomain() = genericEquivalent
 }
 
-fun <T : GitDomain> List<GitDomainConvertible<T>>.toGenericDomain() = this.map { it.toGenericDomain() }
+fun <T : GitDomain> Collection<GitDomainConvertible<T>>.toGenericDomain() = this.map { it.toGenericDomain() }
