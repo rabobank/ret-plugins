@@ -1,7 +1,6 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.quarkus.logging.Log
-import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
@@ -46,7 +45,7 @@ class PullRequestOpenCommand(
     override fun run() {
         try {
             val pullRequest = gitProvider.getPullRequestById(pullRequestId)
-            val prURL = gitProvider.urlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id).toString()
+            val prURL = gitProvider.urlFactory.pullRequest(pullRequest.repository.name, pullRequest.id).toString()
 
             browserUtils.openUrl(prURL)
         } catch (e: ClientWebApplicationException) {
