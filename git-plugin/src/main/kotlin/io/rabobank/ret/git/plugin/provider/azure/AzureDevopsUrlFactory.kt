@@ -12,31 +12,31 @@ class AzureDevopsUrlFactory(
     @ConfigProperty(name = "azure.devops.baseUrl") private val azureDevopsBaseUrl: String,
 ) : GitUrlFactory {
 
-    override fun createRepositoryUrl(repositoryName: String): URL =
+    override fun repository(repositoryName: String): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .buildToURL()
 
-    override fun createPipelineRunUrl(pipelineRunId: String): URL =
+    override fun pipelineRun(pipelineRunId: String): URL =
         azdoBaseUriBuilder()
             .path("_build")
             .path("results")
             .queryParam("buildId", pipelineRunId)
             .buildToURL()
 
-    override fun createPipelineUrl(pipelineId: String): URL =
+    override fun pipeline(pipelineId: String): URL =
         azdoBaseUriBuilder()
             .path("_build")
             .queryParam("definitionId", pipelineId)
             .buildToURL()
 
-    override fun createPipelineDashboardUrl(): URL =
+    override fun pipelineDashboard(): URL =
         azdoBaseUriBuilder()
             .path("_build")
             .buildToURL()
 
-    override fun createPullRequestUrl(repositoryName: String, pullRequestId: String): URL =
+    override fun pullRequest(repositoryName: String, pullRequestId: String): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
@@ -44,7 +44,7 @@ class AzureDevopsUrlFactory(
             .path(pullRequestId)
             .buildToURL()
 
-    override fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): URL =
+    override fun pullRequestCreate(repositoryName: String, sourceRef: String?): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
