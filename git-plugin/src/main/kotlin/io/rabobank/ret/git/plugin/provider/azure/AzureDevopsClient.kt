@@ -1,4 +1,4 @@
-package io.rabobank.ret.git.plugin.azure
+package io.rabobank.ret.git.plugin.provider.azure
 
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST

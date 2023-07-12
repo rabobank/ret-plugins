@@ -1,9 +1,9 @@
 package io.rabobank.ret.git.plugin.output
 
 import io.quarkus.runtime.annotations.RegisterForReflection
-import io.rabobank.ret.git.plugin.azure.Branch
-import io.rabobank.ret.git.plugin.azure.PullRequest
-import io.rabobank.ret.git.plugin.azure.Repository
+import io.rabobank.ret.git.plugin.provider.Branch
+import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.Repository
 
 @RegisterForReflection
 data class Wrapper(val items: List<Item>)

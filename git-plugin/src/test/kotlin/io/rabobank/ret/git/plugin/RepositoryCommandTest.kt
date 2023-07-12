@@ -3,20 +3,14 @@ package io.rabobank.ret.git.plugin
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetConsole
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.configuration.Configurable
-import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.AzureResponse
-import io.rabobank.ret.git.plugin.azure.Repository
 import io.rabobank.ret.git.plugin.command.RepositoryCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
+import io.rabobank.ret.git.plugin.provider.Repository
+import io.rabobank.ret.git.plugin.utilities.TestUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
-import io.rabobank.ret.util.OsUtils
-import jakarta.enterprise.inject.Instance
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -34,7 +28,7 @@ import picocli.CommandLine
 @QuarkusTest
 internal class RepositoryCommandTest {
 
-    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val mockedGitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val mockedRetContext = mock<RetContext>()
     private val outputHandler = mock<OutputHandler>()
@@ -43,16 +37,8 @@ internal class RepositoryCommandTest {
 
     @BeforeEach
     fun before() {
-        val configurables = mock<Instance<Configurable>>()
-        val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
-        retConfig["azure_devops_email"] = "manks@live.com"
-        retConfig["azure_devops_pat"] = "pat"
-        retConfig["azure_devops_project"] = "projectId"
-        retConfig["azure_devops_organization"] = "organization"
-
         val command = RepositoryCommand(
-            mockedAzureDevopsClient,
-            AzureDevopsUrlFactory(PluginConfig(retConfig), "https://dev.azure.com"),
+            mockedGitProvider,
             mockedBrowserUtils,
             mockedRetContext,
         )
@@ -62,8 +48,8 @@ internal class RepositoryCommandTest {
         commandLine = spy(CommandLine(command))
         commandLine.executionExceptionHandler = ExceptionMessageHandler(outputHandler)
 
-        whenever(mockedAzureDevopsClient.getAllRepositories()).thenReturn(
-            AzureResponse.of(
+        whenever(mockedGitProvider.getAllRepositories()).thenReturn(
+            listOf(
                 Repository("client-service", "refs/heads/master"),
                 Repository("admin-service", "refs/heads/master"),
                 Repository("bto-apmd", "refs/heads/master"),
@@ -71,6 +57,7 @@ internal class RepositoryCommandTest {
                 Repository("generic-project", "refs/heads/master"),
             ),
         )
+        whenever(mockedGitProvider.urlFactory).thenReturn(TestUrlFactory("https://test.git"))
     }
 
     @AfterEach
@@ -84,7 +71,7 @@ internal class RepositoryCommandTest {
         val exitCode = commandLine.execute("open", repository)
         assertThat(exitCode).isEqualTo(0)
 
-        val repoUrl = "https://dev.azure.com/organization/projectId/_git/$repository"
+        val repoUrl = "https://test.git/repository/$repository"
 
         verify(mockedBrowserUtils).openUrl(repoUrl)
     }
@@ -97,7 +84,7 @@ internal class RepositoryCommandTest {
         val exitCode = commandLine.execute("open")
         assertThat(exitCode).isEqualTo(0)
 
-        val repoUrl = "https://dev.azure.com/organization/projectId/_git/$repository"
+        val repoUrl = "https://test.git/repository/$repository"
 
         verify(mockedBrowserUtils).openUrl(repoUrl)
     }
@@ -110,7 +97,7 @@ internal class RepositoryCommandTest {
         val exitCode = commandLine.execute("open", repository)
         assertThat(exitCode).isEqualTo(0)
 
-        val repoUrl = "https://dev.azure.com/organization/projectId/_git/$repository"
+        val repoUrl = "https://test.git/repository/$repository"
 
         verify(mockedBrowserUtils).openUrl(repoUrl)
     }

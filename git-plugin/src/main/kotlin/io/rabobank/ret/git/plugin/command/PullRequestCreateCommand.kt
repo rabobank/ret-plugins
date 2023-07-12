@@ -1,10 +1,8 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.CreatePullRequest
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import org.jboss.resteasy.reactive.ClientWebApplicationException
@@ -20,8 +18,7 @@ import picocli.CommandLine.ScopeType
     description = ["Create a pull request"],
 )
 class PullRequestCreateCommand(
-    private val azureDevopsClient: AzureDevopsClient,
-    private val azureDevopsUrlFactory: AzureDevopsUrlFactory,
+    private val gitProvider: GitProvider,
     private val browserUtils: BrowserUtils,
     private val outputHandler: OutputHandler,
     private val retContext: RetContext,
@@ -64,32 +61,26 @@ class PullRequestCreateCommand(
         if (!noPrompt) {
             val branch = if (autofillBranchRequired(filterRepository, providedBranch, contextBranch)) sourceBranch else null
 
-            val prCreateURL = azureDevopsUrlFactory.createPullRequestCreateUrl(repositoryName, branch)
+            val prCreateURL = gitProvider.urlFactory.pullRequestCreate(repositoryName, branch).toString()
             browserUtils.openUrl(prCreateURL)
         } else {
             requireNotNull(sourceBranch) { "Could not determine branch from context. Please provide the branch." }
-            val repository = azureDevopsClient.getRepositoryById(repositoryName)
+            val repository = gitProvider.getRepositoryById(repositoryName)
             val defaultBranch = requireNotNull(repository.defaultBranch) { "No default branch available." }
 
             require(defaultBranch != sourceBranch) {
                 "Could not create PR. Source branch is the same as the default branch."
             }
 
-            val createPullRequest = CreatePullRequest(
-                "refs/heads/$sourceBranch",
-                defaultBranch,
-                "Merge $sourceBranch into ${repository.defaultBranch}",
-                "PR created by RET using `ret pr create --no-prompt`.",
-            )
-
             try {
-                val createPullRequestResponse = azureDevopsClient.createPullRequest(
+                val createPullRequestResponse = gitProvider.createPullRequest(
                     repositoryName,
-                    "6.0",
-                    createPullRequest,
+                    "refs/heads/$sourceBranch",
+                    defaultBranch,
+                    "Merge $sourceBranch into ${repository.defaultBranch}",
+                    "PR created by RET using `ret pr create --no-prompt`.",
                 )
-                val pullRequestUrl =
-                    azureDevopsUrlFactory.pullRequestUrl(repositoryName, createPullRequestResponse.pullRequestId)
+                val pullRequestUrl = gitProvider.urlFactory.pullRequest(repositoryName, createPullRequestResponse.pullRequestId).toString()
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
                 val message = if (e.response.status == CONFLICT) "A pull request for this branch already exists!"

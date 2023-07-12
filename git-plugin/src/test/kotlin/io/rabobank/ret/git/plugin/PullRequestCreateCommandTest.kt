@@ -2,21 +2,15 @@ package io.rabobank.ret.git.plugin
 
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.configuration.Configurable
-import io.rabobank.ret.configuration.RetConfig
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
-import io.rabobank.ret.git.plugin.azure.CreatePullRequest
-import io.rabobank.ret.git.plugin.azure.PullRequestCreated
-import io.rabobank.ret.git.plugin.azure.Repository
 import io.rabobank.ret.git.plugin.command.PullRequestCreateCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
-import io.rabobank.ret.git.plugin.config.PluginConfig
 import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
+import io.rabobank.ret.git.plugin.provider.PullRequestCreated
+import io.rabobank.ret.git.plugin.provider.Repository
+import io.rabobank.ret.git.plugin.utilities.TestUrlFactory
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
-import io.rabobank.ret.util.OsUtils
-import jakarta.enterprise.inject.Instance
 import jakarta.ws.rs.core.Response
 import org.assertj.core.api.Assertions.assertThat
 import org.jboss.resteasy.reactive.ClientWebApplicationException
@@ -27,18 +21,17 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.contains
 import org.mockito.Mockito.spy
-import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
 
-private const val AZURE_DEVOPS_BASE_URL = "azdo.com"
+private const val BASE_URL = "https://test.git"
 
 @QuarkusTest
 internal class PullRequestCreateCommandTest {
 
-    private val mockedAzureDevopsClient = mock<AzureDevopsClient>()
+    private val gitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val mockedRetContext = mock<RetContext>()
     private val outputHandler = mock<OutputHandler>()
@@ -46,16 +39,8 @@ internal class PullRequestCreateCommandTest {
 
     @BeforeEach
     fun before() {
-        val configurables = mock<Instance<Configurable>>()
-        val retConfig = RetConfig(OsUtils(), configurables, "1.0.0")
-        retConfig["azure_devops_email"] = "manks@live.com"
-        retConfig["azure_devops_pat"] = "pat"
-        retConfig["azure_devops_project"] = "projectId"
-        retConfig["azure_devops_organization"] = "organization"
-
         val command = PullRequestCreateCommand(
-            mockedAzureDevopsClient,
-            AzureDevopsUrlFactory(PluginConfig(retConfig), "azdo.com"),
+            gitProvider,
             mockedBrowserUtils,
             outputHandler,
             mockedRetContext,
@@ -65,6 +50,7 @@ internal class PullRequestCreateCommandTest {
 
         commandLine = spy(CommandLine(command))
         commandLine.executionExceptionHandler = ExceptionMessageHandler(outputHandler)
+        whenever(gitProvider.urlFactory).thenReturn(TestUrlFactory("https://test.git"))
     }
 
     @Test
@@ -78,7 +64,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate?sourceRef=feature%2Fmy-branch"
+            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -92,7 +78,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate?sourceRef=feature%2Fmy-branch"
+            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -105,7 +91,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute(flag, repo)
         assertThat(exitCode).isEqualTo(0)
 
-        val expectedURL = "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate"
+        val expectedURL = "$BASE_URL/pullrequest/create/$repo/"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -122,7 +108,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute(flag, repo)
         assertThat(exitCode).isEqualTo(0)
 
-        val expectedURL = "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate"
+        val expectedURL = "$BASE_URL/pullrequest/create/$repo/"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -137,7 +123,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequestcreate?sourceRef=feature%2Fmy-branch"
+            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -159,24 +145,21 @@ internal class PullRequestCreateCommandTest {
         val defaultBranch = "defaultBranch"
         val createdPullRequestId = "123456"
 
-        whenever(mockedAzureDevopsClient.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
+        whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
         whenever(
-            mockedAzureDevopsClient.createPullRequest(
+            gitProvider.createPullRequest(
                 repo,
-                "6.0",
-                CreatePullRequest(
-                    "refs/heads/$branch",
-                    defaultBranch,
-                    "Merge $branch into $defaultBranch",
-                    "PR created by RET using `ret pr create --no-prompt`.",
-                ),
+                "refs/heads/$branch",
+                defaultBranch,
+                "Merge $branch into $defaultBranch",
+                "PR created by RET using `ret pr create --no-prompt`.",
             ),
         ).thenReturn(PullRequestCreated(createdPullRequestId))
 
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
         assertThat(exitCode).isEqualTo(0)
         verify(outputHandler)
-            .println("$AZURE_DEVOPS_BASE_URL/organization/projectId/_git/$repo/pullrequest/$createdPullRequestId")
+            .println("$BASE_URL/pullrequest/$repo/$createdPullRequestId")
     }
 
     @Test
@@ -185,8 +168,8 @@ internal class PullRequestCreateCommandTest {
         val repo = "generic-project"
         val defaultBranch = "defaultBranch"
 
-        whenever(mockedAzureDevopsClient.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
-        whenever(mockedAzureDevopsClient.createPullRequest(anyString(), anyString(), anyOrNull()))
+        whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
+        whenever(gitProvider.createPullRequest(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenThrow(ClientWebApplicationException(Response.Status.CONFLICT))
 
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
@@ -200,7 +183,7 @@ internal class PullRequestCreateCommandTest {
         val repo = "generic-project"
         val defaultBranch = "defaultBranch"
 
-        whenever(mockedAzureDevopsClient.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
+        whenever(gitProvider.getRepositoryById(repo)).thenReturn(Repository(repo, defaultBranch))
 
         val exitCode = commandLine.execute("-r", repo, "--no-prompt", branch)
         assertThat(exitCode).isEqualTo(2)

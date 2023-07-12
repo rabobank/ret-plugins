@@ -2,11 +2,11 @@ package io.rabobank.ret.git.plugin.output
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.rabobank.ret.RetConsole
-import io.rabobank.ret.git.plugin.azure.Branch
-import io.rabobank.ret.git.plugin.azure.Pipeline
-import io.rabobank.ret.git.plugin.azure.PipelineRun
-import io.rabobank.ret.git.plugin.azure.PullRequest
-import io.rabobank.ret.git.plugin.azure.Repository
+import io.rabobank.ret.git.plugin.provider.Branch
+import io.rabobank.ret.git.plugin.provider.Pipeline
+import io.rabobank.ret.git.plugin.provider.PipelineRun
+import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.Repository
 
 class AlfredOutputHandler(private val retConsole: RetConsole, private val objectMapper: ObjectMapper) : OutputHandler {
 

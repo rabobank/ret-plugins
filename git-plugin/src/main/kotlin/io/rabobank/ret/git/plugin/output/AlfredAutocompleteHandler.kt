@@ -2,13 +2,13 @@ package io.rabobank.ret.git.plugin.output
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.rabobank.ret.RetConsole
-import io.rabobank.ret.git.plugin.azure.Branch
-import io.rabobank.ret.git.plugin.azure.Pipeline
-import io.rabobank.ret.git.plugin.azure.PipelineRun
-import io.rabobank.ret.git.plugin.azure.PipelineRunResult
-import io.rabobank.ret.git.plugin.azure.PipelineRunState
-import io.rabobank.ret.git.plugin.azure.PullRequest
-import io.rabobank.ret.git.plugin.azure.Repository
+import io.rabobank.ret.git.plugin.provider.Branch
+import io.rabobank.ret.git.plugin.provider.Pipeline
+import io.rabobank.ret.git.plugin.provider.PipelineRun
+import io.rabobank.ret.git.plugin.provider.PipelineRunResult
+import io.rabobank.ret.git.plugin.provider.PipelineRunState
+import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.Repository
 
 class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val objectMapper: ObjectMapper) :
     OutputHandler {
@@ -54,7 +54,7 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
                 else Wrapper(
                     listOf(Item(title = "Pipeline dashboard", arg = "open-dashboard")) +
                         list.map {
-                            Item(title = it.name, subtitle = "Folder: ${it.folder}", arg = it.id.toString())
+                            Item(title = it.name, subtitle = "Folder: ${it.container}", arg = it.id.toString())
                         },
                 ),
             ),

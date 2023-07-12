@@ -1,8 +1,7 @@
 package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.git.plugin.azure.AzureDevopsClient
-import io.rabobank.ret.git.plugin.azure.AzureDevopsUrlFactory
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
 import picocli.CommandLine.Command
@@ -14,8 +13,7 @@ import picocli.CommandLine.Parameters
     description = ["List all repositories"],
 )
 class RepositoryCommand(
-    private val azureDevopsClient: AzureDevopsClient,
-    private val azureDevopsUrlFactory: AzureDevopsUrlFactory,
+    private val gitProvider: GitProvider,
     private val browserUtils: BrowserUtils,
     private val retContext: RetContext,
 ) {
@@ -26,7 +24,7 @@ class RepositoryCommand(
     fun openRepositoryInBrowser(
         @Parameters(
             arity = "0..1",
-            description = ["Repository name to open in Azure DevOps"],
+            description = ["Repository name to open in the browser"],
             paramLabel = "<repository>",
             completionCandidates = RepositoryCompletionCandidates::class,
         ) repositoryName: String?,
@@ -35,11 +33,12 @@ class RepositoryCommand(
             "No repository provided and ret cannot get repository from context."
         }
 
-        val repositories = azureDevopsClient.getAllRepositories().value
+        val repositories = gitProvider.getAllRepositories()
 
         require(repositories.any { it.name == repository }) { "No repository found with name $repository." }
 
-        browserUtils.openUrl(azureDevopsUrlFactory.createRepositoryUrl(repository))
+        val url = gitProvider.urlFactory.repository(repository).toString()
+        browserUtils.openUrl(url)
     }
 }
 

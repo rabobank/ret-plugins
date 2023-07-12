@@ -1,4 +1,4 @@
-package io.rabobank.ret.git.plugin.azure
+package io.rabobank.ret.git.plugin.provider.azure
 
 import io.quarkus.logging.Log
 import jakarta.ws.rs.client.ClientRequestContext

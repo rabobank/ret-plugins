@@ -1,4 +1,4 @@
-package io.rabobank.ret.git.plugin.config
+package io.rabobank.ret.git.plugin.provider.azure
 
 import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.ConfigurationProperty
@@ -6,7 +6,7 @@ import io.rabobank.ret.configuration.RetConfig
 import jakarta.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
-class PluginConfig(retConfig: RetConfig) : Configurable {
+class AzureDevopsPluginConfig(retConfig: RetConfig) : Configurable {
     val email: String = retConfig[EMAIL].orEmpty()
     val pat: String = retConfig[PAT].orEmpty()
     val projectId: String = retConfig[PROJECT].orEmpty()
