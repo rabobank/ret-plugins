@@ -56,14 +56,6 @@ class AzureDevopsUrlFactory(
             }
             .buildToURL()
 
-    override fun pullRequestUrl(repositoryName: String, pullRequestId: String): URL =
-        azdoBaseUriBuilder()
-            .path("_git")
-            .path(repositoryName)
-            .path("pullrequest")
-            .path(pullRequestId)
-            .buildToURL()
-
     private fun azdoBaseUriBuilder() = UriBuilder.fromUri(azureDevopsBaseUrl)
         .path(pluginConfig.organization)
         .path(pluginConfig.projectId)
