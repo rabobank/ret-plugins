@@ -1,11 +1,13 @@
 package io.rabobank.ret.git.plugin.provider
 
+import java.net.URL
+
 interface GitUrlFactory {
-    fun createRepositoryUrl(repositoryName: String): String
-    fun createPipelineRunUrl(pipelineRunId: String): String
-    fun createPipelineUrl(pipelineId: String): String
-    fun createPipelineDashboardUrl(): String
-    fun createPullRequestUrl(repositoryName: String, pullRequestId: String): String
-    fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): String
-    fun pullRequestUrl(repositoryName: String, pullRequestId: String): String
+    fun createRepositoryUrl(repositoryName: String): URL
+    fun createPipelineRunUrl(pipelineRunId: String): URL
+    fun createPipelineUrl(pipelineId: String): URL
+    fun createPipelineDashboardUrl(): URL
+    fun createPullRequestUrl(repositoryName: String, pullRequestId: String): URL
+    fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): URL
+    fun pullRequestUrl(repositoryName: String, pullRequestId: String): URL
 }

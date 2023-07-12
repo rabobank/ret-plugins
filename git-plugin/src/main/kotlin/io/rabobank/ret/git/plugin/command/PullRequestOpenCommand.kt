@@ -46,7 +46,7 @@ class PullRequestOpenCommand(
     override fun run() {
         try {
             val pullRequest = gitProvider.getPullRequestById(pullRequestId)
-            val prURL = gitProvider.urlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id)
+            val prURL = gitProvider.urlFactory.createPullRequestUrl(pullRequest.repository.name, pullRequest.id).toString()
 
             browserUtils.openUrl(prURL)
         } catch (e: ClientWebApplicationException) {

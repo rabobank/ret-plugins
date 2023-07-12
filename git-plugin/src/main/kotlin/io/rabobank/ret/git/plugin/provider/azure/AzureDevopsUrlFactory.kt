@@ -4,6 +4,7 @@ import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.ws.rs.core.UriBuilder
 import org.eclipse.microprofile.config.inject.ConfigProperty
+import java.net.URL
 
 @ApplicationScoped
 class AzureDevopsUrlFactory(
@@ -11,44 +12,39 @@ class AzureDevopsUrlFactory(
     @ConfigProperty(name = "azure.devops.baseUrl") private val azureDevopsBaseUrl: String,
 ) : GitUrlFactory {
 
-    override fun createRepositoryUrl(repositoryName: String): String =
+    override fun createRepositoryUrl(repositoryName: String): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
-    override fun createPipelineRunUrl(pipelineRunId: String): String =
+    override fun createPipelineRunUrl(pipelineRunId: String): URL =
         azdoBaseUriBuilder()
             .path("_build")
             .path("results")
             .queryParam("buildId", pipelineRunId)
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
-    override fun createPipelineUrl(pipelineId: String): String =
+    override fun createPipelineUrl(pipelineId: String): URL =
         azdoBaseUriBuilder()
             .path("_build")
             .queryParam("definitionId", pipelineId)
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
-    override fun createPipelineDashboardUrl(): String =
+    override fun createPipelineDashboardUrl(): URL =
         azdoBaseUriBuilder()
             .path("_build")
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
-    override fun createPullRequestUrl(repositoryName: String, pullRequestId: String): String =
+    override fun createPullRequestUrl(repositoryName: String, pullRequestId: String): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .path("pullrequest")
             .path(pullRequestId)
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
-    override fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): String =
+    override fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
@@ -58,19 +54,19 @@ class AzureDevopsUrlFactory(
                     it.queryParam("sourceRef", sourceRef)
                 }
             }
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
-    override fun pullRequestUrl(repositoryName: String, pullRequestId: String): String =
+    override fun pullRequestUrl(repositoryName: String, pullRequestId: String): URL =
         azdoBaseUriBuilder()
             .path("_git")
             .path(repositoryName)
             .path("pullrequest")
             .path(pullRequestId)
-            .build()
-            .toASCIIString()
+            .buildToURL()
 
     private fun azdoBaseUriBuilder() = UriBuilder.fromUri(azureDevopsBaseUrl)
         .path(pluginConfig.organization)
         .path(pluginConfig.projectId)
+
+    private fun UriBuilder.buildToURL() = this.build().toURL()
 }
