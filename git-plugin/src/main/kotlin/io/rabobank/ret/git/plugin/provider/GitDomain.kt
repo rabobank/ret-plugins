@@ -26,9 +26,10 @@ data class Repository(
     val defaultBranch: String?,
 ) : GitDomain
 
-data class Branch(val name: String) : GitDomain {
-    val shortName = name.substringAfter("refs/heads/")
-}
+data class Branch(
+    val name: String,
+    val shortName: String
+) : GitDomain
 
 data class Pipeline(
     val id: Int,
