@@ -40,7 +40,7 @@ class PipelineCommand(
             gitProvider.urlFactory.createPipelineUrl(resolvedPipelineId)
         } else gitProvider.urlFactory.createPipelineRunUrl(pipelineRunId)
 
-        browserUtils.openUrl(url)
+        browserUtils.openUrl(url.toString())
     }
 
     private fun getPipelineByUniqueName(pipelineId: String?) =
