@@ -54,7 +54,7 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
                 else Wrapper(
                     listOf(Item(title = "Pipeline dashboard", arg = "open-dashboard")) +
                         list.map {
-                            Item(title = it.name, subtitle = "Folder: ${it.folder}", arg = it.id.toString())
+                            Item(title = it.name, subtitle = "Folder: ${it.container}", arg = it.id.toString())
                         },
                 ),
             ),
