@@ -68,9 +68,9 @@ class AutoCompleteCommandTest {
             ),
         ).thenReturn(
             listOf(
-                Branch("refs/heads/feature/abc"),
-                Branch("refs/heads/feature/ahum"),
-                Branch("refs/heads/feature/def"),
+                Branch("refs/heads/feature/abc", "feature/abc"),
+                Branch("refs/heads/feature/ahum", "feature/ahum"),
+                Branch("refs/heads/feature/def", "feature/def"),
             ),
         )
         allMockedPullRequests = listOf(
@@ -156,7 +156,7 @@ class AutoCompleteCommandTest {
     private fun verifyBranchesOutputted(exitCode: Int, branches: List<String>) {
         assertThat(exitCode).isEqualTo(0)
         verify(outputHandler).listBranches(
-            branches.map { Branch(it) },
+            branches.map { Branch(it, it.removePrefix("refs/heads/")) },
         )
     }
 
