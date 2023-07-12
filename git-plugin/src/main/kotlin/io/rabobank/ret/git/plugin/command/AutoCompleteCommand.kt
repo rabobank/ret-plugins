@@ -34,7 +34,7 @@ class AutoCompleteCommand(
 
         outputHandler.listPipelines(
             pipelines.filter { it.matches(word) }
-                .sortedWith(compareBy({ it.folder }, { it.name })),
+                .sortedWith(compareBy({ it.container }, { it.name })),
         )
     }
 
@@ -125,7 +125,7 @@ class AutoCompleteCommand(
     private fun Pipeline.matches(value: String?): Boolean =
         value == null ||
             intelliSearch.matches(value, name) ||
-            intelliSearch.matches(value, cleanedFolder) ||
+            intelliSearch.matches(value, container) ||
             intelliSearch.matches(value, uniqueName)
 
     private fun PipelineRun.matches(word: String?): Boolean =

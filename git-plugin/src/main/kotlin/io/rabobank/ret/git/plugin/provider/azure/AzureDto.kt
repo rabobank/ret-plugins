@@ -76,9 +76,11 @@ data class Pipeline(
     @JsonProperty("name") val name: String,
     @JsonProperty("folder") val folder: String,
 ) : GitDomainConvertible<GenericPipeline> {
-    val cleanedFolder = folder.removePrefix("\\")
-    val uniqueName = "$cleanedFolder\\$name"
-    override fun toGenericDomain() = GenericPipeline(id, name, folder)
+    override fun toGenericDomain(): GenericPipeline {
+        val cleanedFolder = folder.removePrefix("\\")
+        val uniqueName = "$cleanedFolder\\$name"
+        return GenericPipeline(id, name, cleanedFolder, uniqueName)
+    }
 }
 
 data class PipelineRun(

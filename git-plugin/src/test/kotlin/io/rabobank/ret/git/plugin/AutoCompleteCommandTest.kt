@@ -291,9 +291,9 @@ class AutoCompleteCommandTest {
     fun `should autocomplete pipelines (name, folder) on word`() {
         whenever(gitProvider.getAllPipelines()).thenReturn(
             listOf(
-                Pipeline(1, "admin-service deployment", "\\blabla"),
-                Pipeline(2, "blabla", "\\admin-service"),
-                Pipeline(3, "blabla", "\\blabla"),
+                Pipeline(1, "admin-service deployment", "blabla", "blabla\\admin-service deployment"),
+                Pipeline(2, "blabla", "admin-service", "admin-service\\blabla"),
+                Pipeline(3, "blabla", "blabla", "blabla\\blabla"),
             ),
         )
 
@@ -304,10 +304,10 @@ class AutoCompleteCommandTest {
             argThat {
                 this.containsAll(
                     listOf(
-                        Pipeline(1, "admin-service deployment", "\\blabla"),
-                        Pipeline(2, "blabla", "\\admin-service"),
+                        Pipeline(1, "admin-service deployment", "blabla", "blabla\\admin-service deployment"),
+                        Pipeline(2, "blabla", "admin-service", "admin-service\\blabla"),
                     ),
-                ) && !this.contains(Pipeline(3, "blabla", "\\blabla"))
+                ) && !this.contains(Pipeline(3, "blabla", "blabla", "blabla\\blabla"))
             },
         )
     }
@@ -316,7 +316,7 @@ class AutoCompleteCommandTest {
     fun `should autocomplete pipelines on folder and unique name`() {
         whenever(gitProvider.getAllPipelines()).thenReturn(
             listOf(
-                Pipeline(1, "blabla", "\\admin-service"),
+                Pipeline(1, "blabla", "admin-service", "admin-service\\blabla"),
             ),
         )
 
@@ -325,7 +325,7 @@ class AutoCompleteCommandTest {
 
         verify(outputHandler).listPipelines(
             listOf(
-                Pipeline(1, "blabla", "\\admin-service"),
+                Pipeline(1, "blabla", "admin-service", "admin-service\\blabla"),
             ),
         )
     }
@@ -365,7 +365,7 @@ class AutoCompleteCommandTest {
 
     @Test
     fun `should autocomplete pipeline-runs using the pipeline folder and name as well as id`() {
-        val pipeline = Pipeline(123456, "pipeline_name", "\\folder")
+        val pipeline = Pipeline(123456, "pipeline_name", "folder", "folder\\pipeline_name")
         val expectedResponse = PipelineRun(
             123,
             "name",

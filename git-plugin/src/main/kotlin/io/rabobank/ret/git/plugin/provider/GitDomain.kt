@@ -34,11 +34,19 @@ data class Branch(
 data class Pipeline(
     val id: Int,
     val name: String,
-    val folder: String,
-) : GitDomain {
-    val cleanedFolder = folder.removePrefix("\\")
-    val uniqueName = "$cleanedFolder\\$name"
-}
+
+    /**
+     * The container of where this pipeline belongs to.
+     * For example the folder in Azure DevOps or the repository in GitHub.
+     */
+    val container: String,
+
+    /**
+     * A string which uniquely identifies this pipeline
+     * For example for Azure DevOps: <folder>\<pipeline name> or for GitHub: <repo>/<pipeline name>
+     */
+    val uniqueName: String
+) : GitDomain
 
 data class PipelineRun(
     val id: Int,
