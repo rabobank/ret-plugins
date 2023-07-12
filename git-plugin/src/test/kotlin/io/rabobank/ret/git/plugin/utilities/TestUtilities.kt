@@ -11,7 +11,6 @@ class TestUrlFactory(private val domain: String) : GitUrlFactory {
     override fun createPipelineDashboardUrl() = "$domain/pipeline".toURL()
     override fun createPullRequestUrl(repositoryName: String, pullRequestId: String) = "$domain/pullrequest/$repositoryName/$pullRequestId".toURL()
     override fun createPullRequestCreateUrl(repositoryName: String, sourceRef: String?) = ("$domain/pullrequest/create/$repositoryName/" + (sourceRef ?: "")).toURL()
-    override fun pullRequestUrl(repositoryName: String, pullRequestId: String) = "$domain/pullrequest/$repositoryName/$pullRequestId".toURL()
 
     private fun String.toURL(): URL = UriBuilder.fromUri(this).build().toURL()
 }
