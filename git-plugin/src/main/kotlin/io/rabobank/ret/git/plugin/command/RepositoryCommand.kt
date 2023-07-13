@@ -37,7 +37,7 @@ class RepositoryCommand(
 
         require(repositories.any { it.name == repository }) { "No repository found with name $repository." }
 
-        val url = gitProvider.urlFactory.repository(repository).toString()
+        val url = gitProvider.urlFactory.repository(repository)
         browserUtils.openUrl(url)
     }
 }

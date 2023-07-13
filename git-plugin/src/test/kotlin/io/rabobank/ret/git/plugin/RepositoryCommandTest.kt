@@ -24,6 +24,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
+import java.net.URI
 
 @QuarkusTest
 internal class RepositoryCommandTest {
@@ -71,7 +72,7 @@ internal class RepositoryCommandTest {
         val exitCode = commandLine.execute("open", repository)
         assertThat(exitCode).isEqualTo(0)
 
-        val repoUrl = "https://test.git/repository/$repository"
+        val repoUrl = URI.create("https://test.git/repository/$repository").toURL()
 
         verify(mockedBrowserUtils).openUrl(repoUrl)
     }
@@ -84,7 +85,7 @@ internal class RepositoryCommandTest {
         val exitCode = commandLine.execute("open")
         assertThat(exitCode).isEqualTo(0)
 
-        val repoUrl = "https://test.git/repository/$repository"
+        val repoUrl = URI.create("https://test.git/repository/$repository").toURL()
 
         verify(mockedBrowserUtils).openUrl(repoUrl)
     }
@@ -97,7 +98,7 @@ internal class RepositoryCommandTest {
         val exitCode = commandLine.execute("open", repository)
         assertThat(exitCode).isEqualTo(0)
 
-        val repoUrl = "https://test.git/repository/$repository"
+        val repoUrl = URI.create("https://test.git/repository/$repository").toURL()
 
         verify(mockedBrowserUtils).openUrl(repoUrl)
     }

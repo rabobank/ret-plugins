@@ -19,6 +19,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
+import java.net.URI
 
 private const val BASE_URL = "https://test.git"
 
@@ -58,7 +59,7 @@ internal class PullRequestOpenCommandTest {
 
         val exitCode = commandLine.execute("1234")
         assertThat(exitCode).isEqualTo(0)
-        val expectedURL = "$BASE_URL/pullrequest/repo/1234"
+        val expectedURL = URI.create("$BASE_URL/pullrequest/repo/1234").toURL()
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }

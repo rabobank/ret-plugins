@@ -61,7 +61,7 @@ class PullRequestCreateCommand(
         if (!noPrompt) {
             val branch = if (autofillBranchRequired(filterRepository, providedBranch, contextBranch)) sourceBranch else null
 
-            val prCreateURL = gitProvider.urlFactory.pullRequestCreate(repositoryName, branch).toString()
+            val prCreateURL = gitProvider.urlFactory.pullRequestCreate(repositoryName, branch)
             browserUtils.openUrl(prCreateURL)
         } else {
             requireNotNull(sourceBranch) { "Could not determine branch from context. Please provide the branch." }
