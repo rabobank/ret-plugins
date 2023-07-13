@@ -25,6 +25,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
+import java.net.URI
 
 private const val BASE_URL = "https://test.git"
 
@@ -64,7 +65,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
+            URI.create("$BASE_URL/pullrequest/create/$repo/feature/my-branch").toURL()
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -78,7 +79,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
+            URI.create("$BASE_URL/pullrequest/create/$repo/feature/my-branch").toURL()
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -91,7 +92,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute(flag, repo)
         assertThat(exitCode).isEqualTo(0)
 
-        val expectedURL = "$BASE_URL/pullrequest/create/$repo/"
+        val expectedURL = URI.create("$BASE_URL/pullrequest/create/$repo/").toURL()
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -108,7 +109,7 @@ internal class PullRequestCreateCommandTest {
         val exitCode = commandLine.execute(flag, repo)
         assertThat(exitCode).isEqualTo(0)
 
-        val expectedURL = "$BASE_URL/pullrequest/create/$repo/"
+        val expectedURL = URI.create("$BASE_URL/pullrequest/create/$repo/").toURL()
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
@@ -123,7 +124,7 @@ internal class PullRequestCreateCommandTest {
         assertThat(exitCode).isEqualTo(0)
 
         val expectedURL =
-            "$BASE_URL/pullrequest/create/$repo/feature/my-branch"
+            URI.create("$BASE_URL/pullrequest/create/$repo/feature/my-branch").toURL()
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }

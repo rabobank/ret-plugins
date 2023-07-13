@@ -8,12 +8,9 @@ import io.rabobank.ret.git.plugin.utilities.TestUrlFactory
 import io.rabobank.ret.util.BrowserUtils
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import picocli.CommandLine
+import java.net.URI
 import java.net.URL
 
 internal class PipelineCommandTest {
@@ -35,7 +32,7 @@ internal class PipelineCommandTest {
 
     @Test
     fun `should open browser for the pipeline dashboard`() {
-        val expectedPipelineRunURL = "https://test.git/pipeline"
+        val expectedPipelineRunURL = URI.create("https://test.git/pipeline").toURL()
 
         commandLine.execute("open")
 
@@ -45,7 +42,7 @@ internal class PipelineCommandTest {
     @Test
     fun `should open browser for correct pipeline`() {
         val pipelineId = "123"
-        val expectedPipelineRunURL = "https://test.git/pipeline/$pipelineId"
+        val expectedPipelineRunURL = URI.create("https://test.git/pipeline/$pipelineId").toURL()
 
         commandLine.execute("open", pipelineId)
 
@@ -55,7 +52,7 @@ internal class PipelineCommandTest {
     @Test
     fun `should open browser for correct pipeline by folder and name`() {
         val pipelineId = "folder\\pipeline_name"
-        val expectedPipelineRunURL = "https://test.git/pipeline/123"
+        val expectedPipelineRunURL = URI.create("https://test.git/pipeline/123").toURL()
         whenever(gitProviderMock.getAllPipelines()).thenReturn(
             listOf(
                 Pipeline(123, "pipeline_name", "folder", "folder\\pipeline_name"),
@@ -88,7 +85,7 @@ internal class PipelineCommandTest {
         val pipelineId = "not_used"
         val pipelineRunId = "123456"
         val expectedPipelineRunURL =
-            "https://test.git/pipeline/run/$pipelineRunId"
+            URI.create("https://test.git/pipeline/run/$pipelineRunId").toURL()
 
         commandLine.execute("open", pipelineId, pipelineRunId)
 
