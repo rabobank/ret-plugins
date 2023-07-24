@@ -15,6 +15,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
+import java.net.URL
 
 internal class PipelineCommandTest {
 
@@ -82,7 +83,7 @@ internal class PipelineCommandTest {
 
         commandLine.execute("open", pipelineId)
 
-        verify(browserUtilsMock, never()).openUrl(any())
+        verify(browserUtilsMock, never()).openUrl(any<URL>())
     }
 
     @Test
