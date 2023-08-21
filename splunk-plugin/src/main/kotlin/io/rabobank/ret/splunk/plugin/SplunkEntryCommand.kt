@@ -22,7 +22,7 @@ import picocli.CommandLine
 class SplunkEntryCommand(
     private val browserUtils: BrowserUtils,
     private val retContext: RetContext,
-    splunkConfig: SplunkConfig,
+    private val splunkConfig: SplunkConfig,
 ) : Runnable {
     @CommandLine.Mixin
     lateinit var contextAwareness: ContextAwareness
@@ -48,15 +48,17 @@ class SplunkEntryCommand(
     )
     var queryParts: List<String> = emptyList()
 
-    private val splunkUrl = "${splunkConfig.splunkBaseUrl}/en-GB/app/${splunkConfig.splunkApp}/search"
+    private val splunkUrl = "${splunkConfig.baseUrl}/en-US/app/${splunkConfig.app}/search"
 
     override fun run() {
         val queryArguments = mutableListOf<String>()
 
         val appName = providedAppName ?: retContext.gitRepository
+        val searchField = splunkConfig.searchField ?: "appName"
 
         providedIndex?.let { queryArguments += "index=$it" }
-        appName?.let { queryArguments += "cf_app_name=$it" }
+            ?: splunkConfig.indexes.joinToString(" OR ", "(", ")") { "index=$it" }
+        appName?.let { queryArguments += "$searchField=$it" }
         queryArguments += queryParts
 
         val query = queryArguments.joinToString(" ")
