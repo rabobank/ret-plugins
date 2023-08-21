@@ -34,7 +34,7 @@
         <detekt.version>1.23.1</detekt.version>
         <git-commit-id.version>6.0.0</git-commit-id.version>
         <jreleaser-maven-plugin.version>1.7.0</jreleaser-maven-plugin.version>
-        <ktlint-maven-plugin.version>1.16.0</ktlint-maven-plugin.version>
+        <ktlint-maven-plugin.version>2.0.0</ktlint-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-surefire-junit5-tree-reporter.version>1.2.1</maven-surefire-junit5-tree-reporter.version>
