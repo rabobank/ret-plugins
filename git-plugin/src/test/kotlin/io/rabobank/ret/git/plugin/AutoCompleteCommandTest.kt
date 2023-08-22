@@ -3,7 +3,10 @@ package io.rabobank.ret.git.plugin
 import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
+import io.rabobank.ret.git.plugin.command.AutoCompleteCommand
+import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.Branch
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.Pipeline
 import io.rabobank.ret.git.plugin.provider.PipelineRun
 import io.rabobank.ret.git.plugin.provider.PipelineRunResult
@@ -11,9 +14,6 @@ import io.rabobank.ret.git.plugin.provider.PipelineRunState
 import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 import io.rabobank.ret.git.plugin.provider.Reviewer
-import io.rabobank.ret.git.plugin.command.AutoCompleteCommand
-import io.rabobank.ret.git.plugin.output.OutputHandler
-import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -99,9 +99,7 @@ class AutoCompleteCommandTest {
         val exitCode = commandLine.execute("git-repository")
         assertThat(exitCode).isEqualTo(0)
 
-        verify(outputHandler).listRepositories(
-            allMockedRepositories,
-        )
+        verify(outputHandler).listRepositories(allMockedRepositories)
     }
 
     @ParameterizedTest

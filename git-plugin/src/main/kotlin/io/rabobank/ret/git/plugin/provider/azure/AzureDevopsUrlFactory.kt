@@ -49,9 +49,9 @@ class AzureDevopsUrlFactory(
             .path("_git")
             .path(repositoryName)
             .path("pullrequestcreate")
-            .also {
+            .apply {
                 if (sourceRef != null) {
-                    it.queryParam("sourceRef", sourceRef)
+                    queryParam("sourceRef", sourceRef)
                 }
             }
             .buildToURL()
