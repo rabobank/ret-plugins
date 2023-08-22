@@ -2,32 +2,37 @@ package io.rabobank.ret.splunk.plugin
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.rabobank.ret.RetContext
-import io.rabobank.ret.commands.PluginInitializeCommand
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.splunk.plugin.splunk.SplunkConfig
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
+import org.apache.commons.io.FileUtils
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.mockito.Mockito.mock
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import picocli.CommandLine
+import picocli.CommandLine.Command
 import picocli.CommandLine.IFactory
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.pathString
 
 class SplunkEntryCommandTest {
-
     private val mockedBrowserUtils = mock<BrowserUtils>()
+    private val retFolder by lazy { Files.createDirectory(mockUserHomeDirectory.resolve(".ret")) }
+    private val pluginsPath by lazy { Files.createDirectory(retFolder.resolve("plugins")) }
+    private val pluginConfigFileName = "splunk.json"
     private val mockedOsUtils by lazy {
         mock<OsUtils> {
-            whenever(it.getHomeDirectory()).thenReturn(mockUserHomeDirectory.pathString)
+            whenever(it.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
+            whenever(it.getPluginConfig("splunk")).thenReturn(pluginsPath.resolve(pluginConfigFileName))
         }
     }
     private val mockedRetContext = mock<RetContext>()
@@ -38,27 +43,31 @@ class SplunkEntryCommandTest {
 
     @BeforeEach
     fun before() {
-        val retFolder = Files.createDirectory(mockUserHomeDirectory.resolve(".ret"))
-        val pluginsPath = Files.createDirectory(retFolder.resolve("plugins"))
-        val pluginConfigFileName = "splunk-plugin.json"
-        Files.createFile(pluginsPath.resolve(pluginConfigFileName))
-
-        val objectMapper = jacksonObjectMapper()
         val splunkConfig = mapOf(
             "base_url" to "splunk.base.url",
             "app" to "appName",
         )
-        objectMapper.writeValue(pluginsPath.resolve(pluginConfigFileName).toFile(), splunkConfig)
+        val objectMapper = jacksonObjectMapper()
+        objectMapper.writeValue(mockedOsUtils.getPluginConfig("splunk").toFile(), splunkConfig)
 
         val splunkCommand = SplunkEntryCommand(
             mockedBrowserUtils,
             mockedRetContext,
-            SplunkConfig(mockedOsUtils, objectMapper),
+            SplunkConfig().apply {
+                pluginName = "splunk"
+                this.objectMapper = objectMapper
+                osUtils = mockedOsUtils
+            },
         )
 
         splunkCommand.contextAwareness = ContextAwareness()
 
         commandLine = CommandLine(splunkCommand, CustomInitializationFactory())
+    }
+
+    @AfterEach
+    fun tearDown() {
+        FileUtils.deleteQuietly(mockUserHomeDirectory.toFile())
     }
 
     @ParameterizedTest
@@ -157,11 +166,9 @@ class SplunkEntryCommandTest {
 }
 
 class CustomInitializationFactory : IFactory {
-    private val pluginInitializeCommand = mock<PluginInitializeCommand>()
-
-    override fun <K : Any?> create(cls: Class<K>?): K =
-        if (cls?.isInstance(pluginInitializeCommand) == true) {
-            cls.cast(pluginInitializeCommand)
+    override fun <K : Any> create(cls: Class<K>): K =
+        if (cls.isAnnotationPresent(Command::class.java)) {
+            mock(cls)
         } else {
             CommandLine.defaultFactory().create(cls)
         }
