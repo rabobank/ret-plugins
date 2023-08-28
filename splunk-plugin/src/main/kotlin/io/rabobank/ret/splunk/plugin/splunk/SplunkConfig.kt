@@ -1,15 +1,22 @@
 package io.rabobank.ret.splunk.plugin.splunk
 
-import io.rabobank.ret.configuration.ConfigurablePlugin
+import io.rabobank.ret.configuration.BasePluginConfig
 import io.rabobank.ret.configuration.ConfigurationProperty
 import jakarta.enterprise.context.ApplicationScoped
+import org.apache.commons.lang3.StringUtils.split
 
 @ApplicationScoped
-class SplunkConfig : ConfigurablePlugin() {
+class SplunkConfig : BasePluginConfig() {
     val baseUrl by lazy { config[BASE_URL] }
     val app by lazy { config[APP] }
     val indexes by lazy { config[INDEXES]?.run { split(",").map { it.trim() } }.orEmpty() }
     val searchField by lazy { config[SEARCH_FIELD] }
+
+    override fun keysToMigrate(): List<Pair<String, String>> =
+        listOf(
+            SPLUNK_BASE_URL to BASE_URL,
+            SPLUNK_APP to APP,
+        )
 
     override fun properties() = listOf(
         ConfigurationProperty(BASE_URL, "Enter the Splunk base URL", required = true),
@@ -24,6 +31,8 @@ class SplunkConfig : ConfigurablePlugin() {
     )
 
     private companion object {
+        private const val SPLUNK_BASE_URL = "splunk_base_url"
+        private const val SPLUNK_APP = "splunk_app"
         private const val BASE_URL = "base_url"
         private const val APP = "app"
         private const val INDEXES = "indexes"
