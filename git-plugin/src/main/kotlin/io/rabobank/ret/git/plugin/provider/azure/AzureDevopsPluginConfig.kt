@@ -1,18 +1,18 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
-import io.rabobank.ret.configuration.ConfigurablePlugin
+import io.rabobank.ret.configuration.BasePluginConfig
 import io.rabobank.ret.configuration.ConfigurationProperty
 import jakarta.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
-class AzureDevopsPluginConfig : ConfigurablePlugin() {
-    val email by lazy { config[EMAIL].orEmpty() }
-    val pat by lazy { config[PAT].orEmpty() }
-    val projectId by lazy { config[PROJECT].orEmpty() }
-    val organization by lazy { config[ORGANIZATION].orEmpty() }
+class AzureDevopsPluginConfig : BasePluginConfig() {
+    val email: String? by lazy { config[EMAIL] }
+    val pat: String? by lazy { config[PAT] }
+    val projectId: String? by lazy { config[PROJECT] }
+    val organization: String? by lazy { config[ORGANIZATION] }
 
     override fun properties() = listOf(
-        ConfigurationProperty(EMAIL, "Enter your email address", required = true),
+        ConfigurationProperty(EMAIL, "Enter your Azure email address", required = true),
         ConfigurationProperty(PAT, "Enter your Azure Personal Access Token (PAT)", required = true),
         ConfigurationProperty(PROJECT, "Enter your Azure project", required = true),
         ConfigurationProperty(ORGANIZATION, "Enter your Azure organization", required = true),

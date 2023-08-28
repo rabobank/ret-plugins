@@ -7,10 +7,10 @@ import org.apache.commons.lang3.StringUtils.split
 
 @ApplicationScoped
 class SplunkConfig : BasePluginConfig() {
-    val baseUrl by lazy { config[BASE_URL] }
-    val app by lazy { config[APP] }
-    val indexes by lazy { config[INDEXES]?.run { split(",").map { it.trim() } }.orEmpty() }
-    val searchField by lazy { config[SEARCH_FIELD] }
+    val baseUrl: String? by lazy { config[BASE_URL] }
+    val app: String? by lazy { config[APP] }
+    val indexes: List<String> by lazy { config.get<List<String>?>(INDEXES)?.run { split(",").map { it.trim() } }.orEmpty() }
+    val searchField: String? by lazy { config[SEARCH_FIELD] }
 
     override fun keysToMigrate(): List<Pair<String, String>> =
         listOf(

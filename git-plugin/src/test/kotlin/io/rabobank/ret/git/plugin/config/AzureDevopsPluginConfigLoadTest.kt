@@ -29,24 +29,21 @@ class AzureDevopsPluginConfigLoadTest {
     fun setUp() {
         Files.createFile(pluginsPath.resolve(pluginConfigFileName))
 
-        val objectMapper = jacksonObjectMapper()
         val config = mapOf(
             "azure_devops_email" to "manks@live.com",
             "azure_devops_pat" to "this_is_a_pat",
             "azure_devops_project" to "this_is_the_project",
             "azure_devops_organization" to "my-organization",
         )
-        objectMapper.writeValue(pluginsPath.resolve(pluginConfigFileName).toFile(), config)
+        pluginConfig.objectMapper.writeValue(pluginsPath.resolve(pluginConfigFileName).toFile(), config)
     }
 
     @Test
     fun shouldLoadConfiguration() {
-        val osUtils = mock<OsUtils> {
+        pluginConfig.osUtils = mock<OsUtils> {
             whenever(it.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
-            whenever(it.getPluginConfig("git")).thenReturn(pluginsPath.resolve(pluginConfigFileName))
+            whenever(it.getPluginConfig(pluginConfig.pluginName)).thenReturn(pluginsPath.resolve(pluginConfigFileName))
         }
-
-        pluginConfig.osUtils = osUtils
 
         assertThat(pluginConfig.email).isEqualTo("manks@live.com")
         assertThat(pluginConfig.pat).isEqualTo("this_is_a_pat")
@@ -56,15 +53,13 @@ class AzureDevopsPluginConfigLoadTest {
 
     @Test
     fun shouldLoadCorrectlyWithEmptyConfiguration() {
-        val osUtils = mock<OsUtils> {
+        pluginConfig.osUtils = mock<OsUtils> {
             whenever(it.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
         }
 
-        pluginConfig.osUtils = osUtils
-
-        assertThat(pluginConfig.email).isEmpty()
-        assertThat(pluginConfig.pat).isEmpty()
-        assertThat(pluginConfig.projectId).isEmpty()
-        assertThat(pluginConfig.organization).isEmpty()
+        assertThat(pluginConfig.email).isNull()
+        assertThat(pluginConfig.pat).isNull()
+        assertThat(pluginConfig.projectId).isNull()
+        assertThat(pluginConfig.organization).isNull()
     }
 }
