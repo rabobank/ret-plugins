@@ -1,32 +1,24 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
-import io.rabobank.ret.git.plugin.provider.*
-import io.rabobank.ret.git.plugin.provider.Branch
-import io.rabobank.ret.git.plugin.provider.Pipeline
-import io.rabobank.ret.git.plugin.provider.PipelineRun
-import io.rabobank.ret.git.plugin.provider.PullRequest
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
-import io.rabobank.ret.git.plugin.provider.Repository
 
 class AzureDevopsProvider(
     private val azureDevopsClient: AzureDevopsClient,
     private val pluginConfig: AzureDevopsPluginConfig,
-    override val urlFactory: AzureDevopsUrlFactory
+    override val urlFactory: AzureDevopsUrlFactory,
 ) : GitProvider {
 
-    override fun getAllPullRequests(): List<PullRequest> {
-        return azureDevopsClient.getAllPullRequests().value.toGenericDomain()
-    }
+    override fun getAllPullRequests() =
+        azureDevopsClient.getAllPullRequests().value.toGenericDomain()
 
-    override fun getPullRequestsNotReviewedByUser(): List<PullRequest> {
-        return getAllPullRequests().filterNot {
+    override fun getPullRequestsNotReviewedByUser() =
+        getAllPullRequests().filterNot {
             it.reviewers.any { reviewer -> reviewer.uniqueName.equals(pluginConfig.email, true) }
         }
-    }
 
-    override fun getPullRequestById(id: String): PullRequest {
-        return azureDevopsClient.getPullRequestById(id).toGenericDomain()
-    }
+    override fun getPullRequestById(id: String) =
+        azureDevopsClient.getPullRequestById(id).toGenericDomain()
 
     override fun createPullRequest(
         repository: String,
@@ -39,24 +31,17 @@ class AzureDevopsProvider(
         return azureDevopsClient.createPullRequest(repository, "6.0", creationDTO).toGenericDomain()
     }
 
-    override fun getAllRepositories(): List<Repository> {
-        return azureDevopsClient.getAllRepositories().value.toGenericDomain()
-    }
+    override fun getAllRepositories() =
+        azureDevopsClient.getAllRepositories().value.toGenericDomain()
 
-    override fun getRepositoryById(repository: String): Repository {
-        return azureDevopsClient.getRepositoryById(repository).toGenericDomain()
-    }
+    override fun getRepositoryById(repository: String) =
+        azureDevopsClient.getRepositoryById(repository).toGenericDomain()
 
-    override fun getAllRefs(repository: String, filter: String): List<Branch> {
-        return azureDevopsClient.getAllRefs(repository, filter).value.toGenericDomain()
-    }
+    override fun getAllRefs(repository: String, filter: String) =
+        azureDevopsClient.getAllRefs(repository, filter).value.toGenericDomain()
 
-    override fun getAllPipelines(): List<Pipeline> {
-        return azureDevopsClient.getAllPipelines().value.toGenericDomain()
-    }
+    override fun getAllPipelines() = azureDevopsClient.getAllPipelines().value.toGenericDomain()
 
-    override fun getPipelineRuns(pipelineId: String): List<PipelineRun> {
-        return azureDevopsClient.getPipelineRuns(pipelineId).value.toGenericDomain()
-    }
-
+    override fun getPipelineRuns(pipelineId: String) =
+        azureDevopsClient.getPipelineRuns(pipelineId).value.toGenericDomain()
 }
