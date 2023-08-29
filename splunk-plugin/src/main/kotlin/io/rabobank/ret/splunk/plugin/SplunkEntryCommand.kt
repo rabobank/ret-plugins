@@ -23,6 +23,7 @@ import picocli.CommandLine.Parameters
     subcommands = [
         PluginInitializeCommand::class,
         PluginConfigureCommand::class,
+        AutoCompleteCommand::class,
     ],
 )
 @RegisterForReflection(targets = [RetContext::class])
@@ -39,6 +40,7 @@ class SplunkEntryCommand(
         names = ["--index", "-i"],
         description = ["Provide the index to query on"],
         paramLabel = "index",
+        completionCandidates = IndexCompletionCandidates::class,
     )
     var providedIndex: String? = null
 
@@ -83,4 +85,8 @@ class SplunkEntryCommand(
         Log.info("Querying splunk with url '$url'")
         browserUtils.openUrl(url)
     }
+}
+
+internal class IndexCompletionCandidates : Iterable<String> {
+    override fun iterator(): Iterator<String> = listOf("function:_autocomplete_splunk_index").iterator()
 }

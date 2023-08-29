@@ -8,4 +8,6 @@ interface OutputHandler {
     fun error(message: String) {
         // No-op
     }
+
+    fun listIndexes(indexes: List<String>)
 }
