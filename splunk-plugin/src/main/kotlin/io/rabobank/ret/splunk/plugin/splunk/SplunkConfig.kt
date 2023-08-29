@@ -3,13 +3,12 @@ package io.rabobank.ret.splunk.plugin.splunk
 import io.rabobank.ret.configuration.BasePluginConfig
 import io.rabobank.ret.configuration.ConfigurationProperty
 import jakarta.enterprise.context.ApplicationScoped
-import org.apache.commons.lang3.StringUtils.split
 
 @ApplicationScoped
 class SplunkConfig : BasePluginConfig() {
     val baseUrl: String? by lazy { config[BASE_URL] }
     val app: String? by lazy { config[APP] }
-    val indexes: List<String> by lazy { config.get<List<String>?>(INDEXES)?.run { split(",").map { it.trim() } }.orEmpty() }
+    val indexes: List<String> by lazy { config.get<String?>(INDEXES)?.run { split(",").map { it.trim() } }.orEmpty() }
     val searchField: String? by lazy { config[SEARCH_FIELD] }
 
     override fun keysToMigrate(): List<Pair<String, String>> =
@@ -21,7 +20,11 @@ class SplunkConfig : BasePluginConfig() {
     override fun properties() = listOf(
         ConfigurationProperty(BASE_URL, "Enter the Splunk base URL", required = true),
         ConfigurationProperty(APP, "Enter your Splunk app name", required = true),
-        ConfigurationProperty(INDEXES, "Enter your Splunk index, if more than one, separate by comma. E.g. my_index_a, my_index_b", required = true),
+        ConfigurationProperty(
+            INDEXES,
+            "Enter your Splunk index, if more than one, separate by comma. E.g. my_index_a, my_index_b",
+            required = true,
+        ),
         //Optional answers from here on onwards:
         ConfigurationProperty(
             SEARCH_FIELD,

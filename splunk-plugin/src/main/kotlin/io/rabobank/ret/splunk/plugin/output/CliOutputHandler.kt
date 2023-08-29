@@ -11,4 +11,8 @@ class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
     override fun error(message: String) {
         retConsole.errorOut(message)
     }
+
+    override fun listIndexes(indexes: List<String>) {
+        throw UnsupportedOperationException()
+    }
 }

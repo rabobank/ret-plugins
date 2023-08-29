@@ -12,4 +12,8 @@ class AlfredOutputHandler(private val retConsole: RetConsole, private val object
     override fun println(message: String) {
         retConsole.out(objectMapper.writeValueAsString(Wrapper(listOf(Item(message)))))
     }
+
+    override fun listIndexes(indexes: List<String>) {
+        throw UnsupportedOperationException()
+    }
 }
