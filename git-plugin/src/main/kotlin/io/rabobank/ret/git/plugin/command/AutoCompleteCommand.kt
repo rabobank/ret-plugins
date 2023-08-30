@@ -8,6 +8,7 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
+import io.rabobank.ret.util.Logged
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
 import picocli.CommandLine.Command
 import picocli.CommandLine.Mixin
@@ -15,6 +16,7 @@ import picocli.CommandLine.Option
 import picocli.CommandLine.ScopeType
 
 @Command(name = "autocomplete", hidden = true)
+@Logged
 class AutoCompleteCommand(
     private val gitProvider: GitProvider,
     private val intelliSearch: IntelliSearch,

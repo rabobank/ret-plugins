@@ -4,6 +4,7 @@ import io.rabobank.ret.RetContext
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
+import io.rabobank.ret.util.Logged
 import picocli.CommandLine.Command
 import picocli.CommandLine.Mixin
 import picocli.CommandLine.Parameters
@@ -12,6 +13,7 @@ import picocli.CommandLine.Parameters
     name = "repository",
     description = ["List all repositories"],
 )
+@Logged
 class RepositoryCommand(
     private val gitProvider: GitProvider,
     private val browserUtils: BrowserUtils,

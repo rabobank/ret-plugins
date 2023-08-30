@@ -2,6 +2,7 @@ package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.util.BrowserUtils
+import io.rabobank.ret.util.Logged
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
@@ -10,6 +11,7 @@ import picocli.CommandLine.Parameters
     name = "pipeline",
     description = ["Open a recent pipeline run"],
 )
+@Logged
 class PipelineCommand(
     private val browserUtils: BrowserUtils,
     private val gitProvider: GitProvider,
