@@ -3,6 +3,8 @@ package io.rabobank.ret.git.plugin.provider.azure
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated
 
+const val API_VERSION = "6.0"
+
 class AzureDevopsProvider(
     private val azureDevopsClient: AzureDevopsClient,
     private val pluginConfig: AzureDevopsPluginConfig,
@@ -14,7 +16,7 @@ class AzureDevopsProvider(
 
     override fun getPullRequestsNotReviewedByUser() =
         getAllPullRequests().filterNot {
-            it.reviewers.any { reviewer -> reviewer.uniqueName.equals(pluginConfig.email, true) }
+            it.reviewers.any { reviewer -> reviewer.uniqueName.equals(pluginConfig.config.email, true) }
         }
 
     override fun getPullRequestById(id: String) =
@@ -28,7 +30,7 @@ class AzureDevopsProvider(
         description: String,
     ): PullRequestCreated {
         val creationDTO = CreatePullRequest(sourceRefName, targetRefName, title, description)
-        return azureDevopsClient.createPullRequest(repository, "6.0", creationDTO).toGenericDomain()
+        return azureDevopsClient.createPullRequest(repository, API_VERSION, creationDTO).toGenericDomain()
     }
 
     override fun getAllRepositories() =

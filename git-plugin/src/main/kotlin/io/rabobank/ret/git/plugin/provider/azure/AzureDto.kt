@@ -2,18 +2,18 @@ package io.rabobank.ret.git.plugin.provider.azure
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.quarkus.runtime.annotations.RegisterForReflection
-import io.rabobank.ret.git.plugin.provider.Branch as GenericBranch
 import io.rabobank.ret.git.plugin.provider.GitDomain
 import io.rabobank.ret.git.plugin.provider.GitDomainConvertible
+import java.time.ZonedDateTime
+import io.rabobank.ret.git.plugin.provider.Branch as GenericBranch
 import io.rabobank.ret.git.plugin.provider.Pipeline as GenericPipeline
 import io.rabobank.ret.git.plugin.provider.PipelineRun as GenericPipelineRun
-import io.rabobank.ret.git.plugin.provider.PipelineRunState as GenericPipelineRunState
 import io.rabobank.ret.git.plugin.provider.PipelineRunResult as GenericPipelineRunResult
+import io.rabobank.ret.git.plugin.provider.PipelineRunState as GenericPipelineRunState
 import io.rabobank.ret.git.plugin.provider.PullRequest as GenericPullRequest
 import io.rabobank.ret.git.plugin.provider.PullRequestCreated as GenericPullRequestCreated
-import io.rabobank.ret.git.plugin.provider.Reviewer as GenericReviewer
 import io.rabobank.ret.git.plugin.provider.Repository as GenericRepository
-import java.time.ZonedDateTime
+import io.rabobank.ret.git.plugin.provider.Reviewer as GenericReviewer
 
 data class AzureResponse<T>(
     @JsonProperty("count") val count: Int,

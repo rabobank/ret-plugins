@@ -5,6 +5,7 @@ import io.rabobank.ret.git.plugin.output.OutputHandler
 import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.BrowserUtils
+import io.rabobank.ret.util.Logged
 import org.jboss.resteasy.reactive.ClientWebApplicationException
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.CONFLICT
 import picocli.CommandLine.Command
@@ -17,6 +18,7 @@ import picocli.CommandLine.ScopeType
     name = "create",
     description = ["Create a pull request"],
 )
+@Logged
 class PullRequestCreateCommand(
     private val gitProvider: GitProvider,
     private val browserUtils: BrowserUtils,

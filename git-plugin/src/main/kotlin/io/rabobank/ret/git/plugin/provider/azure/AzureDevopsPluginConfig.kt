@@ -1,15 +1,13 @@
 package io.rabobank.ret.git.plugin.provider.azure
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.rabobank.ret.configuration.BasePluginConfig
 import io.rabobank.ret.configuration.ConfigurationProperty
 import jakarta.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
 class AzureDevopsPluginConfig : BasePluginConfig() {
-    val email: String? by lazy { config[EMAIL] }
-    val pat: String? by lazy { config[PAT] }
-    val projectId: String? by lazy { config[PROJECT] }
-    val organization: String? by lazy { config[ORGANIZATION] }
+    val config by lazy { convertTo<AzureDevopsConfig>() }
 
     override fun properties() = listOf(
         ConfigurationProperty(EMAIL, "Enter your Azure email address", required = true),
@@ -36,3 +34,14 @@ class AzureDevopsPluginConfig : BasePluginConfig() {
         private const val ORGANIZATION = "azure_devops_organization"
     }
 }
+
+data class AzureDevopsConfig(
+    @JsonProperty("azure_devops_email")
+    val email: String?,
+    @JsonProperty("azure_devops_pat")
+    val pat: String?,
+    @JsonProperty("azure_devops_project")
+    val project: String?,
+    @JsonProperty("azure_devops_organization")
+    val organization: String?,
+)

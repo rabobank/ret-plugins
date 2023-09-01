@@ -7,7 +7,7 @@ import io.rabobank.ret.RetContext
 import io.rabobank.ret.commands.PluginConfigureCommand
 import io.rabobank.ret.commands.PluginInitializeCommand
 import io.rabobank.ret.picocli.mixin.ContextAwareness
-import io.rabobank.ret.splunk.plugin.splunk.SplunkConfig
+import io.rabobank.ret.splunk.plugin.splunk.SplunkPluginConfig
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.Logged
 import jakarta.ws.rs.core.UriBuilder
@@ -28,10 +28,10 @@ import picocli.CommandLine.Parameters
 )
 @RegisterForReflection(targets = [RetContext::class])
 @Logged
-class SplunkEntryCommand(
+class SplunkCommand(
     private val browserUtils: BrowserUtils,
     private val retContext: RetContext,
-    private val splunkConfig: SplunkConfig,
+    private val splunkConfig: SplunkPluginConfig,
 ) : Runnable {
     @Mixin
     lateinit var contextAwareness: ContextAwareness
@@ -45,11 +45,12 @@ class SplunkEntryCommand(
     var providedIndex: String? = null
 
     @Option(
-        names = ["--app", "-a"],
-        description = ["Provide the app name to query on"],
-        paramLabel = "appName",
+        names = ["--project", "-p"],
+        description = ["Provide the project name to query on"],
+        paramLabel = "projectName",
+        completionCandidates = ProjectCompletionCandidates::class,
     )
-    var providedAppName: String? = null
+    var providedProjectName: String? = null
 
     @Parameters(
         paramLabel = "query",
@@ -58,20 +59,19 @@ class SplunkEntryCommand(
     )
     var queryParts: List<String> = emptyList()
 
-    private val splunkUrl = "${splunkConfig.baseUrl}/en-US/app/${splunkConfig.app}/search"
+    private val splunkUrl = "${splunkConfig.config.baseUrl}/en-US/app/${splunkConfig.config.app}/search"
 
     override fun run() {
-        val queryArguments = mutableListOf<String>()
+        val queryArguments = mutableListOf<String?>()
 
-        val appName = providedAppName ?: retContext.gitRepository?.removeSuffix(".git")
-        val searchField = splunkConfig.searchField ?: "appName"
+        val projectName = providedProjectName ?: retContext.gitRepository?.removeSuffix(".git")
+        val searchField = splunkConfig.config.searchField ?: "project"
 
-        queryArguments += providedIndex?.let { "index=$it" }
-            ?: splunkConfig.indexes.joinToString(" OR ", "(", ")") { "index=$it" }
-        appName?.let { queryArguments += "$searchField=$it" }
+        queryArguments += providedIndex?.let { "index=$it" } ?: splunkConfig.config.indexes.joinToStringOrSingle()
+        projectName?.let { queryArguments += "$searchField=$it" }
         queryArguments += queryParts
 
-        val query = queryArguments.joinToString(" ")
+        val query = queryArguments.filterNotNull().joinToString(" ")
 
         val url = UriBuilder.fromUri(splunkUrl)
             .apply {
@@ -85,8 +85,16 @@ class SplunkEntryCommand(
         Log.info("Querying splunk with url '$url'")
         browserUtils.openUrl(url)
     }
+
+    private fun List<String>.joinToStringOrSingle() =
+        takeIf { it.size > 1 }?.joinToString(separator = " OR ", prefix = "(", postfix = ")") { "index=$it" }
+            ?: firstOrNull()
 }
 
 internal class IndexCompletionCandidates : Iterable<String> {
     override fun iterator(): Iterator<String> = listOf("function:_autocomplete_splunk_index").iterator()
+}
+
+internal class ProjectCompletionCandidates : Iterable<String> {
+    override fun iterator(): Iterator<String> = listOf("function:_autocomplete_splunk_project").iterator()
 }

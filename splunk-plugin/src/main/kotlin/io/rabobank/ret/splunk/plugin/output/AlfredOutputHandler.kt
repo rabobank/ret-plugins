@@ -16,4 +16,8 @@ class AlfredOutputHandler(private val retConsole: RetConsole, private val object
     override fun listIndexes(indexes: List<String>) {
         throw UnsupportedOperationException()
     }
+
+    override fun listProjects(projects: List<String>) {
+        throw UnsupportedOperationException()
+    }
 }
