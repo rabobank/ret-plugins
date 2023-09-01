@@ -36,7 +36,10 @@ class AzureDevopsPluginConfigLoadTest {
             "azure_devops_project" to "this_is_the_project",
             "azure_devops_organization" to "my-organization",
         )
-        pluginConfig.objectMapper.writeValue(pluginConfig.osUtils.getRetPluginsDirectory().resolve(pluginConfigFileName).toFile(), config)
+        pluginConfig.objectMapper.writeValue(
+            pluginConfig.osUtils.getRetPluginsDirectory().resolve(pluginConfigFileName).toFile(),
+            config,
+        )
     }
 
     @AfterEach
@@ -46,12 +49,6 @@ class AzureDevopsPluginConfigLoadTest {
 
     @Test
     fun shouldLoadConfiguration() {
-//        pluginConfig.osUtils = spy(OsUtils())
-//        {
-//            whenever(it.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
-//            whenever(it.getPluginConfig(pluginConfig.pluginName)).thenReturn(pluginsPath.resolve(pluginConfigFileName))
-//        }
-
         assertThat(pluginConfig.config.email).isEqualTo("manks@live.com")
         assertThat(pluginConfig.config.pat).isEqualTo("this_is_a_pat")
         assertThat(pluginConfig.config.project).isEqualTo("this_is_the_project")
@@ -61,10 +58,6 @@ class AzureDevopsPluginConfigLoadTest {
     @Test
     fun shouldLoadCorrectlyWithEmptyConfiguration() {
         whenever(pluginConfig.osUtils.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
-//        pluginConfig.osUtils = mock<OsUtils> {
-//            whenever(it.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
-//            whenever(it.getPluginConfig(pluginConfig.pluginName)).thenReturn(pluginsPath.resolve(pluginConfigFileName))
-//        }
 
         assertThat(pluginConfig.config.email).isNull()
         assertThat(pluginConfig.config.pat).isNull()

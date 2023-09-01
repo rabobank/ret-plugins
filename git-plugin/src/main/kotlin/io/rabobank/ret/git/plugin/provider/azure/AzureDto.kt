@@ -35,7 +35,7 @@ data class PullRequest(
         id,
         title,
         repository.toGenericDomain(),
-        reviewers.toGenericDomain()
+        reviewers.toGenericDomain(),
     )
 }
 
@@ -90,7 +90,13 @@ data class PipelineRun(
     @JsonProperty("state") val state: PipelineRunState,
     @JsonProperty("result") val result: PipelineRunResult?,
 ) : GitDomainConvertible<GenericPipelineRun> {
-    override fun toGenericDomain() = GenericPipelineRun(id, name, createdDate, state.toGenericDomain(), result?.toGenericDomain())
+    override fun toGenericDomain() = GenericPipelineRun(
+        id,
+        name,
+        createdDate,
+        state.toGenericDomain(),
+        result?.toGenericDomain(),
+    )
 }
 
 enum class PipelineRunState(private val genericEquivalent: GenericPipelineRunState) :
@@ -105,12 +111,14 @@ enum class PipelineRunState(private val genericEquivalent: GenericPipelineRunSta
     IN_PROGRESS(GenericPipelineRunState.IN_PROGRESS),
 
     @JsonProperty("unknown")
-    UNKNOWN(GenericPipelineRunState.UNKNOWN);
+    UNKNOWN(GenericPipelineRunState.UNKNOWN),
+    ;
 
     override fun toGenericDomain() = genericEquivalent
 }
 
-enum class PipelineRunResult(private val genericEquivalent: GenericPipelineRunResult) : GitDomainConvertible<GenericPipelineRunResult> {
+enum class PipelineRunResult(private val genericEquivalent: GenericPipelineRunResult) :
+    GitDomainConvertible<GenericPipelineRunResult> {
     @JsonProperty("canceled")
     CANCELED(GenericPipelineRunResult.CANCELED),
 
@@ -121,7 +129,8 @@ enum class PipelineRunResult(private val genericEquivalent: GenericPipelineRunRe
     SUCCEEDED(GenericPipelineRunResult.SUCCEEDED),
 
     @JsonProperty("unknown")
-    UNKNOWN(GenericPipelineRunResult.UNKNOWN);
+    UNKNOWN(GenericPipelineRunResult.UNKNOWN),
+    ;
 
     override fun toGenericDomain() = genericEquivalent
 }

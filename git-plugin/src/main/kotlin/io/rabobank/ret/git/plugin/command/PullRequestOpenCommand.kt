@@ -29,7 +29,8 @@ class PullRequestOpenCommand(
     @Mixin
     lateinit var contextAwareness: ContextAwareness
 
-    // This is just needed for autocompletion. It allows to autocomplete PRs based on repository (ret pr open -r=rt <TAB>)
+    // This is just needed for autocompletion.
+    // It allows to autocomplete PRs based on repository (ret pr open -r=rt <TAB>)
     @Option(
         names = ["--repository", "-r"],
         description = ["Filter on repository"],
@@ -52,8 +53,11 @@ class PullRequestOpenCommand(
 
             browserUtils.openUrl(prURL)
         } catch (e: ClientWebApplicationException) {
-            if (e.response.status == NOT_FOUND) outputHandler.error("Pull request with id '$pullRequestId' could not be found")
-            else outputHandler.error("Something failed when fetching pull request with id: $pullRequestId")
+            if (e.response.status == NOT_FOUND) {
+                outputHandler.error("Pull request with id '$pullRequestId' could not be found")
+            } else {
+                outputHandler.error("Something failed when fetching pull request with id: $pullRequestId")
+            }
 
             Log.error("Unable to open pr with id $pullRequestId", e)
             // Only for causing an exitcode "1", exitProcess does not have the same effect
@@ -63,5 +67,5 @@ class PullRequestOpenCommand(
 }
 
 internal class PullRequestCompletionCandidates : Iterable<String> {
-    override fun iterator(): Iterator<String> = listOf("function:_autocomplete_pullrequest").iterator()
+    override fun iterator() = listOf("function:_autocomplete_pullrequest").iterator()
 }

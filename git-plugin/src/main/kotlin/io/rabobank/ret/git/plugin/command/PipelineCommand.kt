@@ -32,15 +32,18 @@ class PipelineCommand(
             completionCandidates = PipelineRunCompletionCandidates::class,
         ) pipelineRunId: String?,
     ) {
-        val url = if (pipelineId == null) gitProvider.urlFactory.pipelineDashboard()
-        else if (pipelineRunId == null) {
+        val url = if (pipelineId == null) {
+            gitProvider.urlFactory.pipelineDashboard()
+        } else if (pipelineRunId == null) {
             val resolvedPipelineId = if (pipelineId.matches(DIGITS_PATTERN)) {
                 pipelineId
             } else {
                 getPipelineByUniqueName(pipelineId).id.toString()
             }
             gitProvider.urlFactory.pipeline(resolvedPipelineId)
-        } else gitProvider.urlFactory.pipelineRun(pipelineRunId)
+        } else {
+            gitProvider.urlFactory.pipelineRun(pipelineRunId)
+        }
 
         browserUtils.openUrl(url)
     }

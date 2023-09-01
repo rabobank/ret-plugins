@@ -13,8 +13,8 @@ class SplunkPluginConfig : BasePluginConfig() {
 
     override fun keysToMigrate(): List<Pair<String, String>> =
         listOf(
-            SPLUNK_BASE_URL to BASE_URL,
-            SPLUNK_APP to APP,
+            "splunk_base_url" to BASE_URL,
+            "splunk_app" to APP,
         )
 
     override fun properties() = listOf(
@@ -29,13 +29,12 @@ class SplunkPluginConfig : BasePluginConfig() {
         ConfigurationProperty(
             SEARCH_FIELD,
             "Optional: Enter the field of the unique identifier. E.g. system_name, application_name or cf_app_name.\n" +
-                "This is handy in case you have one big index where all different sorts of applications/systems log to. E.g. my_awesome_microservice or my_linux_server_1",
+                "This is handy in case you have one big index where all different sorts of " +
+                "applications/systems log to. E.g. my_awesome_microservice or my_linux_server_1",
         ),
     )
 
     private companion object {
-        private const val SPLUNK_BASE_URL = "splunk_base_url"
-        private const val SPLUNK_APP = "splunk_app"
         private const val BASE_URL = "base_url"
         private const val APP = "app"
         private const val INDEXES = "indexes"

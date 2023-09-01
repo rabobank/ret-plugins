@@ -28,7 +28,7 @@ data class Repository(
 
 data class Branch(
     val name: String,
-    val shortName: String
+    val shortName: String,
 ) : GitDomain
 
 data class Pipeline(
@@ -45,7 +45,7 @@ data class Pipeline(
      * A string which uniquely identifies this pipeline
      * For example for Azure DevOps: <folder>\<pipeline name> or for GitHub: <repo>/<pipeline name>
      */
-    val uniqueName: String
+    val uniqueName: String,
 ) : GitDomain
 
 data class PipelineRun(

@@ -124,13 +124,13 @@ class AutoCompleteCommand(
         return filterWord.isNullOrBlank() || this.repository.name.equals(filterWord, true)
     }
 
-    private fun Pipeline.matches(value: String?): Boolean =
+    private fun Pipeline.matches(value: String?) =
         value == null ||
             intelliSearch.matches(value, name) ||
             intelliSearch.matches(value, container) ||
             intelliSearch.matches(value, uniqueName)
 
-    private fun PipelineRun.matches(word: String?): Boolean =
+    private fun PipelineRun.matches(word: String?) =
         word == null || intelliSearch.matches(word, id.toString()) || intelliSearch.matches(word, name) ||
             intelliSearch.matches(word, state.toString()) || intelliSearch.matches(word, result.toString())
 

@@ -23,8 +23,11 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listPRs(list: List<PullRequest>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (list.isEmpty()) Wrapper(listOf(Item("No pull requests found", valid = false)))
-                else Wrapper(list.map { Item(it) }),
+                if (list.isEmpty()) {
+                    Wrapper(listOf(Item("No pull requests found", valid = false)))
+                } else {
+                    Wrapper(list.map { Item(it) })
+                },
             ),
         )
     }
@@ -32,8 +35,11 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listRepositories(list: List<Repository>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (list.isEmpty()) Wrapper(listOf(Item("No repositories found", valid = false)))
-                else Wrapper(list.map { Item(it) }),
+                if (list.isEmpty()) {
+                    Wrapper(listOf(Item("No repositories found", valid = false)))
+                } else {
+                    Wrapper(list.map { Item(it) })
+                },
             ),
         )
     }
@@ -41,8 +47,11 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listBranches(list: List<Branch>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (list.isEmpty()) Wrapper(listOf(Item("No branches found", valid = false)))
-                else Wrapper(list.map { Item(it) }),
+                if (list.isEmpty()) {
+                    Wrapper(listOf(Item("No branches found", valid = false)))
+                } else {
+                    Wrapper(list.map { Item(it) })
+                },
             ),
         )
     }
@@ -50,13 +59,16 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listPipelines(list: List<Pipeline>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (list.isEmpty()) Wrapper(listOf(Item("No pipelines found", valid = false)))
-                else Wrapper(
-                    listOf(Item(title = "Pipeline dashboard", arg = "open-dashboard")) +
-                        list.map {
-                            Item(title = it.name, subtitle = "Folder: ${it.container}", arg = it.id.toString())
-                        },
-                ),
+                if (list.isEmpty()) {
+                    Wrapper(listOf(Item("No pipelines found", valid = false)))
+                } else {
+                    Wrapper(
+                        listOf(Item(title = "Pipeline dashboard", arg = "open-dashboard")) +
+                            list.map {
+                                Item(title = it.name, subtitle = "Folder: ${it.container}", arg = it.id.toString())
+                            },
+                    )
+                },
             ),
         )
     }
@@ -64,18 +76,21 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listPipelineRuns(list: List<PipelineRun>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (list.isEmpty()) Wrapper(listOf(Item("No pipeline runs found", valid = false)))
-                else Wrapper(
-                    listOf(Item(title = "Pipeline run overview", arg = "open-dashboard")) +
-                        list.map {
-                            Item(
-                                title = it.name,
-                                subtitle = "State: ${it.state}, result: ${it.result}",
-                                icon = ItemIcon("icons/${it.icon()}"),
-                                arg = it.id.toString(),
-                            )
-                        },
-                ),
+                if (list.isEmpty()) {
+                    Wrapper(listOf(Item("No pipeline runs found", valid = false)))
+                } else {
+                    Wrapper(
+                        listOf(Item(title = "Pipeline run overview", arg = "open-dashboard")) +
+                            list.map {
+                                Item(
+                                    title = it.name,
+                                    subtitle = "State: ${it.state}, result: ${it.result}",
+                                    icon = ItemIcon("icons/${it.icon()}"),
+                                    arg = it.id.toString(),
+                                )
+                            },
+                    )
+                },
             ),
         )
     }
@@ -83,5 +98,7 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     private fun PipelineRun.icon() =
         if (state == PipelineRunState.COMPLETED) {
             if (result == PipelineRunResult.SUCCEEDED) "succeeded.png" else "failed.png"
-        } else "in_progress.png"
+        } else {
+            "in_progress.png"
+        }
 }
