@@ -2,24 +2,24 @@ package io.rabobank.ret.git.plugin.config
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.rabobank.ret.git.plugin.provider.azure.AzureDevopsPluginConfig
-import io.rabobank.ret.util.OsUtils
+import org.apache.commons.io.FileUtils
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import org.mockito.kotlin.mock
+import org.mockito.Mockito.spy
 import org.mockito.kotlin.whenever
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
 
 class AzureDevopsPluginConfigLoadTest {
-    private val retFolder by lazy { Files.createDirectory(mockUserHomeDirectory.resolve(".ret")) }
-    private val pluginsPath by lazy { Files.createDirectory(retFolder.resolve("plugins")) }
     private val pluginConfigFileName = "git.json"
     private val pluginConfig = AzureDevopsPluginConfig()
         .apply {
             pluginName = "git"
             objectMapper = jacksonObjectMapper()
+            osUtils = spy()
         }
 
     @TempDir
@@ -27,7 +27,8 @@ class AzureDevopsPluginConfigLoadTest {
 
     @BeforeEach
     fun setUp() {
-        Files.createFile(pluginsPath.resolve(pluginConfigFileName))
+        whenever(pluginConfig.osUtils.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
+        pluginConfig.osUtils.getRetPluginsDirectory().createDirectories()
 
         val config = mapOf(
             "azure_devops_email" to "manks@live.com",
@@ -35,31 +36,39 @@ class AzureDevopsPluginConfigLoadTest {
             "azure_devops_project" to "this_is_the_project",
             "azure_devops_organization" to "my-organization",
         )
-        pluginConfig.objectMapper.writeValue(pluginsPath.resolve(pluginConfigFileName).toFile(), config)
+        pluginConfig.objectMapper.writeValue(pluginConfig.osUtils.getRetPluginsDirectory().resolve(pluginConfigFileName).toFile(), config)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        FileUtils.deleteQuietly(mockUserHomeDirectory.toFile())
     }
 
     @Test
     fun shouldLoadConfiguration() {
-        pluginConfig.osUtils = mock<OsUtils> {
-            whenever(it.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
-            whenever(it.getPluginConfig(pluginConfig.pluginName)).thenReturn(pluginsPath.resolve(pluginConfigFileName))
-        }
+//        pluginConfig.osUtils = spy(OsUtils())
+//        {
+//            whenever(it.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
+//            whenever(it.getPluginConfig(pluginConfig.pluginName)).thenReturn(pluginsPath.resolve(pluginConfigFileName))
+//        }
 
-        assertThat(pluginConfig.email).isEqualTo("manks@live.com")
-        assertThat(pluginConfig.pat).isEqualTo("this_is_a_pat")
-        assertThat(pluginConfig.projectId).isEqualTo("this_is_the_project")
-        assertThat(pluginConfig.organization).isEqualTo("my-organization")
+        assertThat(pluginConfig.config.email).isEqualTo("manks@live.com")
+        assertThat(pluginConfig.config.pat).isEqualTo("this_is_a_pat")
+        assertThat(pluginConfig.config.project).isEqualTo("this_is_the_project")
+        assertThat(pluginConfig.config.organization).isEqualTo("my-organization")
     }
 
     @Test
     fun shouldLoadCorrectlyWithEmptyConfiguration() {
-        pluginConfig.osUtils = mock<OsUtils> {
-            whenever(it.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
-        }
+        whenever(pluginConfig.osUtils.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
+//        pluginConfig.osUtils = mock<OsUtils> {
+//            whenever(it.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
+//            whenever(it.getPluginConfig(pluginConfig.pluginName)).thenReturn(pluginsPath.resolve(pluginConfigFileName))
+//        }
 
-        assertThat(pluginConfig.email).isNull()
-        assertThat(pluginConfig.pat).isNull()
-        assertThat(pluginConfig.projectId).isNull()
-        assertThat(pluginConfig.organization).isNull()
+        assertThat(pluginConfig.config.email).isNull()
+        assertThat(pluginConfig.config.pat).isNull()
+        assertThat(pluginConfig.config.project).isNull()
+        assertThat(pluginConfig.config.organization).isNull()
     }
 }

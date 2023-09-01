@@ -18,8 +18,8 @@ class AzureDevopsConfiguration(
         RestClientBuilder.newBuilder()
             .baseUrl(
                 UriBuilder.fromUri(URI.create(azureDevopsBaseUrl))
-                    .path(pluginConfig.organization)
-                    .path(pluginConfig.projectId)
+                    .path(pluginConfig.config.organization)
+                    .path(pluginConfig.config.project)
                     .path("_apis")
                     .build()
                     .toURL(),

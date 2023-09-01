@@ -2,11 +2,11 @@ package io.rabobank.ret.git.plugin.command
 
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
+import io.rabobank.ret.git.plugin.output.OutputHandler
+import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.git.plugin.provider.Pipeline
 import io.rabobank.ret.git.plugin.provider.PipelineRun
 import io.rabobank.ret.git.plugin.provider.PullRequest
-import io.rabobank.ret.git.plugin.output.OutputHandler
-import io.rabobank.ret.git.plugin.provider.GitProvider
 import io.rabobank.ret.picocli.mixin.ContextAwareness
 import io.rabobank.ret.util.Logged
 import io.rabobank.ret.util.RegexUtils.DIGITS_PATTERN
@@ -30,7 +30,7 @@ class AutoCompleteCommand(
     @Mixin
     lateinit var contextAwareness: ContextAwareness
 
-    @Command(name = "git-pipeline")
+    @Command(name = "pipeline")
     fun printPipelines(@Option(names = ["--word", "-w"]) word: String?) {
         val pipelines = gitProvider.getAllPipelines()
 
@@ -40,7 +40,7 @@ class AutoCompleteCommand(
         )
     }
 
-    @Command(name = "git-pipeline-run")
+    @Command(name = "pipeline-run")
     fun printPipelineRuns(
         @Option(names = ["--word", "-w"]) word: String?,
         @Option(
@@ -64,7 +64,7 @@ class AutoCompleteCommand(
         )
     }
 
-    @Command(name = "git-repository")
+    @Command(name = "repository")
     fun printRepositories(@Option(names = ["--word", "-w"]) word: String?) {
         val repositories = gitProvider.getAllRepositories()
 
@@ -75,7 +75,7 @@ class AutoCompleteCommand(
         )
     }
 
-    @Command(name = "git-branch")
+    @Command(name = "branch")
     fun printBranches(
         @Option(names = ["--word", "-w"]) word: String?,
         @Option(names = ["--repository", "-r"]) repositoryFlag: String?,
@@ -91,7 +91,7 @@ class AutoCompleteCommand(
         } ?: outputHandler.error("No repository could be determined")
     }
 
-    @Command(name = "git-pullrequest")
+    @Command(name = "pullrequest")
     fun printPullRequests(
         @Option(
             names = ["-n", "--not-reviewed"],
@@ -111,8 +111,8 @@ class AutoCompleteCommand(
             .filter { it.isFromRepository(filterRepository) }
             .filter {
                 word == null ||
-                        intelliSearch.matches(word, it.title) ||
-                        intelliSearch.matches(word, it.repository.name)
+                    intelliSearch.matches(word, it.title) ||
+                    intelliSearch.matches(word, it.repository.name)
             }
         outputHandler.listPRs(filteredPrs)
     }

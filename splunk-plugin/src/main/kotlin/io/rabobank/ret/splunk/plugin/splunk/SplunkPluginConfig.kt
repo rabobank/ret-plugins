@@ -1,15 +1,15 @@
 package io.rabobank.ret.splunk.plugin.splunk
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import io.rabobank.ret.configuration.BasePluginConfig
 import io.rabobank.ret.configuration.ConfigurationProperty
+import io.rabobank.ret.util.CommaDelimitedToListDeserializer
 import jakarta.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
-class SplunkConfig : BasePluginConfig() {
-    val baseUrl: String? by lazy { config[BASE_URL] }
-    val app: String? by lazy { config[APP] }
-    val indexes: List<String> by lazy { config.get<String?>(INDEXES)?.run { split(",").map { it.trim() } }.orEmpty() }
-    val searchField: String? by lazy { config[SEARCH_FIELD] }
+class SplunkPluginConfig : BasePluginConfig() {
+    val config by lazy { convertTo<SplunkConfig>() }
 
     override fun keysToMigrate(): List<Pair<String, String>> =
         listOf(
@@ -18,14 +18,14 @@ class SplunkConfig : BasePluginConfig() {
         )
 
     override fun properties() = listOf(
-        ConfigurationProperty(BASE_URL, "Enter the Splunk base URL", required = true),
-        ConfigurationProperty(APP, "Enter your Splunk app name", required = true),
+        ConfigurationProperty(BASE_URL, "Enter the Splunk base URL (<base-url>/en-US/<app-name>)", required = true),
+        ConfigurationProperty(APP, "Enter your Splunk app name (<base-url>/en-US/<app-name>)", required = true),
         ConfigurationProperty(
             INDEXES,
-            "Enter your Splunk index, if more than one, separate by comma. E.g. my_index_a, my_index_b",
+            "Enter your Splunk index(es) (comma separated). E.g. my_index_a, my_index_b",
             required = true,
         ),
-        //Optional answers from here on onwards:
+        // Optional answers from here on onwards:
         ConfigurationProperty(
             SEARCH_FIELD,
             "Optional: Enter the field of the unique identifier. E.g. system_name, application_name or cf_app_name.\n" +
@@ -42,3 +42,18 @@ class SplunkConfig : BasePluginConfig() {
         private const val SEARCH_FIELD = "search_field"
     }
 }
+
+data class SplunkConfig(
+    @JsonProperty("base_url")
+    val baseUrl: String,
+    val app: String,
+    @JsonDeserialize(using = CommaDelimitedToListDeserializer::class)
+    val indexes: List<String> = emptyList(),
+    @JsonProperty("search_field")
+    val searchField: String? = null,
+    val projects: List<SplunkProject> = emptyList(),
+)
+
+data class SplunkProject(
+    val name: String,
+)

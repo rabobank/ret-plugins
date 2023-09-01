@@ -96,7 +96,7 @@ class AutoCompleteCommandTest {
 
     @Test
     fun `should return all repository names in project`() {
-        val exitCode = commandLine.execute("git-repository")
+        val exitCode = commandLine.execute("repository")
         assertThat(exitCode).isEqualTo(0)
 
         verify(outputHandler).listRepositories(allMockedRepositories)
@@ -105,7 +105,7 @@ class AutoCompleteCommandTest {
     @ParameterizedTest
     @MethodSource("repositoryTest")
     fun `should return all repository names that matches the word`(word: String, repositories: List<Repository>) {
-        val exitCode = commandLine.execute("git-repository", "--word=$word")
+        val exitCode = commandLine.execute("repository", "--word=$word")
         assertThat(exitCode).isEqualTo(0)
 
         verify(outputHandler).listRepositories(repositories)
@@ -113,7 +113,7 @@ class AutoCompleteCommandTest {
 
     @Test
     fun `should return nothing if nothing matches the word`() {
-        val exitCode = commandLine.execute("git-repository", "--word=blu-engineering-tools")
+        val exitCode = commandLine.execute("repository", "--word=blu-engineering-tools")
 
         assertThat(exitCode).isEqualTo(0)
         verify(outputHandler).listRepositories(emptyList())
@@ -122,7 +122,7 @@ class AutoCompleteCommandTest {
     @Test
     fun `should return branches which match the word`() {
         verifyBranchesOutputted(
-            commandLine.execute("git-branch", "--word=ahum", "--repository=admin-service"),
+            commandLine.execute("branch", "--word=ahum", "--repository=admin-service"),
             listOf("refs/heads/feature/ahum"),
         )
     }
@@ -130,7 +130,7 @@ class AutoCompleteCommandTest {
     @Test
     fun `should return all branches if no word is given`() {
         verifyBranchesOutputted(
-            commandLine.execute("git-branch", "--repository=admin-service"),
+            commandLine.execute("branch", "--repository=admin-service"),
             listOf(
                 "refs/heads/feature/abc",
                 "refs/heads/feature/ahum",
@@ -142,7 +142,7 @@ class AutoCompleteCommandTest {
     @Test
     fun `should return all branches if an empty string as word is given`() {
         verifyBranchesOutputted(
-            commandLine.execute("git-branch", "--word=", "--repository=admin-service"),
+            commandLine.execute("branch", "--word=", "--repository=admin-service"),
             listOf(
                 "refs/heads/feature/abc",
                 "refs/heads/feature/ahum",
@@ -162,7 +162,7 @@ class AutoCompleteCommandTest {
     fun `should return no branches if nothing matches the word`() {
         verifyBranchesOutputted(
             commandLine.execute(
-                "git-branch",
+                "branch",
                 "--word=123456",
                 "--repository=admin-service",
             ),
@@ -175,7 +175,7 @@ class AutoCompleteCommandTest {
         whenever(mockedRetContext.gitRepository).thenReturn("admin-service")
 
         verifyBranchesOutputted(
-            commandLine.execute("git-branch", "--word=abc"),
+            commandLine.execute("branch", "--word=abc"),
             listOf(
                 "refs/heads/feature/abc",
             ),
@@ -187,14 +187,14 @@ class AutoCompleteCommandTest {
         whenever(mockedRetContext.gitRepository).thenReturn("admin-service")
 
         verifyBranchesOutputted(
-            commandLine.execute("git-branch", "--word=abc", "--repository="),
+            commandLine.execute("branch", "--word=abc", "--repository="),
             listOf("refs/heads/feature/abc"),
         )
     }
 
     @Test
     fun `should an error if no repository can be determined`() {
-        val exitCode = commandLine.execute("git-branch", "--word=123456")
+        val exitCode = commandLine.execute("branch", "--word=123456")
 
         assertThat(exitCode).isEqualTo(0)
         verify(outputHandler).error("No repository could be determined")
@@ -212,38 +212,38 @@ class AutoCompleteCommandTest {
         )
 
         verifyBranchesOutputted(
-            commandLine.execute("git-branch", "--word=123456", "--repository=client-service-encryption"),
+            commandLine.execute("branch", "--word=123456", "--repository=client-service-encryption"),
             emptyList(),
         )
     }
 
     @Test
     fun gitProviderReturnsPullRequestsAutocomplete() {
-        verifyPullRequestsOutputted(setOf("1235"), "git-pullrequest", "--word=logo")
+        verifyPullRequestsOutputted(setOf("1235"), "pullrequest", "--word=logo")
     }
 
     @Test
     fun gitProviderReturnsPullRequestsAutocompleteIntelligentlyOnFirstLetters() {
-        verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", "--word=ret")
+        verifyPullRequestsOutputted(setOf("1241", "1271"), "pullrequest", "--word=ret")
     }
 
     @Test
     fun gitProviderReturnsPullRequestsAutocompleteIntelligentlyOnPartialWords() {
-        verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", "--word=retengt")
+        verifyPullRequestsOutputted(setOf("1241", "1271"), "pullrequest", "--word=retengt")
     }
 
     @Test
     fun gitProviderReturnsPullRequestsFilterRepoOnContextAware() {
         whenever(mockedRetContext.gitRepository).thenReturn("generic-project")
 
-        verifyPullRequestsOutputted(setOf("1235"), "git-pullrequest")
+        verifyPullRequestsOutputted(setOf("1235"), "pullrequest")
     }
 
     @Test
     fun gitProviderReturnsPullRequestsFilterRepoOnFlagIgnoresContextAware() {
         whenever(mockedRetContext.gitRepository).thenReturn("generic-project")
 
-        verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", "-r=ret-engineering-tools")
+        verifyPullRequestsOutputted(setOf("1241", "1271"), "pullrequest", "-r=ret-engineering-tools")
     }
 
     @Test
@@ -252,18 +252,18 @@ class AutoCompleteCommandTest {
             listOf(),
         )
 
-        verifyPullRequestsOutputted(emptySet(), "git-pullrequest")
+        verifyPullRequestsOutputted(emptySet(), "pullrequest")
     }
 
     @Test
     fun gitProviderReturnsPullRequests() {
-        verifyPullRequestsOutputted(allMockedPullRequests.map { it.id }.toSet(), "git-pullrequest")
+        verifyPullRequestsOutputted(allMockedPullRequests.map { it.id }.toSet(), "pullrequest")
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["-n", "--not-reviewed"])
     fun gitProviderReturnsPullRequestsNotReviewed(flag: String) {
-        verifyPullRequestsOutputted(setOf("1241", "1271", "1272"), "git-pullrequest", flag)
+        verifyPullRequestsOutputted(setOf("1241", "1271", "1272"), "pullrequest", flag)
     }
 
     @ParameterizedTest
@@ -271,18 +271,18 @@ class AutoCompleteCommandTest {
     fun gitProviderReturnsPullRequestsFilterRepoIgnoreContextAware(flag: String) {
         whenever(mockedRetContext.gitRepository).thenReturn("generic-project")
 
-        verifyPullRequestsOutputted(allMockedPullRequests.map { it.id }.toSet(), flag, "git-pullrequest")
+        verifyPullRequestsOutputted(allMockedPullRequests.map { it.id }.toSet(), flag, "pullrequest")
     }
 
     @Test
     fun gitProviderReturnsPullRequestsAutocompleteIntelligentlyOnPartialWords2() {
-        verifyPullRequestsOutputted(setOf("1272"), "git-pullrequest", "--word=upda")
+        verifyPullRequestsOutputted(setOf("1272"), "pullrequest", "--word=upda")
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["-r=ret-engineering-tools", "--repository=ret-engineering-tools"])
     fun gitProviderReturnsPullRequestsFilterRepoOnFlag(flag: String) {
-        verifyPullRequestsOutputted(setOf("1241", "1271"), "git-pullrequest", flag)
+        verifyPullRequestsOutputted(setOf("1241", "1271"), "pullrequest", flag)
     }
 
     @Test
@@ -295,7 +295,7 @@ class AutoCompleteCommandTest {
             ),
         )
 
-        val exitCode = commandLine.execute("git-pipeline", "-w", "as")
+        val exitCode = commandLine.execute("pipeline", "-w", "as")
         assertThat(exitCode).isEqualTo(0)
 
         verify(outputHandler).listPipelines(
@@ -318,7 +318,7 @@ class AutoCompleteCommandTest {
             ),
         )
 
-        val exitCode = commandLine.execute("git-pipeline", "-w", "admin-service\\bla")
+        val exitCode = commandLine.execute("pipeline", "-w", "admin-service\\bla")
         assertThat(exitCode).isEqualTo(0)
 
         verify(outputHandler).listPipelines(
@@ -355,7 +355,7 @@ class AutoCompleteCommandTest {
             ),
         )
 
-        val exitCode = commandLine.execute("git-pipeline-run", "--pipeline-id", pipelineId, "-w", autocompletionWord)
+        val exitCode = commandLine.execute("pipeline-run", "--pipeline-id", pipelineId, "-w", autocompletionWord)
         assertThat(exitCode).isEqualTo(0)
 
         verify(outputHandler).listPipelineRuns(expectedOutcome)
@@ -379,7 +379,7 @@ class AutoCompleteCommandTest {
         whenever(gitProvider.getPipelineRuns(pipeline.id.toString()))
             .thenReturn(listOf(expectedResponse))
 
-        val exitCode = commandLine.execute("git-pipeline-run", "--pipeline-id", "folder\\pipeline_name")
+        val exitCode = commandLine.execute("pipeline-run", "--pipeline-id", "folder\\pipeline_name")
         assertThat(exitCode).isEqualTo(0)
 
         verify(outputHandler).listPipelineRuns(listOf(expectedResponse))

@@ -57,8 +57,8 @@ class AzureDevopsUrlFactory(
             .buildToURL()
 
     private fun azdoBaseUriBuilder() = UriBuilder.fromUri(azureDevopsBaseUrl)
-        .path(pluginConfig.organization)
-        .path(pluginConfig.projectId)
+        .path(pluginConfig.config.organization)
+        .path(pluginConfig.config.project)
 
     private fun UriBuilder.buildToURL() = this.build().toURL()
 }

@@ -15,4 +15,8 @@ class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
     override fun listIndexes(indexes: List<String>) {
         throw UnsupportedOperationException()
     }
+
+    override fun listProjects(projects: List<String>) {
+        throw UnsupportedOperationException()
+    }
 }

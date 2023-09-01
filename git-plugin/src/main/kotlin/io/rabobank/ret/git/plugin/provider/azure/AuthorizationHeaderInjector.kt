@@ -14,7 +14,7 @@ class AuthorizationHeaderInjector(private val pluginConfig: AzureDevopsPluginCon
         outgoingHeaders: MultivaluedMap<String, String>,
     ): MultivaluedMap<String, String> {
         val result: MultivaluedMap<String, String> = MultivaluedHashMap()
-        val encodedPat = String(Base64.getEncoder().encode(":${pluginConfig.pat}".toByteArray()))
+        val encodedPat = String(Base64.getEncoder().encode(":${pluginConfig.config.pat}".toByteArray()))
         result.add("Authorization", "Basic $encodedPat")
         return result
     }

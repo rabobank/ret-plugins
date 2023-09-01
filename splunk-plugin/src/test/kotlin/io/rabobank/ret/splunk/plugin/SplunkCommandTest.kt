@@ -3,7 +3,7 @@ package io.rabobank.ret.splunk.plugin
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.picocli.mixin.ContextAwareness
-import io.rabobank.ret.splunk.plugin.splunk.SplunkConfig
+import io.rabobank.ret.splunk.plugin.splunk.SplunkPluginConfig
 import io.rabobank.ret.util.BrowserUtils
 import io.rabobank.ret.util.OsUtils
 import org.apache.commons.io.FileUtils
@@ -24,7 +24,7 @@ import picocli.CommandLine.IFactory
 import java.nio.file.Files
 import java.nio.file.Path
 
-class SplunkEntryCommandTest {
+class SplunkCommandTest {
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val retFolder by lazy { Files.createDirectory(mockUserHomeDirectory.resolve(".ret")) }
     private val pluginsPath by lazy { Files.createDirectory(retFolder.resolve("plugins")) }
@@ -45,15 +45,15 @@ class SplunkEntryCommandTest {
     fun before() {
         val splunkConfig = mapOf(
             "base_url" to "splunk.base.url",
-            "app" to "appName",
+            "app" to "general",
         )
         val objectMapper = jacksonObjectMapper()
         objectMapper.writeValue(mockedOsUtils.getPluginConfig("splunk").toFile(), splunkConfig)
 
-        val splunkCommand = SplunkEntryCommand(
+        val splunkCommand = SplunkCommand(
             mockedBrowserUtils,
             mockedRetContext,
-            SplunkConfig().apply {
+            SplunkPluginConfig().apply {
                 pluginName = "splunk"
                 this.objectMapper = objectMapper
                 osUtils = mockedOsUtils
@@ -71,14 +71,14 @@ class SplunkEntryCommandTest {
     }
 
     @ParameterizedTest
-    @CsvSource("--index,--app", "-i,-a")
-    fun `should open Splunk Dashboard with index and app provided`(indexFlag: String, appFlag: String) {
+    @CsvSource("--index,--project", "-i,-p")
+    fun `should open Splunk Dashboard with index and app provided`(indexFlag: String, projectFlag: String) {
         val index = "splunk-index"
-        val appName = "my-application"
+        val project = "my-application"
 
-        val expectedURL = "$SPLUNK_URL?q=search+index%3D$index+appName%3D$appName"
+        val expectedURL = "$SPLUNK_URL?q=search+index%3D$index+project%3D$project"
 
-        val exitCode = commandLine.execute(indexFlag, index, appFlag, appName)
+        val exitCode = commandLine.execute(indexFlag, index, projectFlag, project)
         assertThat(exitCode).isEqualTo(0)
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
@@ -99,12 +99,12 @@ class SplunkEntryCommandTest {
     @Test
     fun `should open Splunk Dashboard with index and app provided plus query part`() {
         val index = "splunk-index"
-        val appName = "my-application"
+        val project = "my-application"
         val queryPart = "loglevel=INFO"
 
-        val expectedURL = "$SPLUNK_URL?q=search+index%3D$index+appName%3D$appName+loglevel%3DINFO"
+        val expectedURL = "$SPLUNK_URL?q=search+index%3D$index+project%3D$project+loglevel%3DINFO"
 
-        val exitCode = commandLine.execute("--index", index, "--app", appName, queryPart)
+        val exitCode = commandLine.execute("--index", index, "--project", project, queryPart)
         assertThat(exitCode).isEqualTo(0)
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
@@ -136,11 +136,11 @@ class SplunkEntryCommandTest {
 
     @Test
     fun `should open Splunk Dashboard with app name from execution context`() {
-        val appName = "my-application"
+        val project = "my-application"
 
-        val expectedURL = "$SPLUNK_URL?q=search+appName%3D$appName"
+        val expectedURL = "$SPLUNK_URL?q=search+project%3D$project"
 
-        whenever(mockedRetContext.gitRepository).thenReturn(appName)
+        whenever(mockedRetContext.gitRepository).thenReturn(project)
 
         val exitCode = commandLine.execute()
         assertThat(exitCode).isEqualTo(0)
@@ -150,18 +150,18 @@ class SplunkEntryCommandTest {
 
     @Test
     fun `should open Splunk Dashboard with app name provided`() {
-        val appName = "my-application"
+        val project = "my-application"
 
-        val expectedURL = "$SPLUNK_URL?q=search+appName%3D$appName"
+        val expectedURL = "$SPLUNK_URL?q=search+project%3D$project"
 
-        val exitCode = commandLine.execute("--app", appName)
+        val exitCode = commandLine.execute("--project", project)
         assertThat(exitCode).isEqualTo(0)
 
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
 
     private companion object {
-        private const val SPLUNK_URL = "splunk.base.url/en-US/app/appName/search"
+        private const val SPLUNK_URL = "splunk.base.url/en-US/app/general/search"
     }
 }
 

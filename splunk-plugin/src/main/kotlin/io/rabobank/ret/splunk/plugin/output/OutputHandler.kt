@@ -10,4 +10,6 @@ interface OutputHandler {
     }
 
     fun listIndexes(indexes: List<String>)
+
+    fun listProjects(projects: List<String>)
 }
