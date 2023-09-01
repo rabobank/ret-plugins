@@ -34,16 +34,25 @@ class AzureDevopsProviderTest {
         assertThat(pullRequests)
             .containsExactlyInAnyOrder(
                 GenericPullRequest("1", "title", GenericRepository("repo", "master"), listOf()),
-                GenericPullRequest("3", "title", GenericRepository("repo", "master"), listOf(GenericReviewer("other-manks@live.com"))),
+                GenericPullRequest(
+                    "3",
+                    "title",
+                    GenericRepository("repo", "master"),
+                    listOf(GenericReviewer("other-manks@live.com")),
+                ),
             )
     }
 
     @Test
     fun `pull requests can be created correctly`() {
-        whenever(azureDevopsClient.createPullRequest(anyString(), anyString(), any())).thenReturn(PullRequestCreated("123"))
+        whenever(
+            azureDevopsClient.createPullRequest(anyString(), anyString(), any()),
+        ).thenReturn(PullRequestCreated("123"))
 
         azureDevopsProvider.createPullRequest("repo", "source", "target", "title", "desc")
 
-        verify(azureDevopsClient).createPullRequest("repo", API_VERSION, CreatePullRequest("source", "target", "title", "desc"))
+        verify(
+            azureDevopsClient,
+        ).createPullRequest("repo", API_VERSION, CreatePullRequest("source", "target", "title", "desc"))
     }
 }

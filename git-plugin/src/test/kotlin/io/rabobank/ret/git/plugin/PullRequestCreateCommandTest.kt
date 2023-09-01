@@ -86,7 +86,9 @@ internal class PullRequestCreateCommandTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["--repository", "-r"])
-    fun `create should open web page to create pr without selected branch, when repo provided and branch not`(flag: String) {
+    fun `create should open web page to create pr without selected branch, when repo provided and branch not`(
+        flag: String,
+    ) {
         val repo = "generic-project"
 
         val exitCode = commandLine.execute(flag, repo)

@@ -16,8 +16,11 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listIndexes(indexes: List<String>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (indexes.isEmpty()) Wrapper(listOf(Item("No indexes found", valid = false)))
-                else Wrapper(indexes.map { Item(title = it, arg = it) }),
+                if (indexes.isEmpty()) {
+                    Wrapper(listOf(Item("No indexes found", valid = false)))
+                } else {
+                    Wrapper(indexes.map { Item(title = it, arg = it) })
+                },
             ),
         )
     }
@@ -25,8 +28,11 @@ class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val 
     override fun listProjects(projects: List<String>) {
         retConsole.out(
             objectMapper.writeValueAsString(
-                if (projects.isEmpty()) Wrapper(listOf(Item("No projects found", valid = false)))
-                else Wrapper(projects.map { Item(title = it, arg = it) }),
+                if (projects.isEmpty()) {
+                    Wrapper(listOf(Item("No projects found", valid = false)))
+                } else {
+                    Wrapper(projects.map { Item(title = it, arg = it) })
+                },
             ),
         )
     }

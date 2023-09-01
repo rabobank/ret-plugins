@@ -45,5 +45,5 @@ class RepositoryCommand(
 }
 
 internal class RepositoryCompletionCandidates : Iterable<String> {
-    override fun iterator(): Iterator<String> = listOf("function:_autocomplete_repository").iterator()
+    override fun iterator() = listOf("function:_autocomplete_repository").iterator()
 }

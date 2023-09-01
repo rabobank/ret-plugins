@@ -61,7 +61,16 @@ class PullRequestCreateCommand(
         val sourceBranch = providedBranch ?: contextBranch
 
         if (!noPrompt) {
-            val branch = if (autofillBranchRequired(filterRepository, providedBranch, contextBranch)) sourceBranch else null
+            val branch = if (autofillBranchRequired(
+                    filterRepository,
+                    providedBranch,
+                    contextBranch,
+                )
+            ) {
+                sourceBranch
+            } else {
+                null
+            }
 
             val prCreateURL = gitProvider.urlFactory.pullRequestCreate(repositoryName, branch)
             browserUtils.openUrl(prCreateURL)
@@ -82,25 +91,34 @@ class PullRequestCreateCommand(
                     "Merge $sourceBranch into ${repository.defaultBranch}",
                     "PR created by RET using `ret pr create --no-prompt`.",
                 )
-                val pullRequestUrl = gitProvider.urlFactory.pullRequest(repositoryName, createPullRequestResponse.pullRequestId).toString()
+                val pullRequestUrl = gitProvider.urlFactory.pullRequest(
+                    repositoryName,
+                    createPullRequestResponse.pullRequestId,
+                ).toString()
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
-                val message = if (e.response.status == CONFLICT) "A pull request for this branch already exists!"
-                else "Creating a PR directly failed."
+                val message = if (e.response.status == CONFLICT) {
+                    "A pull request for this branch already exists!"
+                } else {
+                    "Creating a PR directly failed."
+                }
 
                 throw IllegalStateException(message, e)
             }
         }
     }
 
-    private fun autofillBranchRequired(filterRepository: String?, providedBranch: String?, contextBranch: String?): Boolean =
-        providedBranch != null || contextBranch != null && filterRepository == null
+    private fun autofillBranchRequired(
+        filterRepository: String?,
+        providedBranch: String?,
+        contextBranch: String?,
+    ) = providedBranch != null || contextBranch != null && filterRepository == null
 }
 
 internal class BranchCompletionCandidates : Iterable<String> {
-    override fun iterator(): Iterator<String> = listOf("function:_autocomplete_branch").iterator()
+    override fun iterator() = listOf("function:_autocomplete_branch").iterator()
 }
 
 internal class RepositoryFlagCompletionCandidates : Iterable<String> {
-    override fun iterator(): Iterator<String> = listOf("function:_autocomplete_repository_flag").iterator()
+    override fun iterator() = listOf("function:_autocomplete_repository_flag").iterator()
 }
