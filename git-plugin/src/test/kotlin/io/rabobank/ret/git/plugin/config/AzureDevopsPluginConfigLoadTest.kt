@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
 import org.mockito.kotlin.whenever
 import java.nio.file.Path
@@ -20,6 +21,7 @@ class AzureDevopsPluginConfigLoadTest {
             pluginName = "git"
             objectMapper = jacksonObjectMapper()
             osUtils = spy()
+            retConfig = mock()
         }
 
     @TempDir
@@ -59,9 +61,9 @@ class AzureDevopsPluginConfigLoadTest {
     fun shouldLoadCorrectlyWithEmptyConfiguration() {
         whenever(pluginConfig.osUtils.getHomeDirectory()).thenReturn("$mockUserHomeDirectory/nonexisting")
 
-        assertThat(pluginConfig.config.email).isNull()
-        assertThat(pluginConfig.config.pat).isNull()
-        assertThat(pluginConfig.config.project).isNull()
-        assertThat(pluginConfig.config.organization).isNull()
+        assertThat(pluginConfig.config.email).isEmpty()
+        assertThat(pluginConfig.config.pat).isEmpty()
+        assertThat(pluginConfig.config.project).isEmpty()
+        assertThat(pluginConfig.config.organization).isEmpty()
     }
 }

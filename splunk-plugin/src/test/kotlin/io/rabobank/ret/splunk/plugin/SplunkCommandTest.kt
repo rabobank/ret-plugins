@@ -57,6 +57,7 @@ class SplunkCommandTest {
                 pluginName = "splunk"
                 this.objectMapper = objectMapper
                 osUtils = mockedOsUtils
+                retConfig = mock()
             },
         )
 
