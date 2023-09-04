@@ -2,13 +2,13 @@ package io.rabobank.ret.splunk.plugin.splunk
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import io.rabobank.ret.configuration.BasePluginConfig
+import io.rabobank.ret.configuration.Configurable
 import io.rabobank.ret.configuration.ConfigurationProperty
 import io.rabobank.ret.util.CommaDelimitedToListDeserializer
 import jakarta.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
-class SplunkPluginConfig : BasePluginConfig() {
+class SplunkPluginConfig : Configurable() {
     val config by lazy { convertTo<SplunkConfig>() }
 
     override fun keysToMigrate(): List<Pair<String, String>> =
@@ -44,8 +44,8 @@ class SplunkPluginConfig : BasePluginConfig() {
 
 data class SplunkConfig(
     @JsonProperty("base_url")
-    val baseUrl: String,
-    val app: String,
+    val baseUrl: String?,
+    val app: String?,
     @JsonDeserialize(using = CommaDelimitedToListDeserializer::class)
     val indexes: List<String> = emptyList(),
     @JsonProperty("search_field")
