@@ -50,6 +50,23 @@
         <finalName>splunk-plugin</finalName>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
+<!--        <resources>-->
+<!--            <resource>-->
+<!--                <directory>src/main/resources</directory>-->
+<!--                <filtering>true</filtering>-->
+<!--                <includes>-->
+<!--                    <include>alfred/info.plist</include>-->
+<!--                </includes>-->
+<!--            </resource>-->
+<!--            <resource>-->
+<!--                <directory>src/main/resources</directory>-->
+<!--                <excludes>-->
+<!--                    <exclude>alfred/info.plist</exclude>-->
+<!--                </excludes>-->
+<!--            </resource>-->
+<!--        </resources>-->
+
         <plugins>
             <plugin>
                 <groupId>io.quarkus.platform</groupId>
@@ -90,22 +107,13 @@
                     <plugin>
                         <groupId>io.quarkus.platform</groupId>
                         <artifactId>quarkus-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>generate-code</goal>
-                                    <goal>generate-code-tests</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>build-native-image</id>
                                 <phase>package</phase>
                                 <configuration>
                                     <target>
@@ -123,22 +131,24 @@
                                     <goal>run</goal>
                                 </goals>
                             </execution>
+                            <execution>
+                                <id>rename-alfred-workflow</id>
+                                <configuration>
+                                    <target>
+                                        <move
+                                            file="${project.build.directory}/distributions/${project.build.finalName}-${project.version}-alfredworkflow.zip"
+                                            tofile="${project.build.directory}/distributions/${project.build.finalName}-${project.version}.alfredworkflow"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <configuration>
-                            <attach>false</attach>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <finalName>${project.build.finalName}-${project.version}-${os.detected.classifier}
-                            </finalName>
-                            <outputDirectory>${project.build.directory}/distributions</outputDirectory>
-                            <workDirectory>${project.build.directory}/assembly/work</workDirectory>
-                            <descriptors>
-                                <descriptor>../assembly/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>make-distribution</id>
@@ -146,6 +156,32 @@
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
+                                <configuration>
+                                    <attach>false</attach>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>${project.build.finalName}-${project.version}-${os.detected.classifier}</finalName>
+                                    <outputDirectory>${project.build.directory}/distributions</outputDirectory>
+                                    <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                                    <descriptors>
+                                        <descriptor>../assembly/assembly.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>package-alfred-workflow</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>false</attach>
+                                    <finalName>${project.build.finalName}-${project.version}</finalName>
+                                    <outputDirectory>${project.build.directory}/distributions</outputDirectory>
+                                    <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                                    <descriptors>
+                                        <descriptor>../assembly/assembly-alfred.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

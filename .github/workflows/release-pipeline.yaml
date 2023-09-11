@@ -1,134 +1,136 @@
 name: RET Plugin release pipeline
 
 on:
-    workflow_dispatch:
-        inputs:
-            version:
-                description: 'Version to release'
-                required: true
-            next:
-                description: 'Next version to release'
-                required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+      next:
+        description: 'Next version to release'
+        required: true
 
 env:
-    GRAAL_VERSION: '22.3.0'
-    JAVA_VERSION: '19'
-    JAVA_DISTRO: 'zulu'
+  GRAAL_VERSION: '22.3.0'
+  JAVA_VERSION: '19'
+  JAVA_DISTRO: 'zulu'
 
 jobs:
-    # Set versions
-    prepare:
-        runs-on: ubuntu-latest
-        steps:
-            -   name: Retrieve tag exists flag
-                uses: mukunku/tag-exists-action@v1.3.0
-                id: checkTag
-                with:
-                    tag: ${{ github.event.inputs.version }}
+  # Set versions
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve tag exists flag
+        uses: mukunku/tag-exists-action@v1.3.0
+        id: checkTag
+        with:
+          tag: ${{ github.event.inputs.version }}
 
-            -   uses: actions/checkout@v3
-                if: steps.checkTag.outputs.exists == 'false'
-                with:
-                    persist-credentials: false
-                    fetch-depth: 0
+      - uses: actions/checkout@v3
+        if: steps.checkTag.outputs.exists == 'false'
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
-            -   name: 'Set up Java'
-                if: steps.checkTag.outputs.exists == 'false'
-                uses: actions/setup-java@v3
-                with:
-                    java-version: ${{ env.JAVA_VERSION }}
-                    distribution: ${{ env.JAVA_DISTRO }}
+      - name: 'Set up Java'
+        if: steps.checkTag.outputs.exists == 'false'
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRO }}
 
-            -   name: 'Configure Git user'
-                if: steps.checkTag.outputs.exists == 'false'
-                run: |
-                    git config --global user.email "skunkworks-rabot@users.noreply.github.com"
-                    git config --global user.name "Skunk Works Rabot"
+      - name: 'Configure Git user'
+        if: steps.checkTag.outputs.exists == 'false'
+        run: |
+          git config --global user.email "skunkworks-rabot@users.noreply.github.com"
+          git config --global user.name "Skunk Works Rabot"
 
-            -   name: 'Prepare release'
-                if: steps.checkTag.outputs.exists == 'false'
-                run: |
-                    RELEASE_VERSION=${{ github.event.inputs.version }}
-                    NEXT_VERSION=${{ github.event.inputs.next }}
-                    mvn -B -ntp --file pom.xml release:prepare -B -Dusername=skunkworks-rabot -Dpassword=${{ secrets.SKUNKWORKS_RABOT_PAT}} -Dtag=$RELEASE_VERSION -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion="${NEXT_VERSION}-SNAPSHOT"
+      - name: 'Prepare release'
+        if: steps.checkTag.outputs.exists == 'false'
+        run: |
+          RELEASE_VERSION=${{ github.event.inputs.version }}
+          NEXT_VERSION=${{ github.event.inputs.next }}
+          mvn -B -ntp release:prepare -B -Dusername=skunkworks-rabot -Dpassword=${{ secrets.SKUNKWORKS_RABOT_PAT}} -Dtag=$RELEASE_VERSION -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion="${NEXT_VERSION}-SNAPSHOT"
 
-    # Build plugins per runner
-    cli:
-        needs: [ prepare ]
-        name: 'Build plugins with Graal on ${{ matrix.os }}'
-        strategy:
-            fail-fast: true
-            matrix:
-                os: [ ubuntu-latest, macOS-latest ]
-        runs-on: ${{ matrix.os }}
-        steps:
-            -   name: 'Check out repository'
-                uses: actions/checkout@v3
-                with:
-                    ref: ${{ github.event.inputs.version }}
-                    fetch-depth: 0
+  # Build plugins per runner
+  cli:
+    needs: [ prepare ]
+    name: 'Build plugins with Graal on ${{ matrix.os }}'
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest, macOS-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.version }}
+          fetch-depth: 0
 
-            -   name: 'Set up Graal'
-                uses: graalvm/setup-graalvm@v1
-                with:
-                    version: ${{ env.GRAAL_VERSION }}
-                    java-version: ${{ env.JAVA_VERSION }}
-                    components: 'native-image'
-                    github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Set up Graal'
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: ${{ env.GRAAL_VERSION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-            -   name: 'Cache Maven packages'
-                uses: actions/cache@v3
-                with:
-                    path: ~/.m2/repository
-                    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-                    restore-keys: ${{ runner.os }}-maven-
+      - name: 'Cache Maven packages'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
-            -   name: 'Build Native Image'
-                run: mvn -B -ntp --file pom.xml -Pnative-plugin package
+      - name: 'Build Native Image'
+        run: mvn -B -ntp -Pnative-plugin package antrun:run@rename-alfred-workflow
 
-            -   name: 'Upload build artifact'
-                uses: actions/upload-artifact@v3
-                with:
-                    name: artifacts
-                    path: |
-                        git-plugin/target/distributions/*.zip
-                        splunk-plugin/target/distributions/*.zip
+      - name: 'Upload build artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: |
+            git-plugin/target/distributions/*.zip
+            git-plugin/target/distributions/*.alfredworkflow
+            splunk-plugin/target/distributions/*.zip
+            splunk-plugin/target/distributions/*.alfredworkflow
 
-    # Collect all release candidates and release
-    release:
-        needs: [ cli ]
-        runs-on: ubuntu-latest
-        steps:
-            -   name: 'Check out repository'
-                uses: actions/checkout@v3
-                with:
-                    fetch-depth: 0 # otherwise, pushing refs to dest repo fails
+  # Collect all release candidates and release
+  release:
+    needs: [ cli ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # otherwise, pushing refs to dest repo fails
 
-            -   name: 'Checkout tag'
-                run: |
-                    git fetch --all
-                    git checkout --progress --force refs/tags/${{ github.event.inputs.version }}
+      - name: 'Checkout tag'
+        run: |
+          git fetch --all
+          git checkout --progress --force refs/tags/${{ github.event.inputs.version }}
 
-            -   name: 'Download all build artifacts'
-                uses: actions/download-artifact@v3
+      - name: 'Download all build artifacts'
+        uses: actions/download-artifact@v3
 
-            -   name: 'Set up Java'
-                uses: actions/setup-java@v3
-                with:
-                    java-version: ${{ env.JAVA_VERSION }}
-                    distribution: ${{ env.JAVA_DISTRO }}
+      - name: 'Set up Java'
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRO }}
 
-            -   name: 'Cache Maven packages'
-                uses: actions/cache@v3
-                with:
-                    path: ~/.m2/repository
-                    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-                    restore-keys: ${{ runner.os }}-maven-
+      - name: 'Cache Maven packages'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
-            -   name: 'Release with JReleaser'
-                env:
-                    JRELEASER_GITHUB_TOKEN: ${{ secrets.SKUNKWORKS_RABOT_PAT }}
-                    JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
-                    JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
-                    JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-                run: mvn -N -B -ntp --file pom.xml -DartifactsDir=artifacts jreleaser:full-release
+      - name: 'Release with JReleaser'
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.SKUNKWORKS_RABOT_PAT }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
+        run: mvn -N -B -ntp -DartifactsDir=artifacts jreleaser:full-release
