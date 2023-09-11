@@ -24,13 +24,9 @@ class PullRequestOpenCommand(
     private val browserUtils: BrowserUtils,
     private val outputHandler: OutputHandler,
 ) : Runnable {
-
-    // This is just needed for autocompletion.
     @Mixin
     lateinit var contextAwareness: ContextAwareness
 
-    // This is just needed for autocompletion.
-    // It allows to autocomplete PRs based on repository (ret pr open -r=rt <TAB>)
     @Option(
         names = ["--repository", "-r"],
         description = ["Filter on repository"],
