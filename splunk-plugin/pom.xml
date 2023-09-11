@@ -133,6 +133,7 @@
                             </execution>
                             <execution>
                                 <id>rename-alfred-workflow</id>
+                                <phase>package</phase>
                                 <configuration>
                                     <target>
                                         <move
@@ -169,7 +170,7 @@
                             </execution>
                             <execution>
                                 <id>package-alfred-workflow</id>
-                                <phase>package</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
