@@ -51,22 +51,6 @@
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
 
-<!--        <resources>-->
-<!--            <resource>-->
-<!--                <directory>src/main/resources</directory>-->
-<!--                <filtering>true</filtering>-->
-<!--                <includes>-->
-<!--                    <include>alfred/info.plist</include>-->
-<!--                </includes>-->
-<!--            </resource>-->
-<!--            <resource>-->
-<!--                <directory>src/main/resources</directory>-->
-<!--                <excludes>-->
-<!--                    <exclude>alfred/info.plist</exclude>-->
-<!--                </excludes>-->
-<!--            </resource>-->
-<!--        </resources>-->
-
         <plugins>
             <plugin>
                 <groupId>io.quarkus.platform</groupId>
