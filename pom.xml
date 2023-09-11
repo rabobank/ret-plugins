@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.rabobank</groupId>
     <artifactId>ret-plugins</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://github.com/rabobank/ret-plugins</url>
     <description>RET Engineering Tools</description>
