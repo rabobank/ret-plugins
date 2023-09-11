@@ -3,6 +3,7 @@ package io.rabobank.ret.splunk.plugin
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.splunk.plugin.output.OutputHandler
 import io.rabobank.ret.splunk.plugin.splunk.SplunkPluginConfig
+import io.rabobank.ret.splunk.plugin.splunk.SplunkProject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,6 +27,7 @@ class AutoCompleteCommandTest {
         val command = AutoCompleteCommand(splunkConfig, outputHandler, IntelliSearch())
         commandLine = CommandLine(command)
         whenever(splunkConfig.config.indexes).thenReturn(indexes)
+        whenever(splunkConfig.config.projects).thenReturn(projects.map(::SplunkProject))
     }
 
     @Test
@@ -45,6 +47,15 @@ class AutoCompleteCommandTest {
         verify(outputHandler).listIndexes(expectedIndexes)
     }
 
+    @ParameterizedTest
+    @MethodSource("matchProjects")
+    fun `should return only matched projects`(word: String, expectedProjects: List<String>) {
+        val exitCode = commandLine.execute("projects", "--word=$word")
+        assertThat(exitCode).isEqualTo(0)
+
+        verify(outputHandler).listProjects(expectedProjects)
+    }
+
     companion object {
         @JvmStatic
         fun matchIndexes() = listOf(
@@ -53,6 +64,14 @@ class AutoCompleteCommandTest {
             Arguments.of("nothing", emptyList<String>()),
         )
 
+        @JvmStatic
+        fun matchProjects() = listOf(
+            Arguments.of("", projects),
+            Arguments.of("1", listOf("project1")),
+            Arguments.of("nothing", emptyList<String>()),
+        )
+
         private val indexes = listOf("index1", "index2", "my-index")
+        private val projects = listOf("project1", "project2", "my-project")
     }
 }

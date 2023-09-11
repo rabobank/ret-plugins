@@ -21,9 +21,7 @@ class AutoCompleteCommand(
     }
 
     @Command(name = "projects")
-    fun printProjects(
-        @Option(names = ["--word", "-w"]) word: String?,
-    ) {
+    fun printProjects(@Option(names = ["--word", "-w"]) word: String?) {
         outputHandler.listProjects(
             splunkConfig.config.projects
                 .map { it.name }
