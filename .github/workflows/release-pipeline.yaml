@@ -84,7 +84,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven-
 
       - name: 'Build Native Image'
-        run: mvn -B -ntp -Pnative-plugin package antrun:run@rename-alfred-workflow
+        run: mvn -B -ntp -Pnative-plugin package
 
       - name: 'Upload build artifact'
         uses: actions/upload-artifact@v3
