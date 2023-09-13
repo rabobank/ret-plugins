@@ -138,6 +138,12 @@
                                         </path>
                                         <platform>osx-x86_64</platform>
                                     </artifact>
+                                    <artifact>
+                                        <path>
+                                            {{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}.alfredworkflow
+                                        </path>
+                                        <platform>universal</platform>
+                                    </artifact>
                                 </artifacts>
                             </git-plugin>
                             <splunk-plugin>
@@ -154,6 +160,12 @@
                                             {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip
                                         </path>
                                         <platform>osx-x86_64</platform>
+                                    </artifact>
+                                    <artifact>
+                                        <path>
+                                            {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}.alfredworkflow
+                                        </path>
+                                        <platform>universal</platform>
                                     </artifact>
                                 </artifacts>
                             </splunk-plugin>
