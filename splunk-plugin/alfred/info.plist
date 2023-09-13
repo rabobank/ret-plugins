@@ -328,6 +328,6 @@
 	<key>version</key>
 	<string>@project.version@</string>
 	<key>webaddress</key>
-	<string>https://github.com/rabobank/ret-plugins/splunk</string>
+	<string>https://github.com/rabobank/ret-plugins/tree/main/splunk-plugin</string>
 </dict>
 </plist>
