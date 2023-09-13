@@ -128,6 +128,11 @@
                                 <artifacts>
                                     <artifact>
                                         <path>
+                                            {{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}.alfredworkflow
+                                        </path>
+                                    </artifact>
+                                    <artifact>
+                                        <path>
                                             {{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip
                                         </path>
                                         <platform>linux-x86_64</platform>
@@ -138,17 +143,16 @@
                                         </path>
                                         <platform>osx-x86_64</platform>
                                     </artifact>
-                                    <artifact>
-                                        <path>
-                                            {{artifactsDir}}/git-plugin/target/distributions/{{distributionName}}-{{projectVersion}}.alfredworkflow
-                                        </path>
-                                        <platform>universal</platform>
-                                    </artifact>
                                 </artifacts>
                             </git-plugin>
                             <splunk-plugin>
                                 <type>BINARY</type>
                                 <artifacts>
+                                    <artifact>
+                                        <path>
+                                            {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}.alfredworkflow
+                                        </path>
+                                    </artifact>
                                     <artifact>
                                         <path>
                                             {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip
@@ -160,12 +164,6 @@
                                             {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip
                                         </path>
                                         <platform>osx-x86_64</platform>
-                                    </artifact>
-                                    <artifact>
-                                        <path>
-                                            {{artifactsDir}}/splunk-plugin/target/distributions/{{distributionName}}-{{projectVersion}}.alfredworkflow
-                                        </path>
-                                        <platform>universal</platform>
                                     </artifact>
                                 </artifacts>
                             </splunk-plugin>
