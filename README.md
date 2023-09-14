@@ -161,10 +161,10 @@ The final url that will be used by the Splunk plugin has this format:
 You can search on Splunk and already type your query in the commandline, before opening the Splunk web page. Optionally,
 RET allows you to specify some properties (Cloud Foundry application name and index).
 
-Usage: `ret splunk [-ica] [-a=appName] [-i=index] [<queryParts>...]`
+Usage: `ret splunk [-ica] [-p=projectName] [-i=index] [<queryParts>...]`
 
 Flags:
-- `-a, --app=appName` Provide the CF (Cloud Foundry) app name to query on.
+- `-p, --project=projectName` Provide the project (git repo) name to query on.
     - Context-awareness: will fill in the current Git repository name.
 - `-i, --index=index` Provide the index to query on.
 - `-ica, --ignore-context-aware` Ignore context awareness
@@ -177,7 +177,7 @@ Examples:
 $ ret splunk
 (Opens Splunk with query "cf_app_name=<Your Git repo name>", or navigate to the Splunk search page without context-awareness)
 
-$ ret splunk -i=my-index -a=admin-service loglevel != INFO
+$ ret splunk -i=my-index -p=admin-service loglevel != INFO
 (Opens Splunk with query "index=my-index cf_app_name=admin-service loglevel != INFO")
 ```
 
