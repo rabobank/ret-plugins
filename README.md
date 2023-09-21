@@ -147,14 +147,32 @@ Arguments:
 
 Upon installation, RET prompts you for the following config properties:
 
-| Property        | Description                                                     |
-|-----------------|-----------------------------------------------------------------|
-| splunk_base_url | The base url where your Splunk is deployed                      |
-| splunk_app      | The app name of your Splunk instance that should be searched on |
+| Property        | Description                                                                     |
+|-----------------|---------------------------------------------------------------------------------|
+| splunk_base_url | The base url where your Splunk is deployed                                      |
+| splunk_app      | The app name of your Splunk instance that should be searched on                 |
+| indexes         | Indexes of your Splunk instance that should be searched on (optional)           |
+| search_field    | Unique identifier of your Splunk instance that should be searched on (optional) |
 
 The final url that will be used by the Splunk plugin has this format:
 ```
 "${splunkBaseUrl}/en-GB/app/${splunkApp}/search"
+```
+
+Configuration example
+```
+{
+  "plugin_version" : "0.1.0",
+  "base_url" : "https://my.splunk.com:8080",
+  "app" : "my_app",
+  "indexes" : "my_index_a, my_index_b",
+  "search_field" : "app_name",
+  "projects" : [ {
+    "name" : "my-project-x"
+  }, {
+    "name" : "my-project-y"
+  } ]
+}
 ```
 
 ### Search on Splunk
