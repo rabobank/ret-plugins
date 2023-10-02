@@ -21,6 +21,7 @@ data class AzureResponse<T>(
 ) {
     companion object {
         fun <T> of(vararg items: T): AzureResponse<T> = AzureResponse(items.size, items.asList())
+
         fun <T> of(items: List<T>): AzureResponse<T> = AzureResponse(items.size, items)
     }
 }
@@ -31,12 +32,13 @@ data class PullRequest(
     @JsonProperty("repository") val repository: Repository,
     @JsonProperty("reviewers") val reviewers: List<Reviewer>,
 ) : GitDomainConvertible<GenericPullRequest> {
-    override fun toGenericDomain() = GenericPullRequest(
-        id,
-        title,
-        repository.toGenericDomain(),
-        reviewers.toGenericDomain(),
-    )
+    override fun toGenericDomain() =
+        GenericPullRequest(
+            id,
+            title,
+            repository.toGenericDomain(),
+            reviewers.toGenericDomain(),
+        )
 }
 
 data class PullRequestCreated(
@@ -53,7 +55,9 @@ data class CreatePullRequest(
     @JsonProperty("description") val description: String,
 )
 
-data class Reviewer(@JsonProperty("uniqueName") val uniqueName: String) : GitDomainConvertible<GenericReviewer> {
+data class Reviewer(
+    @JsonProperty("uniqueName") val uniqueName: String,
+) : GitDomainConvertible<GenericReviewer> {
     override fun toGenericDomain() = GenericReviewer(uniqueName)
 }
 
@@ -64,7 +68,9 @@ data class Repository(
     override fun toGenericDomain() = GenericRepository(name, defaultBranch)
 }
 
-data class Branch(@JsonProperty("name") val name: String) : GitDomainConvertible<GenericBranch> {
+data class Branch(
+    @JsonProperty("name") val name: String,
+) : GitDomainConvertible<GenericBranch> {
     override fun toGenericDomain(): GenericBranch {
         val shortName = name.substringAfter("refs/heads/")
         return GenericBranch(name, shortName)
@@ -90,13 +96,14 @@ data class PipelineRun(
     @JsonProperty("state") val state: PipelineRunState,
     @JsonProperty("result") val result: PipelineRunResult?,
 ) : GitDomainConvertible<GenericPipelineRun> {
-    override fun toGenericDomain() = GenericPipelineRun(
-        id,
-        name,
-        createdDate,
-        state.toGenericDomain(),
-        result?.toGenericDomain(),
-    )
+    override fun toGenericDomain() =
+        GenericPipelineRun(
+            id,
+            name,
+            createdDate,
+            state.toGenericDomain(),
+            result?.toGenericDomain(),
+        )
 }
 
 enum class PipelineRunState(private val genericEquivalent: GenericPipelineRunState) :

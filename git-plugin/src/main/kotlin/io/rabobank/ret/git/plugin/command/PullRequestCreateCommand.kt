@@ -25,7 +25,6 @@ class PullRequestCreateCommand(
     private val outputHandler: OutputHandler,
     private val retContext: RetContext,
 ) : Runnable {
-
     @Mixin
     lateinit var contextAwareness: ContextAwareness
 
@@ -54,23 +53,25 @@ class PullRequestCreateCommand(
     var filterRepository: String? = null
 
     override fun run() {
-        val repositoryName = requireNotNull(filterRepository ?: retContext.gitRepository) {
-            "Could not determine repository from context. Please provide the repository."
-        }
+        val repositoryName =
+            requireNotNull(filterRepository ?: retContext.gitRepository) {
+                "Could not determine repository from context. Please provide the repository."
+            }
         val contextBranch = retContext.gitBranch
         val sourceBranch = providedBranch ?: contextBranch
 
         if (!noPrompt) {
-            val branch = if (autofillBranchRequired(
-                    filterRepository,
-                    providedBranch,
-                    contextBranch,
-                )
-            ) {
-                sourceBranch
-            } else {
-                null
-            }
+            val branch =
+                if (autofillBranchRequired(
+                        filterRepository,
+                        providedBranch,
+                        contextBranch,
+                    )
+                ) {
+                    sourceBranch
+                } else {
+                    null
+                }
 
             val prCreateURL = gitProvider.urlFactory.pullRequestCreate(repositoryName, branch)
             browserUtils.openUrl(prCreateURL)
@@ -84,24 +85,27 @@ class PullRequestCreateCommand(
             }
 
             try {
-                val createPullRequestResponse = gitProvider.createPullRequest(
-                    repositoryName,
-                    "refs/heads/$sourceBranch",
-                    defaultBranch,
-                    "Merge $sourceBranch into ${repository.defaultBranch}",
-                    "PR created by RET using `ret pr create --no-prompt`.",
-                )
-                val pullRequestUrl = gitProvider.urlFactory.pullRequest(
-                    repositoryName,
-                    createPullRequestResponse.pullRequestId,
-                ).toString()
+                val createPullRequestResponse =
+                    gitProvider.createPullRequest(
+                        repositoryName,
+                        "refs/heads/$sourceBranch",
+                        defaultBranch,
+                        "Merge $sourceBranch into ${repository.defaultBranch}",
+                        "PR created by RET using `ret pr create --no-prompt`.",
+                    )
+                val pullRequestUrl =
+                    gitProvider.urlFactory.pullRequest(
+                        repositoryName,
+                        createPullRequestResponse.pullRequestId,
+                    ).toString()
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
-                val message = if (e.response.status == CONFLICT) {
-                    "A pull request for this branch already exists!"
-                } else {
-                    "Creating a PR directly failed."
-                }
+                val message =
+                    if (e.response.status == CONFLICT) {
+                        "A pull request for this branch already exists!"
+                    } else {
+                        "Creating a PR directly failed."
+                    }
 
                 throw IllegalStateException(message, e)
             }

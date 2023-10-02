@@ -18,9 +18,10 @@ import picocli.CommandLine
 class AutoCompleteCommandTest {
     private lateinit var commandLine: CommandLine
     private val outputHandler = mock<OutputHandler>()
-    private val splunkConfig = mock<SplunkPluginConfig> {
-        whenever(it.config).thenReturn(mock())
-    }
+    private val splunkConfig =
+        mock<SplunkPluginConfig> {
+            whenever(it.config).thenReturn(mock())
+        }
 
     @BeforeEach
     fun beforeEach() {
@@ -40,7 +41,10 @@ class AutoCompleteCommandTest {
 
     @ParameterizedTest
     @MethodSource("matchIndexes")
-    fun `should return only matched indexes`(word: String, expectedIndexes: List<String>) {
+    fun `should return only matched indexes`(
+        word: String,
+        expectedIndexes: List<String>,
+    ) {
         val exitCode = commandLine.execute("indexes", "--word=$word")
         assertThat(exitCode).isEqualTo(0)
 
@@ -49,7 +53,10 @@ class AutoCompleteCommandTest {
 
     @ParameterizedTest
     @MethodSource("matchProjects")
-    fun `should return only matched projects`(word: String, expectedProjects: List<String>) {
+    fun `should return only matched projects`(
+        word: String,
+        expectedProjects: List<String>,
+    ) {
         val exitCode = commandLine.execute("projects", "--word=$word")
         assertThat(exitCode).isEqualTo(0)
 
@@ -58,18 +65,20 @@ class AutoCompleteCommandTest {
 
     companion object {
         @JvmStatic
-        fun matchIndexes() = listOf(
-            Arguments.of("", indexes),
-            Arguments.of("1", listOf("index1")),
-            Arguments.of("nothing", emptyList<String>()),
-        )
+        fun matchIndexes() =
+            listOf(
+                Arguments.of("", indexes),
+                Arguments.of("1", listOf("index1")),
+                Arguments.of("nothing", emptyList<String>()),
+            )
 
         @JvmStatic
-        fun matchProjects() = listOf(
-            Arguments.of("", projects),
-            Arguments.of("1", listOf("project1")),
-            Arguments.of("nothing", emptyList<String>()),
-        )
+        fun matchProjects() =
+            listOf(
+                Arguments.of("", projects),
+                Arguments.of("1", listOf("project1")),
+                Arguments.of("nothing", emptyList<String>()),
+            )
 
         private val indexes = listOf("index1", "index2", "my-index")
         private val projects = listOf("project1", "project2", "my-project")

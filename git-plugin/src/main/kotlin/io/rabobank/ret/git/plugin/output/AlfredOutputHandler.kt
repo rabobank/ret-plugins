@@ -9,7 +9,6 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 
 class AlfredOutputHandler(private val retConsole: RetConsole, private val objectMapper: ObjectMapper) : OutputHandler {
-
     override fun listPRs(list: List<PullRequest>) {
         throw UnsupportedOperationException()
     }

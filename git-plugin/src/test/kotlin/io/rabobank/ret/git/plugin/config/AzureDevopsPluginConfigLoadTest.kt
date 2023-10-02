@@ -16,13 +16,14 @@ import kotlin.io.path.createDirectories
 
 class AzureDevopsPluginConfigLoadTest {
     private val pluginConfigFileName = "git.json"
-    private val pluginConfig = AzureDevopsPluginConfig()
-        .apply {
-            pluginName = "git"
-            objectMapper = jacksonObjectMapper()
-            osUtils = spy()
-            retConfig = mock()
-        }
+    private val pluginConfig =
+        AzureDevopsPluginConfig()
+            .apply {
+                pluginName = "git"
+                objectMapper = jacksonObjectMapper()
+                osUtils = spy()
+                retConfig = mock()
+            }
 
     @TempDir
     lateinit var mockUserHomeDirectory: Path
@@ -32,12 +33,13 @@ class AzureDevopsPluginConfigLoadTest {
         whenever(pluginConfig.osUtils.getHomeDirectory()).thenReturn(mockUserHomeDirectory.toString())
         pluginConfig.osUtils.getRetPluginsDirectory().createDirectories()
 
-        val config = mapOf(
-            "azure_devops_email" to "manks@live.com",
-            "azure_devops_pat" to "this_is_a_pat",
-            "azure_devops_project" to "this_is_the_project",
-            "azure_devops_organization" to "my-organization",
-        )
+        val config =
+            mapOf(
+                "azure_devops_email" to "manks@live.com",
+                "azure_devops_pat" to "this_is_a_pat",
+                "azure_devops_project" to "this_is_the_project",
+                "azure_devops_organization" to "my-organization",
+            )
         pluginConfig.objectMapper.writeValue(
             pluginConfig.osUtils.getRetPluginsDirectory().resolve(pluginConfigFileName).toFile(),
             config,

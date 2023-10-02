@@ -31,9 +31,10 @@ class RepositoryCommand(
             completionCandidates = RepositoryCompletionCandidates::class,
         ) repositoryName: String?,
     ) {
-        val repository = requireNotNull(repositoryName ?: retContext.gitRepository) {
-            "No repository provided and ret cannot get repository from context."
-        }
+        val repository =
+            requireNotNull(repositoryName ?: retContext.gitRepository) {
+                "No repository provided and ret cannot get repository from context."
+            }
 
         val repositories = gitProvider.getAllRepositories()
 

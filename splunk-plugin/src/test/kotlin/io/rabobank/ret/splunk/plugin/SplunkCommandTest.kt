@@ -43,23 +43,25 @@ class SplunkCommandTest {
 
     @BeforeEach
     fun before() {
-        val splunkConfig = mapOf(
-            "base_url" to "splunk.base.url",
-            "app" to "general",
-        )
+        val splunkConfig =
+            mapOf(
+                "base_url" to "splunk.base.url",
+                "app" to "general",
+            )
         val objectMapper = jacksonObjectMapper()
         objectMapper.writeValue(mockedOsUtils.getPluginConfig("splunk").toFile(), splunkConfig)
 
-        val splunkCommand = SplunkCommand(
-            mockedBrowserUtils,
-            mockedRetContext,
-            SplunkPluginConfig().apply {
-                pluginName = "splunk"
-                this.objectMapper = objectMapper
-                osUtils = mockedOsUtils
-                retConfig = mock()
-            },
-        )
+        val splunkCommand =
+            SplunkCommand(
+                mockedBrowserUtils,
+                mockedRetContext,
+                SplunkPluginConfig().apply {
+                    pluginName = "splunk"
+                    this.objectMapper = objectMapper
+                    osUtils = mockedOsUtils
+                    retConfig = mock()
+                },
+            )
 
         splunkCommand.contextAwareness = ContextAwareness()
 
@@ -73,7 +75,10 @@ class SplunkCommandTest {
 
     @ParameterizedTest
     @CsvSource("--index,--project", "-i,-p")
-    fun `should open Splunk Dashboard with index and app provided`(indexFlag: String, projectFlag: String) {
+    fun `should open Splunk Dashboard with index and app provided`(
+        indexFlag: String,
+        projectFlag: String,
+    ) {
         val index = "splunk-index"
         val project = "my-application"
 

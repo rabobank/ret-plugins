@@ -19,7 +19,10 @@ interface GitProvider {
 
     fun getRepositoryById(repository: String): Repository
 
-    fun getAllRefs(repository: String, filter: String): List<Branch>
+    fun getAllRefs(
+        repository: String,
+        filter: String,
+    ): List<Branch>
 
     fun getAllPipelines(): List<Pipeline>
 

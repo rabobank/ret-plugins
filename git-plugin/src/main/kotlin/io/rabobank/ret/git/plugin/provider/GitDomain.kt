@@ -34,13 +34,11 @@ data class Branch(
 data class Pipeline(
     val id: Int,
     val name: String,
-
     /**
      * The container of where this pipeline belongs to.
      * For example the folder in Azure DevOps or the repository in GitHub.
      */
     val container: String,
-
     /**
      * A string which uniquely identifies this pipeline
      * For example for Azure DevOps: <folder>\<pipeline name> or for GitHub: <repo>/<pipeline name>

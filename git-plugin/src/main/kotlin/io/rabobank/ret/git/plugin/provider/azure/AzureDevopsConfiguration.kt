@@ -12,7 +12,6 @@ class AzureDevopsConfiguration(
     private val pluginConfig: AzureDevopsPluginConfig,
     @ConfigProperty(name = "azure.devops.baseUrl") private val azureDevopsBaseUrl: String,
 ) {
-
     @Produces
     fun azureDevopsRestClient(): AzureDevopsClient =
         RestClientBuilder.newBuilder()

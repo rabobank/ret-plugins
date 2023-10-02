@@ -8,7 +8,6 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 
 class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
-
     override fun println(message: String) {
         retConsole.out(message)
     }

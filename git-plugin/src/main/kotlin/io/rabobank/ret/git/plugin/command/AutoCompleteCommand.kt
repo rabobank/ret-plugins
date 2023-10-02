@@ -31,7 +31,9 @@ class AutoCompleteCommand(
     lateinit var contextAwareness: ContextAwareness
 
     @Command(name = "pipeline")
-    fun printPipelines(@Option(names = ["--word", "-w"]) word: String?) {
+    fun printPipelines(
+        @Option(names = ["--word", "-w"]) word: String?,
+    ) {
         val pipelines = gitProvider.getAllPipelines()
 
         outputHandler.listPipelines(
@@ -49,11 +51,12 @@ class AutoCompleteCommand(
             description = ["Filter on pipeline"],
         ) pipelineIdFlag: String,
     ) {
-        val pipelineId = if (pipelineIdFlag.matches(DIGITS_PATTERN)) {
-            pipelineIdFlag
-        } else {
-            getPipelineByUniqueName(pipelineIdFlag).id.toString()
-        }
+        val pipelineId =
+            if (pipelineIdFlag.matches(DIGITS_PATTERN)) {
+                pipelineIdFlag
+            } else {
+                getPipelineByUniqueName(pipelineIdFlag).id.toString()
+            }
 
         val pipelineRuns = gitProvider.getPipelineRuns(pipelineId)
 
@@ -65,7 +68,9 @@ class AutoCompleteCommand(
     }
 
     @Command(name = "repository")
-    fun printRepositories(@Option(names = ["--word", "-w"]) word: String?) {
+    fun printRepositories(
+        @Option(names = ["--word", "-w"]) word: String?,
+    ) {
         val repositories = gitProvider.getAllRepositories()
 
         outputHandler.listRepositories(
@@ -107,13 +112,14 @@ class AutoCompleteCommand(
         filterRepository: String? = null,
     ) {
         val prs = if (!notReviewed) gitProvider.getAllPullRequests() else gitProvider.getPullRequestsNotReviewedByUser()
-        val filteredPrs = prs
-            .filter { it.isFromRepository(filterRepository) }
-            .filter {
-                word == null ||
-                    intelliSearch.matches(word, it.title) ||
-                    intelliSearch.matches(word, it.repository.name)
-            }
+        val filteredPrs =
+            prs
+                .filter { it.isFromRepository(filterRepository) }
+                .filter {
+                    word == null ||
+                        intelliSearch.matches(word, it.title) ||
+                        intelliSearch.matches(word, it.repository.name)
+                }
         outputHandler.listPRs(filteredPrs)
     }
 

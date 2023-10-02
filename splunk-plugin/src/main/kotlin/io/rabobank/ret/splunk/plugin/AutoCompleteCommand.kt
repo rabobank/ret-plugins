@@ -13,7 +13,9 @@ class AutoCompleteCommand(
     private val intelliSearch: IntelliSearch,
 ) {
     @Command(name = "indexes")
-    fun printIndexes(@Option(names = ["--word", "-w"]) word: String?) {
+    fun printIndexes(
+        @Option(names = ["--word", "-w"]) word: String?,
+    ) {
         outputHandler.listIndexes(
             splunkConfig.config.indexes
                 .filter { word == null || intelliSearch.matches(word, it) },
@@ -21,7 +23,9 @@ class AutoCompleteCommand(
     }
 
     @Command(name = "projects")
-    fun printProjects(@Option(names = ["--word", "-w"]) word: String?) {
+    fun printProjects(
+        @Option(names = ["--word", "-w"]) word: String?,
+    ) {
         outputHandler.listProjects(
             splunkConfig.config.projects
                 .map { it.name }

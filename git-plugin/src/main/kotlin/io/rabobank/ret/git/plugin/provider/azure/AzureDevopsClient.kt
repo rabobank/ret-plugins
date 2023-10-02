@@ -13,7 +13,6 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient
 @RegisterClientHeaders(AuthorizationHeaderInjector::class)
 @RegisterProvider(LoggingFilter::class)
 interface AzureDevopsClient {
-
     @GET
     @Path("/git/pullrequests")
     fun getAllPullRequests(): AzureResponse<PullRequest>
@@ -55,5 +54,7 @@ interface AzureDevopsClient {
 
     @GET
     @Path("/pipelines/{pipelineId}/runs")
-    fun getPipelineRuns(@PathParam("pipelineId") pipelineId: String): AzureResponse<PipelineRun>
+    fun getPipelineRuns(
+        @PathParam("pipelineId") pipelineId: String,
+    ): AzureResponse<PipelineRun>
 }

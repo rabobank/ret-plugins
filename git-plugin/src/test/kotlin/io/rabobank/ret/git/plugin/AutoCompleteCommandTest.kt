@@ -43,23 +43,25 @@ class AutoCompleteCommandTest {
 
     @BeforeEach
     fun beforeEach() {
-        val command = AutoCompleteCommand(
-            gitProvider,
-            IntelliSearch(),
-            outputHandler,
-            mockedRetContext,
-        )
+        val command =
+            AutoCompleteCommand(
+                gitProvider,
+                IntelliSearch(),
+                outputHandler,
+                mockedRetContext,
+            )
 
         command.contextAwareness = ContextAwareness()
         commandLine = CommandLine(command)
         commandLine.out = PrintWriter(output)
 
-        allMockedRepositories = listOf(
-            Repository("admin-service", "refs/heads/master"),
-            Repository("client-service", "refs/heads/master"),
-            Repository("generic-project", "refs/heads/master"),
-            Repository("open-source-tool", "refs/heads/master"),
-        )
+        allMockedRepositories =
+            listOf(
+                Repository("admin-service", "refs/heads/master"),
+                Repository("client-service", "refs/heads/master"),
+                Repository("generic-project", "refs/heads/master"),
+                Repository("open-source-tool", "refs/heads/master"),
+            )
         whenever(gitProvider.getAllRepositories()).thenReturn(allMockedRepositories)
         whenever(
             gitProvider.getAllRefs(
@@ -73,23 +75,27 @@ class AutoCompleteCommandTest {
                 Branch("refs/heads/feature/def", "feature/def"),
             ),
         )
-        allMockedPullRequests = listOf(
-            PullRequest(
-                "1234",
-                "PR Title",
-                Repository("repo", "refs/heads/master"),
-                listOf(Reviewer("manks@live.com")),
-            ),
-            PullRequest(
-                "1235",
-                "Add logo",
-                Repository("generic-project", "refs/heads/master"),
-                listOf(Reviewer("manks@live.com")),
-            ),
-            PullRequest("1241", "NOJIRA: ahum", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
-            PullRequest("1271", "NOJIRA: MANKS", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
-            PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
-        )
+        allMockedPullRequests =
+            listOf(
+                PullRequest(
+                    "1234",
+                    "PR Title",
+                    Repository("repo", "refs/heads/master"),
+                    listOf(Reviewer("manks@live.com")),
+                ),
+                PullRequest(
+                    "1235",
+                    "Add logo",
+                    Repository("generic-project", "refs/heads/master"),
+                    listOf(Reviewer("manks@live.com")),
+                ),
+                PullRequest("1241", "NOJIRA: ahum", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
+                PullRequest(
+                    "1271", "NOJIRA: MANKS",
+                    Repository("ret-engineering-tools", "refs/heads/master"), listOf(),
+                ),
+                PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
+            )
         whenever(gitProvider.getAllPullRequests()).thenReturn(allMockedPullRequests)
         whenever(gitProvider.getPullRequestsNotReviewedByUser()).thenReturn(
             allMockedPullRequests.filter {
@@ -108,7 +114,10 @@ class AutoCompleteCommandTest {
 
     @ParameterizedTest
     @MethodSource("repositoryTest")
-    fun `should return all repository names that matches the word`(word: String, repositories: List<Repository>) {
+    fun `should return all repository names that matches the word`(
+        word: String,
+        repositories: List<Repository>,
+    ) {
         val exitCode = commandLine.execute("repository", "--word=$word")
         assertThat(exitCode).isEqualTo(0)
 
@@ -155,7 +164,10 @@ class AutoCompleteCommandTest {
         )
     }
 
-    private fun verifyBranchesOutputted(exitCode: Int, branches: List<String>) {
+    private fun verifyBranchesOutputted(
+        exitCode: Int,
+        branches: List<String>,
+    ) {
         assertThat(exitCode).isEqualTo(0)
         verify(outputHandler).listBranches(
             branches.map { Branch(it, it.removePrefix("refs/heads/")) },
@@ -368,13 +380,14 @@ class AutoCompleteCommandTest {
     @Test
     fun `should autocomplete pipeline-runs using the pipeline folder and name as well as id`() {
         val pipeline = Pipeline(123456, "pipeline_name", "folder", "folder\\pipeline_name")
-        val expectedResponse = PipelineRun(
-            123,
-            "name",
-            staticCreatedDate,
-            PipelineRunState.COMPLETED,
-            PipelineRunResult.CANCELED,
-        )
+        val expectedResponse =
+            PipelineRun(
+                123,
+                "name",
+                staticCreatedDate,
+                PipelineRunState.COMPLETED,
+                PipelineRunResult.CANCELED,
+            )
         whenever(gitProvider.getAllPipelines()).thenReturn(
             listOf(
                 pipeline,
@@ -389,7 +402,10 @@ class AutoCompleteCommandTest {
         verify(outputHandler).listPipelineRuns(listOf(expectedResponse))
     }
 
-    private fun verifyPullRequestsOutputted(pullRequestIds: Set<String>, vararg args: String) {
+    private fun verifyPullRequestsOutputted(
+        pullRequestIds: Set<String>,
+        vararg args: String,
+    ) {
         val exitCode = commandLine.execute(*args)
 
         assertThat(exitCode).isEqualTo(0)
@@ -402,64 +418,78 @@ class AutoCompleteCommandTest {
         private val staticCreatedDate = ZonedDateTime.parse("1993-04-20T09:51:15.372293+01:00")
 
         @JvmStatic
-        fun repositoryTest() = listOf(
-            Arguments.of("as", listOf(Repository("admin-service", "refs/heads/master"))),
-            Arguments.of("admin-service", listOf(Repository("admin-service", "refs/heads/master"))),
-            Arguments.of(
-                "service",
-                listOf(
-                    Repository("admin-service", "refs/heads/master"),
-                    Repository("client-service", "refs/heads/master"),
+        fun repositoryTest() =
+            listOf(
+                Arguments.of("as", listOf(Repository("admin-service", "refs/heads/master"))),
+                Arguments.of("admin-service", listOf(Repository("admin-service", "refs/heads/master"))),
+                Arguments.of(
+                    "service",
+                    listOf(
+                        Repository("admin-service", "refs/heads/master"),
+                        Repository("client-service", "refs/heads/master"),
+                    ),
                 ),
-            ),
-        )
+            )
 
         @JvmStatic
-        fun pipelineRunTest() = listOf(
-            Arguments.of(
-                "123",
-                listOf(
-                    PipelineRun(123, "name", staticCreatedDate, PipelineRunState.COMPLETED, PipelineRunResult.CANCELED),
-                ),
-            ),
-            Arguments.of(
-                "name 3",
-                listOf(
-                    PipelineRun(
-                        789,
-                        "name 3",
-                        staticCreatedDate,
-                        PipelineRunState.COMPLETED,
-                        PipelineRunResult.SUCCEEDED,
+        fun pipelineRunTest() =
+            listOf(
+                Arguments.of(
+                    "123",
+                    listOf(
+                        PipelineRun(
+                            123,
+                            "name",
+                            staticCreatedDate,
+                            PipelineRunState.COMPLETED,
+                            PipelineRunResult.CANCELED,
+                        ),
                     ),
                 ),
-            ),
-            Arguments.of(
-                "compl",
-                listOf(
-                    PipelineRun(123, "name", staticCreatedDate, PipelineRunState.COMPLETED, PipelineRunResult.CANCELED),
-                    PipelineRun(
-                        789,
-                        "name 3",
-                        staticCreatedDate,
-                        PipelineRunState.COMPLETED,
-                        PipelineRunResult.SUCCEEDED,
+                Arguments.of(
+                    "name 3",
+                    listOf(
+                        PipelineRun(
+                            789,
+                            "name 3",
+                            staticCreatedDate,
+                            PipelineRunState.COMPLETED,
+                            PipelineRunResult.SUCCEEDED,
+                        ),
                     ),
                 ),
-            ),
-            Arguments.of(
-                "succee",
-                listOf(
-                    PipelineRun(
-                        789,
-                        "name 3",
-                        staticCreatedDate,
-                        PipelineRunState.COMPLETED,
-                        PipelineRunResult.SUCCEEDED,
+                Arguments.of(
+                    "compl",
+                    listOf(
+                        PipelineRun(
+                            123,
+                            "name",
+                            staticCreatedDate,
+                            PipelineRunState.COMPLETED,
+                            PipelineRunResult.CANCELED,
+                        ),
+                        PipelineRun(
+                            789,
+                            "name 3",
+                            staticCreatedDate,
+                            PipelineRunState.COMPLETED,
+                            PipelineRunResult.SUCCEEDED,
+                        ),
                     ),
                 ),
-            ),
-            Arguments.of("non-existing", emptyList<PipelineRun>()),
-        )
+                Arguments.of(
+                    "succee",
+                    listOf(
+                        PipelineRun(
+                            789,
+                            "name 3",
+                            staticCreatedDate,
+                            PipelineRunState.COMPLETED,
+                            PipelineRunResult.SUCCEEDED,
+                        ),
+                    ),
+                ),
+                Arguments.of("non-existing", emptyList<PipelineRun>()),
+            )
     }
 }

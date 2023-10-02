@@ -6,9 +6,13 @@ import java.net.URL
 
 class TestUrlFactory(private val domain: String) : GitUrlFactory {
     override fun repository(repositoryName: String) = "$domain/repository/$repositoryName".toURL()
+
     override fun pipelineRun(pipelineRunId: String) = "$domain/pipeline/run/$pipelineRunId".toURL()
+
     override fun pipeline(pipelineId: String) = "$domain/pipeline/$pipelineId".toURL()
+
     override fun pipelineDashboard() = "$domain/pipeline".toURL()
+
     override fun pullRequest(
         repositoryName: String,
         pullRequestId: String,

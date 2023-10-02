@@ -9,12 +9,13 @@ import jakarta.enterprise.context.ApplicationScoped
 class AzureDevopsPluginConfig : Configurable() {
     val config by lazy { convertTo<AzureDevopsConfig>() }
 
-    override fun properties() = listOf(
-        ConfigurationProperty(EMAIL, "Enter your Azure email address", required = true),
-        ConfigurationProperty(PAT, "Enter your Azure Personal Access Token (PAT)", required = true),
-        ConfigurationProperty(PROJECT, "Enter your Azure project", required = true),
-        ConfigurationProperty(ORGANIZATION, "Enter your Azure organization", required = true),
-    )
+    override fun properties() =
+        listOf(
+            ConfigurationProperty(EMAIL, "Enter your Azure email address", required = true),
+            ConfigurationProperty(PAT, "Enter your Azure Personal Access Token (PAT)", required = true),
+            ConfigurationProperty(PROJECT, "Enter your Azure project", required = true),
+            ConfigurationProperty(ORGANIZATION, "Enter your Azure organization", required = true),
+        )
 
     private companion object {
         private const val EMAIL = "azure_devops_email"
