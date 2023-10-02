@@ -25,7 +25,6 @@ private const val BASE_URL = "https://test.git"
 
 @QuarkusTest
 internal class PullRequestOpenCommandTest {
-
     private val mockedGitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val outputHandler = mock<OutputHandler>()
@@ -33,11 +32,12 @@ internal class PullRequestOpenCommandTest {
 
     @BeforeEach
     fun before() {
-        val command = PullRequestOpenCommand(
-            mockedGitProvider,
-            mockedBrowserUtils,
-            outputHandler,
-        )
+        val command =
+            PullRequestOpenCommand(
+                mockedGitProvider,
+                mockedBrowserUtils,
+                outputHandler,
+            )
 
         command.contextAwareness = ContextAwareness()
 

@@ -10,17 +10,14 @@ class AzureDevopsProvider(
     private val pluginConfig: AzureDevopsPluginConfig,
     override val urlFactory: AzureDevopsUrlFactory,
 ) : GitProvider {
-
-    override fun getAllPullRequests() =
-        azureDevopsClient.getAllPullRequests().value.toGenericDomain()
+    override fun getAllPullRequests() = azureDevopsClient.getAllPullRequests().value.toGenericDomain()
 
     override fun getPullRequestsNotReviewedByUser() =
         getAllPullRequests().filterNot {
             it.reviewers.any { reviewer -> reviewer.uniqueName.equals(pluginConfig.config.email, true) }
         }
 
-    override fun getPullRequestById(id: String) =
-        azureDevopsClient.getPullRequestById(id).toGenericDomain()
+    override fun getPullRequestById(id: String) = azureDevopsClient.getPullRequestById(id).toGenericDomain()
 
     override fun createPullRequest(
         repository: String,
@@ -33,14 +30,15 @@ class AzureDevopsProvider(
         return azureDevopsClient.createPullRequest(repository, API_VERSION, creationDTO).toGenericDomain()
     }
 
-    override fun getAllRepositories() =
-        azureDevopsClient.getAllRepositories().value.toGenericDomain()
+    override fun getAllRepositories() = azureDevopsClient.getAllRepositories().value.toGenericDomain()
 
     override fun getRepositoryById(repository: String) =
         azureDevopsClient.getRepositoryById(repository).toGenericDomain()
 
-    override fun getAllRefs(repository: String, filter: String) =
-        azureDevopsClient.getAllRefs(repository, filter).value.toGenericDomain()
+    override fun getAllRefs(
+        repository: String,
+        filter: String,
+    ) = azureDevopsClient.getAllRefs(repository, filter).value.toGenericDomain()
 
     override fun getAllPipelines() = azureDevopsClient.getAllPipelines().value.toGenericDomain()
 

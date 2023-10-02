@@ -8,9 +8,11 @@ import picocli.CommandLine
 
 @ApplicationScoped
 class CommandLineConfiguration {
-
     @Produces
-    fun customCommandLine(factory: PicocliCommandLineFactory, outputHandler: OutputHandler): CommandLine =
+    fun customCommandLine(
+        factory: PicocliCommandLineFactory,
+        outputHandler: OutputHandler,
+    ): CommandLine =
         factory.create()
             .setExecutionExceptionHandler(ExceptionMessageHandler(outputHandler))
 }

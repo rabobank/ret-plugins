@@ -16,8 +16,12 @@ interface OutputHandler {
     }
 
     fun listPRs(list: List<PullRequest>)
+
     fun listRepositories(list: List<Repository>)
+
     fun listBranches(list: List<Branch>)
+
     fun listPipelines(list: List<Pipeline>)
+
     fun listPipelineRuns(list: List<PipelineRun>)
 }

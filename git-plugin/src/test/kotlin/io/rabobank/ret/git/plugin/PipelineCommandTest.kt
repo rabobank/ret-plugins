@@ -18,7 +18,6 @@ import java.net.URI
 import java.net.URL
 
 internal class PipelineCommandTest {
-
     private val browserUtilsMock = mock<BrowserUtils>()
     private val gitProviderMock = mock<GitProvider>()
     private lateinit var gitUrlFactory: GitUrlFactory

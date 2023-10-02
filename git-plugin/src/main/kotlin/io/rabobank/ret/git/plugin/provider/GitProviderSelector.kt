@@ -13,7 +13,6 @@ class GitProviderSelector(
     private val pluginConfig: AzureDevopsPluginConfig,
     private val azureDevopsUrlFactory: AzureDevopsUrlFactory,
 ) {
-
     @Produces
     fun gitProvider() = AzureDevopsProvider(azureDevopsClient, pluginConfig, azureDevopsUrlFactory)
 }

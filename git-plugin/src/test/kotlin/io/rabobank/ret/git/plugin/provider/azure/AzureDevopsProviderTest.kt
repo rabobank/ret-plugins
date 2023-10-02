@@ -12,11 +12,11 @@ import io.rabobank.ret.git.plugin.provider.Repository as GenericRepository
 import io.rabobank.ret.git.plugin.provider.Reviewer as GenericReviewer
 
 class AzureDevopsProviderTest {
-
     private val azureDevopsClient = mock<AzureDevopsClient>()
-    private val pluginConfig = mock<AzureDevopsPluginConfig> {
-        whenever(it.config).thenReturn(mock())
-    }
+    private val pluginConfig =
+        mock<AzureDevopsPluginConfig> {
+            whenever(it.config).thenReturn(mock())
+        }
     private val urlFactory = mock<AzureDevopsUrlFactory>()
 
     private val azureDevopsProvider = AzureDevopsProvider(azureDevopsClient, pluginConfig, urlFactory)

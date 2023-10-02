@@ -17,22 +17,25 @@ class SplunkPluginConfig : Configurable() {
             "splunk_app" to APP,
         )
 
-    override fun properties() = listOf(
-        ConfigurationProperty(BASE_URL, "Enter the Splunk base URL (<base-url>/en-US/<app-name>)", required = true),
-        ConfigurationProperty(APP, "Enter your Splunk app name (<base-url>/en-US/<app-name>)", required = true),
-        ConfigurationProperty(
-            INDEXES,
-            "Enter your Splunk index(es) (comma separated). E.g. my_index_a, my_index_b",
-            required = true,
-        ),
-        // Optional answers from here on onwards:
-        ConfigurationProperty(
-            SEARCH_FIELD,
-            "Optional: Enter the field of the unique identifier. E.g. system_name, application_name or cf_app_name.\n" +
-                "This is handy in case you have one big index where all different sorts of " +
-                "applications/systems log to. E.g. my_awesome_microservice or my_linux_server_1",
-        ),
-    )
+    override fun properties() =
+        listOf(
+            ConfigurationProperty(BASE_URL, "Enter the Splunk base URL (<base-url>/en-US/<app-name>)", required = true),
+            ConfigurationProperty(APP, "Enter your Splunk app name (<base-url>/en-US/<app-name>)", required = true),
+            ConfigurationProperty(
+                INDEXES,
+                "Enter your Splunk index(es) (comma separated). E.g. my_index_a, my_index_b",
+                required = true,
+            ),
+            // Optional answers from here on onwards:
+            ConfigurationProperty(
+                SEARCH_FIELD,
+                """
+                Optional: Enter the field of the unique identifier. E.g. system_name, application_name or cf_app_name.
+                This is handy in case you have one big index where all different sorts of applications/systems log to.
+                E.g. my_awesome_microservice or my_linux_server_1
+                """.trimIndent(),
+            ),
+        )
 
     private companion object {
         private const val BASE_URL = "base_url"

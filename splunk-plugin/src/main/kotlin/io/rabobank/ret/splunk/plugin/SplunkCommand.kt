@@ -73,14 +73,15 @@ class SplunkCommand(
 
         val query = queryArguments.filterNotNull().joinToString(" ")
 
-        val url = UriBuilder.fromUri(splunkUrl)
-            .apply {
-                if (query.isNotBlank()) {
-                    queryParam("q", "search $query")
+        val url =
+            UriBuilder.fromUri(splunkUrl)
+                .apply {
+                    if (query.isNotBlank()) {
+                        queryParam("q", "search $query")
+                    }
                 }
-            }
-            .build()
-            .toASCIIString()
+                .build()
+                .toASCIIString()
 
         Log.info("Querying splunk with url '$url'")
         browserUtils.openUrl(url)

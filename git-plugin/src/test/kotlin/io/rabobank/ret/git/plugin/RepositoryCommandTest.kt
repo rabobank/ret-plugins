@@ -28,7 +28,6 @@ import java.net.URI
 
 @QuarkusTest
 internal class RepositoryCommandTest {
-
     private val mockedGitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
     private val mockedRetContext = mock<RetContext>()
@@ -38,11 +37,12 @@ internal class RepositoryCommandTest {
 
     @BeforeEach
     fun before() {
-        val command = RepositoryCommand(
-            mockedGitProvider,
-            mockedBrowserUtils,
-            mockedRetContext,
-        )
+        val command =
+            RepositoryCommand(
+                mockedGitProvider,
+                mockedBrowserUtils,
+                mockedRetContext,
+            )
 
         command.contextAwareness = ContextAwareness()
 

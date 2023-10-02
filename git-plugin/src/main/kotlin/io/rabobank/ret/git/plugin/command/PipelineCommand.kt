@@ -16,7 +16,6 @@ class PipelineCommand(
     private val browserUtils: BrowserUtils,
     private val gitProvider: GitProvider,
 ) {
-
     @Command(name = "open", description = ["Open the pipeline dashboard, or a specific pipeline or run"])
     fun openPipelineInBrowser(
         @Parameters(
@@ -32,18 +31,20 @@ class PipelineCommand(
             completionCandidates = PipelineRunCompletionCandidates::class,
         ) pipelineRunId: String?,
     ) {
-        val url = if (pipelineId == null) {
-            gitProvider.urlFactory.pipelineDashboard()
-        } else if (pipelineRunId == null) {
-            val resolvedPipelineId = if (pipelineId.matches(DIGITS_PATTERN)) {
-                pipelineId
+        val url =
+            if (pipelineId == null) {
+                gitProvider.urlFactory.pipelineDashboard()
+            } else if (pipelineRunId == null) {
+                val resolvedPipelineId =
+                    if (pipelineId.matches(DIGITS_PATTERN)) {
+                        pipelineId
+                    } else {
+                        getPipelineByUniqueName(pipelineId).id.toString()
+                    }
+                gitProvider.urlFactory.pipeline(resolvedPipelineId)
             } else {
-                getPipelineByUniqueName(pipelineId).id.toString()
+                gitProvider.urlFactory.pipelineRun(pipelineRunId)
             }
-            gitProvider.urlFactory.pipeline(resolvedPipelineId)
-        } else {
-            gitProvider.urlFactory.pipelineRun(pipelineRunId)
-        }
 
         browserUtils.openUrl(url)
     }
