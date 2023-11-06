@@ -32,7 +32,7 @@
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
         <detekt.version>1.23.3</detekt.version>
         <git-commit-id.version>7.0.0</git-commit-id.version>
-        <jreleaser-maven-plugin.version>1.8.0</jreleaser-maven-plugin.version>
+        <jreleaser-maven-plugin.version>1.9.0</jreleaser-maven-plugin.version>
         <ktlint-maven-plugin.version>3.0.0</ktlint-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
