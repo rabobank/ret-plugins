@@ -44,7 +44,7 @@
         <ret-plugin.version>0.2.0</ret-plugin.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.2.2</surefire-plugin.version>
-        <versions-maven-plugin.version>2.16.1</versions-maven-plugin.version>
+        <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
     </properties>
 
     <modules>
