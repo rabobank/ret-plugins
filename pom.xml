@@ -30,7 +30,7 @@
 
         <assertj-core.version>3.24.2</assertj-core.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
-        <detekt.version>1.23.3</detekt.version>
+        <detekt.version>1.23.4</detekt.version>
         <git-commit-id.version>7.0.0</git-commit-id.version>
         <jreleaser-maven-plugin.version>1.9.0</jreleaser-maven-plugin.version>
         <ktlint-maven-plugin.version>3.0.0</ktlint-maven-plugin.version>
