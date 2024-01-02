@@ -87,7 +87,7 @@ jobs:
         run: mvn -B -ntp -Pnative-plugin package
 
       - name: 'Upload build artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: |
