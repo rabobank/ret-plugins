@@ -28,7 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <assertj-core.version>3.25.2</assertj-core.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
         <compiler-plugin.version>3.12.1</compiler-plugin.version>
         <detekt.version>1.23.4</detekt.version>
         <git-commit-id.version>7.0.0</git-commit-id.version>
