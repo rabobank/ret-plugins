@@ -55,6 +55,11 @@ class AutoCompleteCommandTest {
         commandLine = CommandLine(command)
         commandLine.out = PrintWriter(output)
 
+        mockedRepositories()
+        mockedPullRequests()
+    }
+
+    private fun mockedRepositories() {
         allMockedRepositories =
             listOf(
                 Repository("admin-service", "refs/heads/master"),
@@ -75,6 +80,9 @@ class AutoCompleteCommandTest {
                 Branch("refs/heads/feature/def", "feature/def"),
             ),
         )
+    }
+
+    private fun mockedPullRequests() {
         allMockedPullRequests =
             listOf(
                 PullRequest(
@@ -89,10 +97,17 @@ class AutoCompleteCommandTest {
                     Repository("generic-project", "refs/heads/master"),
                     listOf(Reviewer("manks@live.com")),
                 ),
-                PullRequest("1241", "NOJIRA: ahum", Repository("ret-engineering-tools", "refs/heads/master"), listOf()),
                 PullRequest(
-                    "1271", "NOJIRA: MANKS",
-                    Repository("ret-engineering-tools", "refs/heads/master"), listOf(),
+                    "1241",
+                    "NOJIRA: ahum",
+                    Repository("ret-engineering-tools", "refs/heads/master"),
+                    listOf(),
+                ),
+                PullRequest(
+                    "1271",
+                    "NOJIRA: MANKS",
+                    Repository("ret-engineering-tools", "refs/heads/master"),
+                    listOf(),
                 ),
                 PullRequest("1272", "update admin-service", Repository("test", "refs/heads/master"), listOf()),
             )
