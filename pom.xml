@@ -40,7 +40,7 @@
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <mockito-kotlin.version>5.2.1</mockito-kotlin.version>
         <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
-        <quarkus.platform.version>3.7.4</quarkus.platform.version>
+        <quarkus.platform.version>3.8.1</quarkus.platform.version>
         <ret-plugin.version>0.2.0</ret-plugin.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
