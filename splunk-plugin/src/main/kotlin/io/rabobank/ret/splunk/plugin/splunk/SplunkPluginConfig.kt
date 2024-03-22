@@ -19,8 +19,8 @@ class SplunkPluginConfig : Configurable() {
 
     override fun properties() =
         listOf(
-            ConfigurationProperty(BASE_URL, "Enter the Splunk base URL (<base-url>/en-US/<app-name>)", required = true),
-            ConfigurationProperty(APP, "Enter your Splunk app name (<base-url>/en-US/<app-name>)", required = true),
+            ConfigurationProperty(BASE_URL, "Enter the Splunk base URL (<base-url> in <base-url>/en-US/app/<app-name>/search)", required = true),
+            ConfigurationProperty(APP, "Enter your Splunk app name (<app-name> in <base-url>/en-US/app/<app-name>/search)", required = true),
             ConfigurationProperty(
                 INDEXES,
                 "Enter your Splunk index(es) (comma separated). E.g. my_index_a, my_index_b",
