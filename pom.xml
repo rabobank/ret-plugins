@@ -35,7 +35,7 @@
         <jreleaser-maven-plugin.version>1.11.0</jreleaser-maven-plugin.version>
         <ktlint-maven-plugin.version>3.2.0</ktlint-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <maven-assembly-plugin.version>3.7.0</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
         <maven-surefire-junit5-tree-reporter.version>1.2.1</maven-surefire-junit5-tree-reporter.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <mockito-kotlin.version>5.2.1</mockito-kotlin.version>
