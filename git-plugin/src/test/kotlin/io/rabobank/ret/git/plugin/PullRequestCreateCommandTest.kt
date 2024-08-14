@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin
 
-import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.git.plugin.command.PullRequestCreateCommand
 import io.rabobank.ret.git.plugin.config.ExceptionMessageHandler
@@ -29,7 +28,6 @@ import java.net.URI
 
 private const val BASE_URL = "https://test.git"
 
-@QuarkusTest
 internal class PullRequestCreateCommandTest {
     private val gitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
