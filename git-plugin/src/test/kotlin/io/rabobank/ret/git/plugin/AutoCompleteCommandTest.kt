@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin
 
-import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.IntelliSearch
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.git.plugin.command.AutoCompleteCommand
@@ -31,7 +30,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.time.ZonedDateTime
 
-@QuarkusTest
 class AutoCompleteCommandTest {
     private lateinit var commandLine: CommandLine
     private val gitProvider = mock<GitProvider>()

@@ -1,6 +1,5 @@
 package io.rabobank.ret.git.plugin
 
-import io.quarkus.test.junit.QuarkusTest
 import io.rabobank.ret.RetConsole
 import io.rabobank.ret.RetContext
 import io.rabobank.ret.git.plugin.command.RepositoryCommand
@@ -26,7 +25,6 @@ import org.mockito.kotlin.whenever
 import picocli.CommandLine
 import java.net.URI
 
-@QuarkusTest
 internal class RepositoryCommandTest {
     private val mockedGitProvider = mock<GitProvider>()
     private val mockedBrowserUtils = mock<BrowserUtils>()
