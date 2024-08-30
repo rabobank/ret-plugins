@@ -59,7 +59,9 @@ class SplunkCommand(
     )
     var queryParts: List<String> = emptyList()
 
-    private val splunkUrl by lazy { "${splunkConfig.config.baseUrl}/en-US/app/${splunkConfig.config.app}/search" }
+    private val splunkUrl by lazy {
+        "${splunkConfig.config.baseUrl}/${splunkConfig.config.locale}/app/${splunkConfig.config.app}/search"
+    }
 
     override fun run() {
         val queryArguments = mutableListOf<String?>()
