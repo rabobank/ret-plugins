@@ -21,12 +21,12 @@ class SplunkPluginConfig : Configurable() {
         listOf(
             ConfigurationProperty(
                 BASE_URL,
-                "Enter the Splunk base URL (<base-url> in <base-url>/en-US/app/<app-name>/search)",
+                "Enter the Splunk base URL (<base-url> in <base-url>/<locale>/app/<app-name>/search)",
                 required = true,
             ),
             ConfigurationProperty(
                 APP,
-                "Enter your Splunk app name (<app-name> in <base-url>/en-US/app/<app-name>/search)",
+                "Enter your Splunk app name (<app-name> in <base-url>/<locale>/app/<app-name>/search)",
                 required = true,
             ),
             ConfigurationProperty(
@@ -56,6 +56,7 @@ class SplunkPluginConfig : Configurable() {
 data class SplunkConfig(
     @JsonProperty("base_url")
     val baseUrl: String?,
+    val locale: String? = "en-GB",
     val app: String?,
     @JsonDeserialize(using = CommaDelimitedToListDeserializer::class)
     val indexes: List<String> = emptyList(),

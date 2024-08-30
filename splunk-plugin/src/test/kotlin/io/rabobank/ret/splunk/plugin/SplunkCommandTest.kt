@@ -48,8 +48,7 @@ class SplunkCommandTest {
                 "base_url" to "splunk.base.url",
                 "app" to "general",
             )
-        val objectMapper = jacksonObjectMapper()
-        objectMapper.writeValue(mockedOsUtils.getPluginConfig("splunk").toFile(), splunkConfig)
+        jacksonObjectMapper.writeValue(mockedOsUtils.getPluginConfig("splunk").toFile(), splunkConfig)
 
         val splunkCommand =
             SplunkCommand(
@@ -57,7 +56,7 @@ class SplunkCommandTest {
                 mockedRetContext,
                 SplunkPluginConfig().apply {
                     pluginName = "splunk"
-                    this.objectMapper = objectMapper
+                    objectMapper = jacksonObjectMapper
                     osUtils = mockedOsUtils
                     retConfig = mock()
                 },
@@ -166,8 +165,28 @@ class SplunkCommandTest {
         verify(mockedBrowserUtils).openUrl(expectedURL)
     }
 
+    @Test
+    fun `should set locale`() {
+        val splunkConfig =
+            mapOf(
+                "base_url" to "splunk.base.url",
+                "app" to "general",
+                "locale" to "en-US",
+            )
+        jacksonObjectMapper.writeValue(mockedOsUtils.getPluginConfig("splunk").toFile(), splunkConfig)
+        val project = "my-application"
+
+        val expectedURL = "splunk.base.url/en-US/app/general/search?q=search+project%3D$project"
+
+        val exitCode = commandLine.execute("--project", project)
+        assertThat(exitCode).isEqualTo(0)
+
+        verify(mockedBrowserUtils).openUrl(expectedURL)
+    }
+
     private companion object {
-        private const val SPLUNK_URL = "splunk.base.url/en-US/app/general/search"
+        private const val SPLUNK_URL = "splunk.base.url/en-GB/app/general/search"
+        private val jacksonObjectMapper = jacksonObjectMapper()
     }
 }
 
