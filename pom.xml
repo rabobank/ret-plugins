@@ -29,7 +29,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <assertj-core.version>3.27.3</assertj-core.version>
-        <compiler-plugin.version>3.13.0</compiler-plugin.version>
+        <compiler-plugin.version>3.14.0</compiler-plugin.version>
         <detekt.version>1.23.7</detekt.version>
         <git-commit-id.version>9.0.1</git-commit-id.version>
         <jreleaser-maven-plugin.version>1.16.0</jreleaser-maven-plugin.version>
