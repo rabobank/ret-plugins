@@ -2,7 +2,9 @@ package io.rabobank.ret.splunk.plugin.output
 
 import io.rabobank.ret.RetConsole
 
-class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
+class CliOutputHandler(
+    private val retConsole: RetConsole,
+) : OutputHandler {
     override fun println(message: String) {
         retConsole.out(message)
     }
@@ -11,11 +13,7 @@ class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
         retConsole.errorOut(message)
     }
 
-    override fun listIndexes(indexes: List<String>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listIndexes(indexes: List<String>): Unit = throw UnsupportedOperationException()
 
-    override fun listProjects(projects: List<String>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listProjects(projects: List<String>): Unit = throw UnsupportedOperationException()
 }

@@ -4,7 +4,9 @@ import io.quarkus.logging.Log
 import io.rabobank.ret.git.plugin.output.OutputHandler
 import picocli.CommandLine
 
-class ExceptionMessageHandler(private val outputHandler: OutputHandler) : CommandLine.IExecutionExceptionHandler {
+class ExceptionMessageHandler(
+    private val outputHandler: OutputHandler,
+) : CommandLine.IExecutionExceptionHandler {
     override fun handleExecutionException(
         exception: Exception,
         commandLine: CommandLine,

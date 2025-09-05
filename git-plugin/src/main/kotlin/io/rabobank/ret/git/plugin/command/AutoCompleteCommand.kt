@@ -37,7 +37,8 @@ class AutoCompleteCommand(
         val pipelines = gitProvider.getAllPipelines()
 
         outputHandler.listPipelines(
-            pipelines.filter { it.matches(word) }
+            pipelines
+                .filter { it.matches(word) }
                 .sortedWith(compareBy({ it.container }, { it.name })),
         )
     }
@@ -61,7 +62,8 @@ class AutoCompleteCommand(
         val pipelineRuns = gitProvider.getPipelineRuns(pipelineId)
 
         outputHandler.listPipelineRuns(
-            pipelineRuns.filter { it.matches(word) }
+            pipelineRuns
+                .filter { it.matches(word) }
                 .sortedByDescending { it.createdDate }
                 .take(TOP_20_PIPELINES),
         )
@@ -90,7 +92,8 @@ class AutoCompleteCommand(
 
         repository?.let { repo ->
             outputHandler.listBranches(
-                gitProvider.getAllRefs(repo, "heads/")
+                gitProvider
+                    .getAllRefs(repo, "heads/")
                     .filter { word == null || intelliSearch.matches(word, it.shortName) },
             )
         } ?: outputHandler.error("No repository could be determined")
@@ -137,8 +140,11 @@ class AutoCompleteCommand(
             intelliSearch.matches(value, uniqueName)
 
     private fun PipelineRun.matches(word: String?) =
-        word == null || intelliSearch.matches(word, id.toString()) || intelliSearch.matches(word, name) ||
-            intelliSearch.matches(word, state.toString()) || intelliSearch.matches(word, result.toString())
+        word == null ||
+            intelliSearch.matches(word, id.toString()) ||
+            intelliSearch.matches(word, name) ||
+            intelliSearch.matches(word, state.toString()) ||
+            intelliSearch.matches(word, result.toString())
 
     private fun getPipelineByUniqueName(pipelineIdFlag: String) =
         requireNotNull(gitProvider.getAllPipelines().firstOrNull { it.uniqueName == pipelineIdFlag }) {

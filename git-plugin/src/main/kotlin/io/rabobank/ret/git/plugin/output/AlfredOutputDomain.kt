@@ -6,10 +6,14 @@ import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 
 @RegisterForReflection
-data class Wrapper(val items: List<Item>)
+data class Wrapper(
+    val items: List<Item>,
+)
 
 @RegisterForReflection
-data class ItemIcon(val path: String)
+data class ItemIcon(
+    val path: String,
+)
 
 @RegisterForReflection
 data class Item(

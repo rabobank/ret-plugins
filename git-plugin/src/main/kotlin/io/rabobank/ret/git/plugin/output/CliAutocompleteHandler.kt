@@ -8,7 +8,9 @@ import io.rabobank.ret.git.plugin.provider.PipelineRunState
 import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 
-class CliAutocompleteHandler(private val retConsole: RetConsole) : OutputHandler {
+class CliAutocompleteHandler(
+    private val retConsole: RetConsole,
+) : OutputHandler {
     override fun listPRs(list: List<PullRequest>) {
         list.map { "${it.id}:${it.repository.name}: ${it.title}" }.forEach(retConsole::out)
     }
@@ -26,9 +28,10 @@ class CliAutocompleteHandler(private val retConsole: RetConsole) : OutputHandler
     }
 
     override fun listPipelineRuns(list: List<PipelineRun>) {
-        list.map {
-            val combinedState = if (it.state == PipelineRunState.COMPLETED) it.result else it.state
-            "${it.id}:${it.name} ($combinedState)"
-        }.forEach(retConsole::out)
+        list
+            .map {
+                val combinedState = if (it.state == PipelineRunState.COMPLETED) it.result else it.state
+                "${it.id}:${it.name} ($combinedState)"
+            }.forEach(retConsole::out)
     }
 }

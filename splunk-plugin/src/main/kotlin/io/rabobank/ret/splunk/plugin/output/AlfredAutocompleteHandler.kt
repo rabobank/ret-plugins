@@ -3,15 +3,13 @@ package io.rabobank.ret.splunk.plugin.output
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.rabobank.ret.RetConsole
 
-class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val objectMapper: ObjectMapper) :
-    OutputHandler {
-    override fun println(message: String) {
-        throw UnsupportedOperationException()
-    }
+class AlfredAutocompleteHandler(
+    private val retConsole: RetConsole,
+    private val objectMapper: ObjectMapper,
+) : OutputHandler {
+    override fun println(message: String): Unit = throw UnsupportedOperationException()
 
-    override fun error(message: String) {
-        throw UnsupportedOperationException()
-    }
+    override fun error(message: String): Unit = throw UnsupportedOperationException()
 
     override fun listIndexes(indexes: List<String>) {
         retConsole.out(

@@ -7,7 +7,9 @@ import io.rabobank.ret.git.plugin.provider.PipelineRun
 import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 
-class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
+class CliOutputHandler(
+    private val retConsole: RetConsole,
+) : OutputHandler {
     override fun println(message: String) {
         retConsole.out(message)
     }
@@ -16,23 +18,13 @@ class CliOutputHandler(private val retConsole: RetConsole) : OutputHandler {
         retConsole.errorOut(message)
     }
 
-    override fun listPRs(list: List<PullRequest>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listPRs(list: List<PullRequest>): Unit = throw UnsupportedOperationException()
 
-    override fun listRepositories(list: List<Repository>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listRepositories(list: List<Repository>): Unit = throw UnsupportedOperationException()
 
-    override fun listBranches(list: List<Branch>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listBranches(list: List<Branch>): Unit = throw UnsupportedOperationException()
 
-    override fun listPipelines(list: List<Pipeline>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listPipelines(list: List<Pipeline>): Unit = throw UnsupportedOperationException()
 
-    override fun listPipelineRuns(list: List<PipelineRun>) {
-        throw UnsupportedOperationException()
-    }
+    override fun listPipelineRuns(list: List<PipelineRun>): Unit = throw UnsupportedOperationException()
 }

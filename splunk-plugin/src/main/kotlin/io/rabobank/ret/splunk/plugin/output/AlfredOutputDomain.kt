@@ -3,10 +3,14 @@ package io.rabobank.ret.splunk.plugin.output
 import io.quarkus.runtime.annotations.RegisterForReflection
 
 @RegisterForReflection
-data class Wrapper(val items: List<Item>)
+data class Wrapper(
+    val items: List<Item>,
+)
 
 @RegisterForReflection
-data class ItemIcon(val path: String)
+data class ItemIcon(
+    val path: String,
+)
 
 @RegisterForReflection
 data class Item(
