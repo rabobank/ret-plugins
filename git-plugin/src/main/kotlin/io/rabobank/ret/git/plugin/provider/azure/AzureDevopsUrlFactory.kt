@@ -58,11 +58,11 @@ class AzureDevopsUrlFactory(
                 if (sourceRef != null) {
                     queryParam("sourceRef", sourceRef)
                 }
-            }
-            .buildToURL()
+            }.buildToURL()
 
     private fun azdoBaseUriBuilder() =
-        UriBuilder.fromUri(azureDevopsBaseUrl)
+        UriBuilder
+            .fromUri(azureDevopsBaseUrl)
             .path(pluginConfig.config.organization)
             .path(pluginConfig.config.project)
 

@@ -10,15 +10,13 @@ import io.rabobank.ret.git.plugin.provider.PipelineRunState
 import io.rabobank.ret.git.plugin.provider.PullRequest
 import io.rabobank.ret.git.plugin.provider.Repository
 
-class AlfredAutocompleteHandler(private val retConsole: RetConsole, private val objectMapper: ObjectMapper) :
-    OutputHandler {
-    override fun println(message: String) {
-        throw UnsupportedOperationException()
-    }
+class AlfredAutocompleteHandler(
+    private val retConsole: RetConsole,
+    private val objectMapper: ObjectMapper,
+) : OutputHandler {
+    override fun println(message: String): Unit = throw UnsupportedOperationException()
 
-    override fun error(message: String) {
-        throw UnsupportedOperationException()
-    }
+    override fun error(message: String): Unit = throw UnsupportedOperationException()
 
     override fun listPRs(list: List<PullRequest>) {
         retConsole.out(

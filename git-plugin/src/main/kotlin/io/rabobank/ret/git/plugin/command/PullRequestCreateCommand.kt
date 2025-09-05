@@ -94,10 +94,11 @@ class PullRequestCreateCommand(
                         "PR created by RET using `ret pr create --no-prompt`.",
                     )
                 val pullRequestUrl =
-                    gitProvider.urlFactory.pullRequest(
-                        repositoryName,
-                        createPullRequestResponse.pullRequestId,
-                    ).toString()
+                    gitProvider.urlFactory
+                        .pullRequest(
+                            repositoryName,
+                            createPullRequestResponse.pullRequestId,
+                        ).toString()
                 outputHandler.println(pullRequestUrl)
             } catch (e: ClientWebApplicationException) {
                 val message =

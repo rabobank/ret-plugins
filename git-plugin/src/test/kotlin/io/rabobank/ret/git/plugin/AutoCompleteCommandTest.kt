@@ -334,7 +334,8 @@ class AutoCompleteCommandTest {
                         Pipeline(1, "admin-service deployment", "blabla", "blabla\\admin-service deployment"),
                         Pipeline(2, "blabla", "admin-service", "admin-service\\blabla"),
                     ),
-                ) && !this.contains(Pipeline(3, "blabla", "blabla", "blabla\\blabla"))
+                ) &&
+                    !this.contains(Pipeline(3, "blabla", "blabla", "blabla\\blabla"))
             },
         )
     }

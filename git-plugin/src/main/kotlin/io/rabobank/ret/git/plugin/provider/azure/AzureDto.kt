@@ -106,8 +106,9 @@ data class PipelineRun(
         )
 }
 
-enum class PipelineRunState(private val genericEquivalent: GenericPipelineRunState) :
-    GitDomainConvertible<GenericPipelineRunState> {
+enum class PipelineRunState(
+    private val genericEquivalent: GenericPipelineRunState,
+) : GitDomainConvertible<GenericPipelineRunState> {
     @JsonProperty("canceling")
     CANCELING(GenericPipelineRunState.CANCELING),
 
@@ -124,8 +125,9 @@ enum class PipelineRunState(private val genericEquivalent: GenericPipelineRunSta
     override fun toGenericDomain() = genericEquivalent
 }
 
-enum class PipelineRunResult(private val genericEquivalent: GenericPipelineRunResult) :
-    GitDomainConvertible<GenericPipelineRunResult> {
+enum class PipelineRunResult(
+    private val genericEquivalent: GenericPipelineRunResult,
+) : GitDomainConvertible<GenericPipelineRunResult> {
     @JsonProperty("canceled")
     CANCELED(GenericPipelineRunResult.CANCELED),
 

@@ -4,7 +4,9 @@ import io.rabobank.ret.git.plugin.provider.GitUrlFactory
 import jakarta.ws.rs.core.UriBuilder
 import java.net.URL
 
-class TestUrlFactory(private val domain: String) : GitUrlFactory {
+class TestUrlFactory(
+    private val domain: String,
+) : GitUrlFactory {
     override fun repository(repositoryName: String) = "$domain/repository/$repositoryName".toURL()
 
     override fun pipelineRun(pipelineRunId: String) = "$domain/pipeline/run/$pipelineRunId".toURL()

@@ -41,7 +41,10 @@ class AzureDevopsPluginConfigLoadTest {
                 "azure_devops_organization" to "my-organization",
             )
         pluginConfig.objectMapper.writeValue(
-            pluginConfig.osUtils.getRetPluginsDirectory().resolve(pluginConfigFileName).toFile(),
+            pluginConfig.osUtils
+                .getRetPluginsDirectory()
+                .resolve(pluginConfigFileName)
+                .toFile(),
             config,
         )
     }

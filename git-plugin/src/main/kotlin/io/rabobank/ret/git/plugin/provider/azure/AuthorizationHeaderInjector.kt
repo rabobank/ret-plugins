@@ -7,7 +7,9 @@ import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory
 import java.util.Base64
 
 @Singleton
-class AuthorizationHeaderInjector(private val pluginConfig: AzureDevopsPluginConfig) : ClientHeadersFactory {
+class AuthorizationHeaderInjector(
+    private val pluginConfig: AzureDevopsPluginConfig,
+) : ClientHeadersFactory {
     override fun update(
         incomingHeaders: MultivaluedMap<String, String>,
         outgoingHeaders: MultivaluedMap<String, String>,

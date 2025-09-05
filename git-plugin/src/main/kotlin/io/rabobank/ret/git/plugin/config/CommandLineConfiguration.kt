@@ -13,6 +13,7 @@ class CommandLineConfiguration {
         factory: PicocliCommandLineFactory,
         outputHandler: OutputHandler,
     ): CommandLine =
-        factory.create()
+        factory
+            .create()
             .setExecutionExceptionHandler(ExceptionMessageHandler(outputHandler))
 }

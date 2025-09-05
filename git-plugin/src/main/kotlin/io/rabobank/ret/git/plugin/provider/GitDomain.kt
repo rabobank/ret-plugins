@@ -19,7 +19,9 @@ data class PullRequestCreated(
     val pullRequestId: String,
 ) : GitDomain
 
-data class Reviewer(val uniqueName: String) : GitDomain
+data class Reviewer(
+    val uniqueName: String,
+) : GitDomain
 
 data class Repository(
     val name: String,
