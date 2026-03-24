@@ -13,7 +13,10 @@ Then, to install a plugin, do the following:
 * Navigate to the latest release
 * Download the zip file for the plugin and operating system you want
 * Unzip and copy/move the file to your `~/.ret/plugins` folder (create the folder if it doesn't exist yet)
-  * If installing on Mac, it is possible that you need to authorize the usage of the dylib file. To do this: right-click on the file and choose open. You will now get a pop-up to confirm opening.
+  * If installing on Mac, it is possible that you need to authorize the usage of the dylib file. To do this do either:
+    * right-click on the file and choose open. You will now get a pop-up to confirm opening
+    * run `xattr -d com.apple.quarantine ./<plugin file>`
+
 Do so, and you will be able to initialize the plugin:
 * Run:
 
