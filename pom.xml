@@ -23,7 +23,7 @@
     </developers>
 
     <properties>
-        <kotlin.version>2.4.20</kotlin.version>
+        <kotlin.version>2.4.21</kotlin.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -36,11 +36,11 @@
         <ktlint-maven-plugin.version>3.7.1</ktlint-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
-        <maven-surefire-junit5-tree-reporter.version>1.5.1</maven-surefire-junit5-tree-reporter.version>
+        <maven-surefire-junit5-tree-reporter.version>2.1.0</maven-surefire-junit5-tree-reporter.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <mockito-kotlin.version>6.4.0</mockito-kotlin.version>
         <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
-        <quarkus.platform.version>3.39.5</quarkus.platform.version>
+        <quarkus.platform.version>3.40.1.1</quarkus.platform.version>
         <ret-plugin.version>0.2.4</ret-plugin.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.6.1</surefire-plugin.version>
