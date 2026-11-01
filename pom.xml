@@ -43,8 +43,8 @@
         <quarkus.platform.version>3.39.5</quarkus.platform.version>
         <ret-plugin.version>0.2.4</ret-plugin.version>
         <skipITs>true</skipITs>
-        <surefire-plugin.version>3.6.0</surefire-plugin.version>
-        <versions-maven-plugin.version>2.22.0</versions-maven-plugin.version>
+        <surefire-plugin.version>3.6.1</surefire-plugin.version>
+        <versions-maven-plugin.version>2.23.0</versions-maven-plugin.version>
     </properties>
 
     <modules>
