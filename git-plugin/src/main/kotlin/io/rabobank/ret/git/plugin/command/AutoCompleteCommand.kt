@@ -103,7 +103,7 @@ class AutoCompleteCommand(
     fun printPullRequests(
         @Option(
             names = ["-n", "--not-reviewed"],
-            description = ["Only show Pull Requests that you have not been reviewed"],
+            description = ["Only show Pull Requests that you have not reviewed"],
         )
         notReviewed: Boolean = false,
         @Option(names = ["--word", "-w"]) word: String?,
