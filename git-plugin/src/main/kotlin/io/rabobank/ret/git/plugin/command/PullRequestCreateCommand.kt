@@ -117,7 +117,7 @@ class PullRequestCreateCommand(
         filterRepository: String?,
         providedBranch: String?,
         contextBranch: String?,
-    ) = providedBranch != null || contextBranch != null && filterRepository == null
+    ) = providedBranch != null || (contextBranch != null && filterRepository == null)
 }
 
 internal class BranchCompletionCandidates : Iterable<String> {
